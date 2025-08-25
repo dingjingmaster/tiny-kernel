@@ -1,7 +1,7 @@
 all: doc kernel
 
 doc:
-	make -C Documentation html
+	make -C Documentation pdf
 
 kernel:
 	make -C source
