@@ -1,7 +1,7 @@
 #ifndef _NFS_FS_SB
 #define _NFS_FS_SB
 
-#include <linux/nfs.h>
+#include "nfs.h"
 
 struct nfs_server {
 	struct file *file;

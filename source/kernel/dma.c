@@ -1,11 +1,11 @@
 /* $Id: dma.c,v 1.5 1992/11/18 02:49:05 root Exp root $
  * linux/kernel/dma.c: A DMA channel allocator. Inspired by linux/kernel/irq.c.
- * Written by Hennus Bergman, 1992. 
+ * Written by Hennus Bergman, 1992.
  */
 
 #include <linux/kernel.h>
 #include <linux/errno.h>
-#include <asm/dma.h>
+#include "../include/asm/dma.h"
 
 
 /* A note on resource allocation:
@@ -15,7 +15,7 @@
  *
  * In order to avoid problems, all processes should allocate resources in
  * the same sequence and release them in the reverse order.
- * 
+ *
  * So, when allocating DMAs and IRQs, first allocate the IRQ, then the DMA.
  * When releasing them, first release the DMA, then release the IRQ.
  * If you don't, you may cause allocation requests to fail unnecessarily.
@@ -84,4 +84,3 @@ void free_dma(unsigned int dmanr)
 	if (mutex_atomic_swap(&dma_chan_busy[dmanr], 0) == 0)
 		printk("Trying to free free DMA%d\n", dmanr);
 } /* free_dma */
-

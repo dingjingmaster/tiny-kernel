@@ -1,5 +1,6 @@
 #ifndef _LINUX_NFS_H
 #define _LINUX_NFS_H
+#include "types.h"
 
 #define NFS_PORT 2049
 #define NFS_MAXDATA 8192
@@ -60,7 +61,7 @@ enum rpc_auth_stat {
 };
 
 #endif /* __KERNEL__ */
-	
+
 enum nfs_stat {
 	NFS_OK = 0,
 	NFSERR_PERM = 1,

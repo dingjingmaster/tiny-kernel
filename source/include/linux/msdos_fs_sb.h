@@ -1,5 +1,6 @@
 #ifndef _MSDOS_FS_SB
 #define _MSDOS_FS_SB
+#include "types.h"
 
 /*
  * MS-DOS file system in-core superblock data

@@ -19,8 +19,8 @@
 #define _LINUX_NET_H
 
 
-#include <linux/wait.h>
-#include <linux/socket.h>
+#include "wait.h"
+#include "socket.h"
 
 
 #define NSOCKETS	128		/* should be dynamic, later...	*/
@@ -119,7 +119,7 @@ struct proto_ops {
   int	(*getsockopt)	(struct socket *sock, int level, int optname,
 			 char *optval, int *optlen);
   int	(*fcntl)	(struct socket *sock, unsigned int cmd,
-			 unsigned long arg);	
+			 unsigned long arg);
 };
 
 

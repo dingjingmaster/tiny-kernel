@@ -5,11 +5,11 @@
  * by Linus.
  */
 
-#include <linux/sched.h>
-#include <linux/kernel.h>
-#include <linux/errno.h>
-#include <linux/types.h>
-#include <linux/ioport.h>
+#include "../include/linux/sched.h"
+#include "../include/linux/kernel.h"
+#include "../include/linux/errno.h"
+#include "../include/linux/types.h"
+#include "../include/linux/ioport.h"
 
 static unsigned long ioport_registrar[IO_BITMAP_SIZE] = {0, /* ... */};
 

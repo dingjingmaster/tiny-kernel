@@ -9,17 +9,17 @@
  * Started 18.12.91
  */
 
-#include <linux/mm.h>
-#include <linux/sched.h>
-#include <linux/head.h>
-#include <linux/kernel.h>
-#include <linux/kernel_stat.h>
-#include <linux/errno.h>
-#include <linux/string.h>
-#include <linux/stat.h>
+#include "../include/linux/mm.h"
+#include "../include/linux/sched.h"
+#include "../include/linux/head.h"
+#include "../include/linux/kernel.h"
+#include "../include/linux/kernel_stat.h"
+#include "../include/linux/errno.h"
+#include "../include/linux/string.h"
+#include "../include/linux/stat.h"
 
-#include <asm/system.h> /* for cli()/sti() */
-#include <asm/bitops.h>
+#include "../include/asm/system.h" /* for cli()/sti() */
+#include "../include/asm/bitops.h"
 
 #define MAX_SWAPFILES 8
 
@@ -215,7 +215,7 @@ void swap_in(unsigned long *table_ptr)
 	if (!(page = get_free_page(GFP_KERNEL))) {
 		oom(current);
 		page = BAD_PAGE;
-	} else	
+	} else
 		read_swap_page(entry, (char *) page);
 	if (*table_ptr != entry) {
 		free_page(page);
@@ -408,7 +408,7 @@ static int swap_out(unsigned int priority)
 /*
  * Go through the page tables, searching for a user page that
  * we can swap out.
- * 
+ *
  * We now check that the process is swappable (normally only 'init'
  * is un-swappable), allowing high-priority processes which cannot be
  * swapped out (things like user-level device drivers (Not implemented)).
@@ -642,7 +642,7 @@ repeat:
 				continue;
 			if (mem_map[MAP_NR(page)] & MAP_PAGE_RESERVED)
 				continue;
-			ppage = (unsigned long *) (page & PAGE_MASK);	
+			ppage = (unsigned long *) (page & PAGE_MASK);
 			for (pg = 0 ; pg < PTRS_PER_PAGE ; pg++,ppage++) {
 				page = *ppage;
 				if (!page)

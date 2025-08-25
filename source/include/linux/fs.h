@@ -6,20 +6,20 @@
  * structures etc.
  */
 
-#include <linux/linkage.h>
-#include <linux/limits.h>
-#include <linux/wait.h>
-#include <linux/types.h>
-#include <linux/dirent.h>
-#include <linux/vfs.h>
-#include <linux/net.h>
+#include "linkage.h"
+#include "limits.h"
+#include "wait.h"
+#include "types.h"
+#include "dirent.h"
+#include "vfs.h"
+#include "net.h"
 
 /*
  * It's silly to have NR_OPEN bigger than NR_FILE, but I'll fix
  * that later. Anyway, now the file code is no longer dependent
  * on bitmaps in unsigned longs, but uses the new fd_set structure..
  *
- * Some programs (notably those using select()) may have to be 
+ * Some programs (notably those using select()) may have to be
  * recompiled to take full advantage of the new limits..
  */
 #undef NR_OPEN
@@ -146,16 +146,16 @@ struct buffer_head {
 	struct buffer_head * b_reqnext;		/* request queue */
 };
 
-#include <linux/pipe_fs_i.h>
-#include <linux/minix_fs_i.h>
-#include <linux/ext_fs_i.h>
-#include <linux/ext2_fs_i.h>
-#include <linux/hpfs_fs_i.h>
-#include <linux/msdos_fs_i.h>
-#include <linux/iso_fs_i.h>
-#include <linux/nfs_fs_i.h>
-#include <linux/xia_fs_i.h>
-#include <linux/sysv_fs_i.h>
+#include "pipe_fs_i.h"
+#include "minix_fs_i.h"
+#include "ext_fs_i.h"
+#include "ext2_fs_i.h"
+#include "hpfs_fs_i.h"
+#include "msdos_fs_i.h"
+#include "iso_fs_i.h"
+#include "nfs_fs_i.h"
+#include "xia_fs_i.h"
+#include "sysv_fs_i.h"
 
 struct inode {
 	dev_t		i_dev;
@@ -226,15 +226,15 @@ struct file_lock {
 	off_t fl_end;
 };
 
-#include <linux/minix_fs_sb.h>
-#include <linux/ext_fs_sb.h>
-#include <linux/ext2_fs_sb.h>
-#include <linux/hpfs_fs_sb.h>
-#include <linux/msdos_fs_sb.h>
-#include <linux/iso_fs_sb.h>
-#include <linux/nfs_fs_sb.h>
-#include <linux/xia_fs_sb.h>
-#include <linux/sysv_fs_sb.h>
+#include "minix_fs_sb.h"
+#include "ext_fs_sb.h"
+#include "ext2_fs_sb.h"
+#include "hpfs_fs_sb.h"
+#include "msdos_fs_sb.h"
+#include "iso_fs_sb.h"
+#include "nfs_fs_sb.h"
+#include "xia_fs_sb.h"
+#include "sysv_fs_sb.h"
 
 struct super_block {
 	dev_t s_dev;

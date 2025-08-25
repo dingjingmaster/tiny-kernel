@@ -10,7 +10,7 @@
 
 #ifndef _MC146818RTC_H
 #define _MC146818RTC_H
-#include <asm/io.h>
+#include "../asm/io.h"
 
 #define CMOS_READ(addr) ({ \
 outb_p(addr|0x80,0x70); \
@@ -90,7 +90,7 @@ outb_p(val,0x71); \
 # define RTC_VRT 0x80		/* valid RAM and time */
 /**********************************************************************/
 
-/* example: !(CMOS_READ(RTC_CONTROL) & RTC_DM_BINARY) 
+/* example: !(CMOS_READ(RTC_CONTROL) & RTC_DM_BINARY)
  * determines if the following two #defines are needed
  */
 #ifndef BCD_TO_BIN

@@ -36,14 +36,14 @@ sched.o: sched.c
 
 ksyms.lst: ksyms.S ../include/linux/autoconf.h
 	$(CPP) $(CFLAGS) $< > $@
- 
+
 ksyms.s: ksyms.sh ksyms.lst
 	sh $< > $@
 
 ksyms.o: ksyms.s
 
 dep:
-	$(CPP) -M *.c > .depend
+	$(CPP) -Iinclude -M *.c > .depend
 
 dummy:
 
@@ -53,4 +53,3 @@ dummy:
 ifeq (.depend,$(wildcard .depend))
 include .depend
 endif
-

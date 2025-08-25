@@ -10,17 +10,17 @@
  * to mainly kill the offending process (probably by giving it a signal,
  * but possibly by killing it outright if necessary).
  */
-#include <linux/head.h>
-#include <linux/sched.h>
-#include <linux/kernel.h>
-#include <linux/string.h>
-#include <linux/errno.h>
-#include <linux/segment.h>
-#include <linux/ptrace.h>
+#include "../include/linux/head.h"
+#include "../include/linux/sched.h"
+#include "../include/linux/kernel.h"
+#include "../include/linux/string.h"
+#include "../include/linux/errno.h"
+#include "../include/linux/segment.h"
+#include "../include/linux/ptrace.h"
 
-#include <asm/system.h>
-#include <asm/segment.h>
-#include <asm/io.h>
+#include "../include/asm/system.h"
+#include "../include/asm/segment.h"
+#include "../include/asm/io.h"
 
 static inline void console_verbose(void)
 {

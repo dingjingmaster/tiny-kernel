@@ -11,28 +11,28 @@
  * current-task
  */
 
-#include <linux/config.h>
-#include <linux/signal.h>
-#include <linux/sched.h>
-#include <linux/timer.h>
-#include <linux/kernel.h>
-#include <linux/kernel_stat.h>
-#include <linux/sys.h>
-#include <linux/fdreg.h>
-#include <linux/errno.h>
-#include <linux/time.h>
-#include <linux/ptrace.h>
-#include <linux/segment.h>
-#include <linux/delay.h>
-#include <linux/interrupt.h>
+#include "../include/linux/config.h"
+#include "../include/linux/signal.h"
+#include "../include/linux/sched.h"
+#include "../include/linux/timer.h"
+#include "../include/linux/kernel.h"
+#include "../include/linux/kernel_stat.h"
+#include "../include/linux/sys.h"
+#include "../include/linux/fdreg.h"
+#include "../include/linux/errno.h"
+#include "../include/linux/time.h"
+#include "../include/linux/ptrace.h"
+#include "../include/linux/segment.h"
+#include "../include/linux/delay.h"
+#include "../include/linux/interrupt.h"
 
-#include <asm/system.h>
-#include <asm/io.h>
-#include <asm/segment.h>
+#include "../include/asm/system.h"
+#include "../include/asm/io.h"
+#include "../include/asm/segment.h"
 
 #define TIMER_IRQ 0
 
-#include <linux/timex.h>
+#include "../include/linux/timex.h"
 
 /*
  * kernel variables
@@ -67,7 +67,7 @@ int need_resched = 0;
 int hard_math = 0;		/* set by boot/head.S */
 int x86 = 0;			/* set by boot/head.S to 3 or 4 */
 int ignore_irq13 = 0;		/* set if exception 16 works */
-int wp_works_ok = 0;		/* set if paging hardware honours WP */ 
+int wp_works_ok = 0;		/* set if paging hardware honours WP */
 
 /*
  * Bus types ..
@@ -165,7 +165,7 @@ asmlinkage void math_state_restore(void)
 	if (last_task_used_math == current)
 		return;
 	timer_table[COPRO_TIMER].expires = jiffies+50;
-	timer_active |= 1<<COPRO_TIMER;	
+	timer_active |= 1<<COPRO_TIMER;
 	if (last_task_used_math)
 		__asm__("fnsave %0":"=m" (last_task_used_math->tss.i387));
 	else
@@ -578,7 +578,7 @@ static void timer_bh(void * unused)
 		cli();
 	}
 	sti();
-	
+
 	for (mask = 1, tp = timer_table+0 ; mask ; tp++,mask += mask) {
 		if (mask > timer_active)
 			break;
@@ -623,7 +623,7 @@ static void do_timer(struct pt_regs * regs)
 
 	if (time_adjust)
 	{
-	    /* We are doing an adjtime thing. 
+	    /* We are doing an adjtime thing.
 	     *
 	     * Modify the value of the tick for next time.
 	     * Note that a positive delta means we want the clock
@@ -638,7 +638,7 @@ static void do_timer(struct pt_regs * regs)
 	       time_adjust_step = -tickadj;
 	     else
 	       time_adjust_step = time_adjust;
-	     
+
 	    /* Reduce by this step the amount of time left  */
 	    time_adjust -= time_adjust_step;
 	}

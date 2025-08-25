@@ -3,18 +3,18 @@
  *
  * Written by obz.
  */
-#include <linux/stat.h>
-#include <linux/sched.h>
-#include <linux/kernel.h>
-#include <linux/mm.h>
-#include <linux/shm.h>
-#include <linux/errno.h>
-#include <linux/mman.h>
-#include <linux/string.h>
-#include <linux/malloc.h>
+#include "../include/linux/stat.h"
+#include "../include/linux/sched.h"
+#include "../include/linux/kernel.h"
+#include "../include/linux/mm.h"
+#include "../include/linux/shm.h"
+#include "../include/linux/errno.h"
+#include "../include/linux/mman.h"
+#include "../include/linux/string.h"
+#include "../include/linux/malloc.h"
 
-#include <asm/segment.h>
-#include <asm/system.h>
+#include "../include/asm/segment.h"
+#include "../include/asm/system.h"
 
 static int anon_map(struct inode *, struct file *,
 		    unsigned long, size_t, int,
@@ -29,7 +29,7 @@ static int anon_map(struct inode *, struct file *,
  * MAP_SHARED	r: (no) yes	r: (yes) yes	r: (no) yes	r: (no) no
  *		w: (no) yes	w: (no) copy	w: (yes) yes	w: (no) no
  *		x: (no) no	x: (no) no	x: (no) no	x: (yes) no
- *		
+ *
  * MAP_PRIVATE	r: (no) yes	r: (yes) yes	r: (no) yes	r: (no) no
  *		w: (no) copy	w: (no) copy	w: (copy) copy	w: (no) no
  *		x: (no) no	x: (no) no	x: (no) no	x: (yes) no
@@ -125,7 +125,7 @@ int do_mmap(struct file * file, unsigned long addr, unsigned long len,
 		error = file->f_op->mmap(file->f_inode, file, addr, len, mask, off);
 	else
 		error = anon_map(NULL, NULL, addr, len, mask, off);
-	
+
 	if (!error)
 		return addr;
 
@@ -335,7 +335,7 @@ int generic_mmap(struct inode * inode, struct file * file,
 	if (!mpnt)
 		return -ENOMEM;
 
-	unmap_page_range(addr, len);	
+	unmap_page_range(addr, len);
 	mpnt->vm_task = current;
 	mpnt->vm_start = addr;
 	mpnt->vm_end = addr + len;
@@ -347,7 +347,7 @@ int generic_mmap(struct inode * inode, struct file * file,
 	mpnt->vm_ops = &file_mmap;
 	insert_vm_struct(current, mpnt);
 	merge_segments(current->mmap, NULL, NULL);
-	
+
 	return 0;
 }
 
@@ -362,7 +362,7 @@ void insert_vm_struct(struct task_struct *t, struct vm_area_struct *vmp)
 	struct vm_area_struct **nxtpp, *mpnt;
 
 	nxtpp = &t->mmap;
-	
+
 	for(mpnt = t->mmap; mpnt != NULL; mpnt = mpnt->vm_next)
 	{
 		if (mpnt->vm_start > vmp->vm_start)
@@ -377,7 +377,7 @@ void insert_vm_struct(struct task_struct *t, struct vm_area_struct *vmp)
 			       vmp->vm_start, vmp->vm_end,
 			       mpnt->vm_start, vmp->vm_end);
 	}
-	
+
 	vmp->vm_next = mpnt;
 
 	*nxtpp = vmp;
@@ -395,7 +395,7 @@ void merge_segments(struct vm_area_struct *mpnt,
 
 	if (mpnt == NULL)
 		return;
-	
+
 	for(prev = mpnt, mpnt = mpnt->vm_next;
 	    mpnt != NULL;
 	    prev = mpnt, mpnt = next)
@@ -403,7 +403,7 @@ void merge_segments(struct vm_area_struct *mpnt,
 		int mp;
 
 		next = mpnt->vm_next;
-		
+
 		if (mergep == NULL)
 		{
 			unsigned long psz = prev->vm_end - prev->vm_start;

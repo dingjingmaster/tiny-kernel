@@ -1,5 +1,6 @@
 #ifndef _HPFS_FS_SB
 #define _HPFS_FS_SB
+#include "types.h"
 
 struct hpfs_sb_info {
 	ino_t sb_root;			/* inode number of root dir */

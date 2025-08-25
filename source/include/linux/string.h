@@ -1,7 +1,7 @@
 #ifndef _LINUX_STRING_H_
 #define _LINUX_STRING_H_
 
-#include <linux/types.h>	/* for size_t */
+#include "./types.h"	/* for size_t */
 
 #ifndef NULL
 #define NULL ((void *) 0)
@@ -18,7 +18,7 @@
  *
  *		Copyright (C) 1991, 1992 Linus Torvalds
  */
- 
+
 extern inline char * strcpy(char * dest,const char *src)
 {
 __asm__("cld\n"

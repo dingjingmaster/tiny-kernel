@@ -61,12 +61,12 @@
 
 /* Debugging support: add file/line info, add beginning+end markers. -M.U- */
 
-#include <linux/kernel.h>
-#include <linux/mm.h>
-#include <linux/string.h>
-#include <linux/malloc.h>
+#include "../include/linux/kernel.h"
+#include "../include/linux/mm.h"
+#include "../include/linux/string.h"
+#include "../include/linux/malloc.h"
 
-#include <asm/system.h>
+#include "../include/asm/system.h"
 
 struct bucket_desc {	/* 16 bytes */
 	void			*page;
@@ -140,7 +140,7 @@ static struct bucket_desc *free_bucket_desc = (struct bucket_desc *) 0;
 
 /* It assumes it is called with interrupts on. and will
    return that way.  It also can sleep if priority != GFP_ATOMIC. */
- 
+
 static inline void init_bucket_desc(unsigned long page)
 {
 	struct bucket_desc *bdesc;
@@ -205,7 +205,7 @@ kmalloc(unsigned int len, int priority)
 	 * If we didn't find a bucket with free space, then we'll
 	 * allocate a new one.
 	 */
-	
+
 	/*
 	 * Note that init_bucket_descriptor() does its
 	 * own cli() before returning, and guarantees that
@@ -217,7 +217,7 @@ kmalloc(unsigned int len, int priority)
 			return NULL;
 		init_bucket_desc(page);
 	}
-	
+
 	bdesc = free_bucket_desc;
 	free_bucket_desc = bdesc->next;
 	restore_flags(flags);
@@ -232,11 +232,11 @@ kmalloc(unsigned int len, int priority)
 		restore_flags(flags);
 		return NULL;
 	}
-		
+
 	bdesc->refcnt = 0;
 	bdesc->bucket_size = bdir->size;
 	bdesc->page = bdesc->freeptr = (void *) page;
-	
+
 	/* Set up the chain of free objects */
 	for (i=PAGE_SIZE/bdir->size; i > 0 ; i--) {
 #ifdef CONFIG_DEBUG_MALLOC
@@ -245,7 +245,7 @@ kmalloc(unsigned int len, int priority)
 		hd = (struct hdr_start *) page;
 		he = (struct hdr_end *)(page+(bdir->size-sizeof(struct hdr_end)));
 		hd->magic = DEB_MAGIC_FREE;
-		hd->file = hd->ok_file = "(expand)"; 
+		hd->file = hd->ok_file = "(expand)";
 		hd->line = hd->ok_line = 0;
 		hd->size = bdir->size-sizeof(struct hdr_start)-sizeof(struct hdr_end);
 		he->magic = DEB_MAGIC_END;
@@ -258,7 +258,7 @@ kmalloc(unsigned int len, int priority)
 #endif
 		page += bdir->size;
 	}
-	
+
 	/* turn interrupts back off for putting the
 	   thing onto the chain. */
 	cli();
@@ -285,7 +285,7 @@ found_bdesc:
 		len -= sizeof(struct hdr_start)+sizeof(struct hdr_end);
 		if(hd->magic != DEB_MAGIC_FREE && hd->magic != DEB_MAGIC_FREED) {
 			printk("DEB_MALLOC allocating %s block 0x%x (head 0x%x) from %s:%d, magic %x\n",
-				(hd->magic == DEB_MAGIC_ALLOC) ? "nonfree" : "trashed", 
+				(hd->magic == DEB_MAGIC_ALLOC) ? "nonfree" : "trashed",
 				retval,hd,deb_file,deb_line,hd->magic);
 			return NULL;
 		}
@@ -460,7 +460,7 @@ found:
 		struct hdr_end *he;
 		hd = (struct hdr_start *) obj;
 		hd--;
-		
+
 		hd->file = deb_file;
 		hd->line = deb_line;
 		hd->magic = DEB_MAGIC_FREE;

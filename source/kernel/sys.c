@@ -4,22 +4,22 @@
  *  Copyright (C) 1991, 1992  Linus Torvalds
  */
 
-#include <linux/config.h>
-#include <linux/errno.h>
-#include <linux/sched.h>
-#include <linux/kernel.h>
-#include <linux/times.h>
-#include <linux/utsname.h>
-#include <linux/param.h>
-#include <linux/resource.h>
-#include <linux/signal.h>
-#include <linux/string.h>
-#include <linux/ptrace.h>
-#include <linux/stat.h>
-#include <linux/mman.h>
+#include "../include/linux/config.h"
+#include "../include/linux/errno.h"
+#include "../include/linux/sched.h"
+#include "../include/linux/kernel.h"
+#include "../include/linux/times.h"
+#include "../include/linux/utsname.h"
+#include "../include/linux/param.h"
+#include "../include/linux/resource.h"
+#include "../include/linux/signal.h"
+#include "../include/linux/string.h"
+#include "../include/linux/ptrace.h"
+#include "../include/linux/stat.h"
+#include "../include/linux/mman.h"
 
-#include <asm/segment.h>
-#include <asm/io.h>
+#include "../include/asm/segment.h"
+#include "../include/asm/io.h"
 
 /*
  * this indicates wether you can reboot with ctrl-alt-del: the default is yes
@@ -238,18 +238,18 @@ void ctrl_alt_del(void)
 	else
 		send_sig(SIGINT,task[1],1);
 }
-	
+
 
 /*
  * This is done BSD-style, with no consideration of the saved gid, except
- * that if you set the effective gid, it sets the saved gid too.  This 
+ * that if you set the effective gid, it sets the saved gid too.  This
  * makes it possible for a setgid program to completely drop its privileges,
  * which is often a useful assertion to make when you are doing a security
  * audit over a program.
  *
  * The general idea is that a program which uses just setregid() will be
  * 100% compatible with BSD.  A program which uses just setgid() will be
- * 100% compatible with POSIX w/ Saved ID's. 
+ * 100% compatible with POSIX w/ Saved ID's.
  */
 asmlinkage int sys_setregid(gid_t rgid, gid_t egid)
 {
@@ -257,7 +257,7 @@ asmlinkage int sys_setregid(gid_t rgid, gid_t egid)
 
 	if (rgid != (gid_t) -1) {
 		if ((current->egid==rgid) ||
-		    (old_rgid == rgid) || 
+		    (old_rgid == rgid) ||
 		    suser())
 			current->gid = rgid;
 		else
@@ -278,7 +278,7 @@ asmlinkage int sys_setregid(gid_t rgid, gid_t egid)
 }
 
 /*
- * setgid() is implemeneted like SysV w/ SAVED_IDS 
+ * setgid() is implemeneted like SysV w/ SAVED_IDS
  */
 asmlinkage int sys_setgid(gid_t gid)
 {
@@ -325,19 +325,19 @@ asmlinkage int sys_old_syscall(void)
  * Unprivileged users may change the real user id to the effective uid
  * or vice versa.  (BSD-style)
  *
- * When you set the effective uid, it sets the saved uid too.  This 
+ * When you set the effective uid, it sets the saved uid too.  This
  * makes it possible for a setuid program to completely drop its privileges,
  * which is often a useful assertion to make when you are doing a security
  * audit over a program.
  *
  * The general idea is that a program which uses just setreuid() will be
  * 100% compatible with BSD.  A program which uses just setuid() will be
- * 100% compatible with POSIX w/ Saved ID's. 
+ * 100% compatible with POSIX w/ Saved ID's.
  */
 asmlinkage int sys_setreuid(uid_t ruid, uid_t euid)
 {
 	int old_ruid = current->uid;
-	
+
 	if (ruid != (uid_t) -1) {
 		if ((current->euid==ruid) ||
 		    (old_ruid == ruid) ||
@@ -361,15 +361,15 @@ asmlinkage int sys_setreuid(uid_t ruid, uid_t euid)
 }
 
 /*
- * setuid() is implemeneted like SysV w/ SAVED_IDS 
- * 
+ * setuid() is implemeneted like SysV w/ SAVED_IDS
+ *
  * Note that SAVED_ID's is deficient in that a setuid root program
- * like sendmail, for example, cannot set its uid to be a normal 
+ * like sendmail, for example, cannot set its uid to be a normal
  * user and then switch back, because if you're root, setuid() sets
  * the saved uid too.  If you don't like this, blame the bright people
  * in the POSIX commmittee and/or USG.  Note that the BSD-style setreuid()
  * will allow a root program to temporarily drop privileges and be able to
- * regain them by swapping the real and effective uid.  
+ * regain them by swapping the real and effective uid.
  */
 asmlinkage int sys_setuid(uid_t uid)
 {
@@ -649,7 +649,7 @@ asmlinkage int sys_olduname(struct oldold_utsname * name)
 asmlinkage int sys_sethostname(char *name, int len)
 {
 	int	i;
-	
+
 	if (!suser())
 		return -EPERM;
 	if (len > __NEW_UTS_LEN)
@@ -669,7 +669,7 @@ asmlinkage int sys_sethostname(char *name, int len)
 asmlinkage int sys_setdomainname(char *name, int len)
 {
 	int	i;
-	
+
 	if (!suser())
 		return -EPERM;
 	if (len > __NEW_UTS_LEN)
@@ -691,11 +691,11 @@ asmlinkage int sys_getrlimit(unsigned int resource, struct rlimit *rlim)
 	error = verify_area(VERIFY_WRITE,rlim,sizeof *rlim);
 	if (error)
 		return error;
-	put_fs_long(current->rlim[resource].rlim_cur, 
+	put_fs_long(current->rlim[resource].rlim_cur,
 		    (unsigned long *) rlim);
-	put_fs_long(current->rlim[resource].rlim_max, 
+	put_fs_long(current->rlim[resource].rlim_max,
 		    ((unsigned long *) rlim)+1);
-	return 0;	
+	return 0;
 }
 
 asmlinkage int sys_setrlimit(unsigned int resource, struct rlimit *rlim)
@@ -762,7 +762,7 @@ int getrusage(struct task_struct *p, int who, struct rusage *ru)
 	lp = (unsigned long *) &r;
 	lpend = (unsigned long *) (&r+1);
 	dest = (unsigned long *) ru;
-	for (; lp < lpend; lp++, dest++) 
+	for (; lp < lpend; lp++, dest++)
 		put_fs_long(*lp, dest);
 	return 0;
 }

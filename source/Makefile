@@ -58,6 +58,8 @@ else
 CFLAGS := $(CFLAGS) -m386
 endif
 
+override CFLAGS += -Iinclude
+
 #
 # if you want the ram-disk device, define this to be the
 # size in blocks.
@@ -111,10 +113,12 @@ Version: dummy
 	rm -f tools/version.h
 
 config:
-	/bin/bash Configure $(OPTS) < config.in
-	@if grep -s '^CONFIG_SOUND' .tmpconfig ; then \
-		$(MAKE) -C drivers/sound config; \
-		else : ; fi
+	@if test ! -f .config ; then \
+	    /bin/bash Configure $(OPTS) < config.in; \
+		if grep -s '^CONFIG_SOUND' .tmpconfig ; then \
+		    $(MAKE) -C drivers/sound config; \
+		else : ; fi; \
+	fi
 	mv .tmpconfig .config
 
 linuxsubdirs: dummy
@@ -129,7 +133,7 @@ tools/version.h: $(CONFIGURE) Makefile
 	@echo \#define LINUX_COMPILE_TIME \"`date +%T`\" >> tools/version.h
 	@echo \#define LINUX_COMPILE_BY \"`whoami`\" >> tools/version.h
 	@echo \#define LINUX_COMPILE_HOST \"`hostname`\" >> tools/version.h
-	@echo \#define LINUX_COMPILE_DOMAIN \"`domainname`\" >> tools/version.h
+	@echo \#define LINUX_COMPILE_DOMAIN \"`hostname -f`\" >> tools/version.h
 
 tools/build: tools/build.c $(CONFIGURE)
 	$(HOSTCC) $(CFLAGS) -o $@ $<
@@ -142,7 +146,7 @@ boot/head.s: boot/head.S $(CONFIGURE) include/linux/tasks.h
 tools/version.o: tools/version.c tools/version.h
 
 init/main.o: $(CONFIGURE) init/main.c
-	$(CC) $(CFLAGS) $(PROFILING) -c -o $*.o $<
+	$(CC) -Iinclude/ $(CFLAGS) $(PROFILING) -c -o $*.o $<
 
 tools/system:	boot/head.o init/main.o tools/version.o linuxsubdirs
 	$(LD) $(LDFLAGS) -Ttext 1000 boot/head.o init/main.o tools/version.o \
@@ -244,8 +248,8 @@ backup: mrproper
 
 depend dep:
 	touch tools/version.h
-	for i in init/*.c;do echo -n "init/";$(CPP) -M $$i;done > .tmpdepend
-	for i in tools/*.c;do echo -n "tools/";$(CPP) -M $$i;done >> .tmpdepend
+	for i in init/*.c;do echo -n "init/";$(CPP) -Iinclude -M $$i;done > .tmpdepend
+	for i in tools/*.c;do echo -n "tools/";$(CPP) -Iinclude -M $$i;done >> .tmpdepend
 	set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i dep; done
 	rm -f tools/version.h
 	mv .tmpdepend .depend

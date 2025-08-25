@@ -5,9 +5,9 @@
  * 'tty.h' defines some structures used by tty_io.c and some defines.
  */
 
-#include <linux/termios.h>
+#include "termios.h"
 
-#include <asm/system.h>
+#include "../asm/system.h"
 
 #define NR_CONSOLES	8
 #define NR_LDISCS	16
@@ -96,7 +96,7 @@ struct serial_struct {
 /*
  * Definitions for async_struct (and serial_struct) flags field
  */
-#define ASYNC_HUP_NOTIFY 0x0001 /* Notify getty on hangups and closes 
+#define ASYNC_HUP_NOTIFY 0x0001 /* Notify getty on hangups and closes
 				   on the callout port */
 #define ASYNC_FOURPORT  0x0002	/* Set OU1, OUT2 per AST Fourport settings */
 #define ASYNC_SAK	0x0004	/* Secure Attention Key (Orange book) */
@@ -289,7 +289,7 @@ struct tty_ldisc {
 	int	(*read)(struct tty_struct * tty, struct file * file,
 			unsigned char * buf, unsigned int nr);
 	int	(*write)(struct tty_struct * tty, struct file * file,
-			 unsigned char * buf, unsigned int nr);	
+			 unsigned char * buf, unsigned int nr);
 	int	(*ioctl)(struct tty_struct * tty, struct file * file,
 			 unsigned int cmd, unsigned long arg);
 	int	(*select)(struct tty_struct * tty, struct inode * inode,
@@ -317,7 +317,7 @@ struct tty_ldisc {
  * overflow.  While the low-level driver is responsible for all
  * receiving flow control, note that the ^S/^Q handling (but not
  * hardware flow control) is handled by the upper layer, in
- * copy_to_cooked.  
+ * copy_to_cooked.
  */
 #define TTY_THROTTLE_SQ_FULL	1
 #define TTY_THROTTLE_SQ_AVAIL	2
@@ -336,7 +336,7 @@ struct tty_ldisc {
 
 /*
  * These bits are used in the flags field of the tty structure.
- * 
+ *
  * So that interrupts won't be able to mess up the queues,
  * copy_to_cooked must be atomic with repect to itself, as must
  * tty->write.  Thus, you must use the inline functions set_bit() and

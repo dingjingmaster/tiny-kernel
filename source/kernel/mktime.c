@@ -4,7 +4,7 @@
  *  Copyright (C) 1991, 1992  Linus Torvalds
  */
 
-#include <linux/mktime.h>
+#include "../include/linux/mktime.h"
 
 /*
  * This isn't the library routine, it is only used in the kernel.

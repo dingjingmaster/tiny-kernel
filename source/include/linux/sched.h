@@ -28,8 +28,8 @@ extern int wp_works_ok;
 extern int EISA_bus;
 #define MCA_bus 0
 
-#include <linux/tasks.h>
-#include <asm/system.h>
+#include "tasks.h"
+#include "../../include/asm/system.h"
 
 /*
  * User space process size: 3GB. This is hardcoded into a few places,
@@ -72,15 +72,15 @@ extern unsigned long avenrun[];		/* Load averages */
 #define FIRST_TASK task[0]
 #define LAST_TASK task[NR_TASKS-1]
 
-#include <linux/head.h>
-#include <linux/fs.h>
-#include <linux/mm.h>
-#include <linux/signal.h>
-#include <linux/time.h>
-#include <linux/param.h>
-#include <linux/resource.h>
-#include <linux/vm86.h>
-#include <linux/math_emu.h>
+#include "head.h"
+#include "fs.h"
+#include "mm.h"
+#include "signal.h"
+#include "time.h"
+#include "param.h"
+#include "resource.h"
+#include "vm86.h"
+#include "math_emu.h"
 
 #define TASK_RUNNING		0
 #define TASK_INTERRUPTIBLE	1
@@ -188,9 +188,9 @@ struct task_struct {
 	unsigned long arg_start, arg_end, env_start, env_end;
 	int pid,pgrp,session,leader;
 	int	groups[NGROUPS];
-	/* 
+	/*
 	 * pointers to (original) parent process, youngest child, younger sibling,
-	 * older sibling, respectively.  (p->father can be replaced with 
+	 * older sibling, respectively.  (p->father can be replaced with
 	 * p->p_pptr->pid)
 	 */
 	struct task_struct *p_opptr,*p_pptr, *p_cptr, *p_ysptr, *p_osptr;
@@ -207,7 +207,7 @@ struct task_struct {
 	long utime,stime,cutime,cstime,start_time;
 	unsigned long min_flt, maj_flt;
 	unsigned long cmin_flt, cmaj_flt;
-	struct rlimit rlim[RLIM_NLIMITS]; 
+	struct rlimit rlim[RLIM_NLIMITS];
 	unsigned short used_math;
 	unsigned short rss;	/* number of resident pages */
 	char comm[16];
@@ -495,7 +495,7 @@ extern inline void up(struct semaphore * sem)
 {
 	sem->count++;
 	wake_up(&sem->wait);
-}	
+}
 
 static inline unsigned long _get_base(char * addr)
 {

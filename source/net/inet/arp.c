@@ -24,7 +24,7 @@
  *		'Mr Linux'	:	arp problems.
  *		Alan Cox	:	arp_ioctl now checks memory areas with verify_area.
  *		Alan Cox	:	Non IP arp message now only appears with debugging on.
- *		Alan Cox	: 	arp queue is volatile (may be altered by arp messages while doing sends) 
+ *		Alan Cox	: 	arp queue is volatile (may be altered by arp messages while doing sends)
  *					Generic queue code is urgently needed!
  *		Alan Cox	:	Deleting your own ip addr now gives EINVAL not a printk message.
  *		Alan Cox	:	Fix to arp linked list error
@@ -54,19 +54,19 @@
  *		as published by the Free Software Foundation; either version
  *		2 of the License, or (at your option) any later version.
  */
-#include <linux/types.h>
-#include <linux/string.h>
-#include <linux/kernel.h>
-#include <linux/sched.h>
-#include <linux/config.h>
-#include <linux/socket.h>
-#include <linux/sockios.h>
-#include <linux/timer.h>
-#include <linux/errno.h>
-#include <linux/if_arp.h>
-#include <linux/in.h>
-#include <asm/system.h>
-#include <asm/segment.h>
+#include "../../include/linux/types.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/config.h"
+#include "../../include/linux/socket.h"
+#include "../../include/linux/sockios.h"
+#include "../../include/linux/timer.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/if_arp.h"
+#include "../../include/linux/in.h"
+#include "../../include/asm/system.h"
+#include "../../include/asm/segment.h"
 #include <stdarg.h>
 #include "inet.h"
 #include "dev.h"
@@ -119,7 +119,7 @@ struct arp_table *arp_tables[ARP_TABLE_SIZE] = {
   NULL,
 };
 
-static int arp_proxies=0;	/* So we can avoid the proxy arp 
+static int arp_proxies=0;	/* So we can avoid the proxy arp
 				   overhead with the usual case of
 				   no proxy arps */
 
@@ -232,7 +232,7 @@ arp_send_q(void)
 		skb->sk = NULL;
 		if(skb->free)
 			kfree_skb(skb, FREE_WRITE);
-			/* If free was 0, magic is now 0, next is 0 and 
+			/* If free was 0, magic is now 0, next is 0 and
 			   the write queue will notice and kill */
 		sti();
 		continue;
@@ -245,7 +245,7 @@ arp_send_q(void)
 		skb->dev->queue_xmit(skb, skb->dev, 0);
 	} else {
 		/* Alas.  Re-queue it... */
-		skb->magic = ARP_QUEUE_MAGIC;      
+		skb->magic = ARP_QUEUE_MAGIC;
 		skb_queue_head(&arp_q,skb);
 	}
   }
@@ -289,7 +289,7 @@ arp_response(struct arphdr *arp1, struct device *dev,  int addrtype)
   ptr1 = ((unsigned char *) &arp1->ar_op) + sizeof(u_short);
   src = *((unsigned long *) (ptr1 + arp1->ar_hln));
   dst = *((unsigned long *) (ptr1 + (arp1->ar_hln * 2) + arp1->ar_pln));
-  
+
   if(addrtype!=IS_MYADDR)
   {
   	apt=arp_lookup_proxy(dst);
@@ -308,7 +308,7 @@ arp_response(struct arphdr *arp1, struct device *dev,  int addrtype)
   }
 
   skb->mem_addr = skb;
-  skb->len      = sizeof(struct arphdr) + (2 * arp1->ar_hln) + 
+  skb->len      = sizeof(struct arphdr) + (2 * arp1->ar_hln) +
 		  (2 * arp1->ar_pln) + dev->hard_header_len;
   skb->mem_len  = sizeof(struct sk_buff) + skb->len;
   hlen = dev->hard_header(skb->data, dev, ETH_P_ARP, src, dst, skb->len);
@@ -436,7 +436,7 @@ arp_destructor(unsigned long paddr, int force)
 			return;
 		*lapt = apt->next;
 		if(apt->flags&ATF_PUBL)
-			arp_proxies--;			
+			arp_proxies--;
 		kfree_s(apt, sizeof(struct arp_table));
 		sti();
 		return;
@@ -451,7 +451,7 @@ arp_destructor(unsigned long paddr, int force)
  */
 
 void arp_destroy(unsigned long paddr)
-{	
+{
 	arp_destructor(paddr,1);
 }
 
@@ -521,7 +521,7 @@ arp_rcv(struct sk_buff *skb, struct device *dev, struct packet_type *pt)
   arp_print(arp);
 
   /* If this test doesn't pass, its not IP. Might be DECNET or friends */
-  if (arp->ar_hln != dev->addr_len || dev->type != NET16(arp->ar_hrd)) 
+  if (arp->ar_hln != dev->addr_len || dev->type != NET16(arp->ar_hrd))
   {
 	DPRINTF((DBG_ARP,"ARP: Bad packet received on device \"%s\" !\n", dev->name));
 	kfree_skb(skb, FREE_READ);
@@ -529,7 +529,7 @@ arp_rcv(struct sk_buff *skb, struct device *dev, struct packet_type *pt)
   }
 
   /* For now we will only deal with IP addresses. */
-  if (((arp->ar_pro != NET16(0x00CC) && dev->type==3) || (arp->ar_pro != NET16(ETH_P_IP) && dev->type!=3) ) || arp->ar_pln != 4) 
+  if (((arp->ar_pro != NET16(0x00CC) && dev->type==3) || (arp->ar_pro != NET16(ETH_P_IP) && dev->type!=3) ) || arp->ar_pln != 4)
   {
 	if (arp->ar_op != NET16(ARPOP_REQUEST))
 		DPRINTF((DBG_ARP,"ARP: Non-IP request on device \"%s\" !\n", dev->name));
@@ -590,7 +590,7 @@ arp_rcv(struct sk_buff *skb, struct device *dev, struct packet_type *pt)
 	kfree_skb(skb, FREE_READ);
 	return 0;
   }
-  
+
   memcpy(&dst, ptr + (arp->ar_hln * 2) + arp->ar_pln, arp->ar_pln);
   if ((addr_hint=chk_addr(dst)) != IS_MYADDR && arp_proxies==0) {
 	DPRINTF((DBG_ARP, "ARP: request was not for me!\n"));
@@ -629,7 +629,7 @@ arp_send(unsigned long paddr, struct device *dev, unsigned long saddr)
 	printk("ARP: No memory available for REQUEST %s\n", in_ntoa(paddr));
 	return;
   }
-  
+
   /* Fill in the request. */
   skb->sk = NULL;
   skb->mem_addr = skb;
@@ -690,7 +690,7 @@ arp_find(unsigned char *haddr, unsigned long paddr, struct device *dev,
 		memcpy(haddr, dev->broadcast, dev->addr_len);
 		return(0);
   }
-		
+
   apt = arp_lookup(paddr);
   if (apt != NULL) {
 	/*
@@ -865,7 +865,7 @@ arp_req_set(struct arpreq *req)
 			htype = ARPHRD_AX25;
 			hlen = 7;
 			break;
-		
+
 	default:
 		return(-EPFNOSUPPORT);
   }
@@ -932,12 +932,12 @@ arp_req_del(struct arpreq *req)
   if (r.arp_pa.sa_family != AF_INET) return(-EPFNOSUPPORT);
 
   si = (struct sockaddr_in *) &r.arp_pa;
-  
-  /* The system cope with this but splats up a nasty kernel message 
+
+  /* The system cope with this but splats up a nasty kernel message
      We trap it beforehand and tell the user off */
   if(chk_addr(si->sin_addr.s_addr)==IS_MYADDR)
   	return -EINVAL;
-  	
+
   arp_destroy(si->sin_addr.s_addr);
 
   return(0);

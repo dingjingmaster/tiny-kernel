@@ -13,12 +13,12 @@
 
 #include <stdarg.h>
 
-#include <asm/segment.h>
-#include <asm/system.h>
+#include "../include/asm/segment.h"
+#include "../include/asm/system.h"
 
-#include <linux/errno.h>
-#include <linux/sched.h>
-#include <linux/kernel.h>
+#include "../include/linux/errno.h"
+#include "../include/linux/sched.h"
+#include "../include/linux/kernel.h"
 
 #define LOG_BUF_LEN	4096
 
@@ -97,7 +97,7 @@ asmlinkage int sys_syslog(int type, char * buf, int len)
 			sti();
 			return i;
 		case 4:		/* Read/clear last kernel messages */
-			do_clear = 1; 
+			do_clear = 1;
 			/* FALL THRU */
 		case 3:		/* Read last kernel messages */
 			if (!buf || len < 0)
@@ -158,7 +158,7 @@ asmlinkage int printk(const char *fmt, ...)
 		if (msg_level < 0) {
 			if (
 				p[0] != '<' ||
-				p[1] < '0' || 
+				p[1] < '0' ||
 				p[1] > '7' ||
 				p[2] != '>'
 			) {

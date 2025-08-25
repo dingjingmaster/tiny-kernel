@@ -22,16 +22,16 @@
  * sa_restorer is the unused
  */
 
-#include <linux/ptrace.h>
-#include <linux/errno.h>
-#include <linux/kernel_stat.h>
-#include <linux/signal.h>
-#include <linux/sched.h>
-#include <linux/interrupt.h>
+#include "../include/linux/ptrace.h"
+#include "../include/linux/errno.h"
+#include "../include/linux/kernel_stat.h"
+#include "../include/linux/signal.h"
+#include "../include/linux/sched.h"
+#include "../include/linux/interrupt.h"
 
-#include <asm/system.h>
-#include <asm/io.h>
-#include <asm/irq.h>
+#include "../include/asm/system.h"
+#include "../include/asm/io.h"
+#include "../include/asm/irq.h"
 
 #define CR0_NE 32
 
@@ -41,7 +41,7 @@ static unsigned char cache_A1 = 0xff;
 unsigned long intr_count = 0;
 unsigned long bh_active = 0;
 unsigned long bh_mask = 0xFFFFFFFF;
-struct bh_struct bh_base[32]; 
+struct bh_struct bh_base[32];
 
 void disable_irq(unsigned int irq_nr)
 {
@@ -250,7 +250,7 @@ int irqaction(unsigned int irq, struct sigaction * new_sa)
 	restore_flags(flags);
 	return 0;
 }
-		
+
 int request_irq(unsigned int irq, void (*handler)(int))
 {
 	struct sigaction sa;

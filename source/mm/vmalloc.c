@@ -4,17 +4,17 @@
  *  Copyright (C) 1993  Linus Torvalds
  */
 
-#include <asm/system.h>
-#include <linux/config.h>
+#include "../include/asm/system.h"
+#include "../include/linux/config.h"
 
-#include <linux/signal.h>
-#include <linux/sched.h>
-#include <linux/head.h>
-#include <linux/kernel.h>
-#include <linux/errno.h>
-#include <linux/types.h>
-#include <linux/malloc.h>
-#include <asm/segment.h>
+#include "../include/linux/signal.h"
+#include "../include/linux/sched.h"
+#include "../include/linux/head.h"
+#include "../include/linux/kernel.h"
+#include "../include/linux/errno.h"
+#include "../include/linux/types.h"
+#include "../include/linux/malloc.h"
+#include "../include/asm/segment.h"
 
 struct vm_struct {
 	unsigned long flags;

@@ -49,7 +49,7 @@
 #define _INET_H
 
 
-#include <linux/ddi.h>
+#include "../../include/linux/ddi.h"
 
 
 #define NET16(x)	((((x) >> 8) & 0x00FF) | (((x) << 8) & 0xFF00))
@@ -57,7 +57,7 @@
 
 #undef	INET_DEBUG
 #ifdef	INET_DEBUG
-#  define	DPRINTF(x)	dprintf x 
+#  define	DPRINTF(x)	dprintf x
 #else
 #   define	DPRINTF(x)	do ; while (0)
 #endif

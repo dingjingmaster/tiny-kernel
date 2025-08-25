@@ -1,5 +1,6 @@
 #ifndef _LINUX_TERMIOS_H
 #define _LINUX_TERMIOS_H
+#include "types.h"
 
 /* 0x54 is just a magic number to make these relatively uniqe ('T') */
 

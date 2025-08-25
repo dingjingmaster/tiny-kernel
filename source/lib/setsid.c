@@ -5,8 +5,7 @@
  */
 
 #define __LIBRARY__
-#include <linux/types.h>
-#include <linux/unistd.h>
+#include "../include/linux/types.h"
+#include "../include/linux/unistd.h"
 
 _syscall0(pid_t,setsid)
-

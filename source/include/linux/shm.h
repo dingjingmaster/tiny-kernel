@@ -1,6 +1,6 @@
 #ifndef _LINUX_SHM_H_
 #define _LINUX_SHM_H_
-#include <linux/ipc.h>
+#include "ipc.h"
 
 struct shmid_ds {
 	struct	ipc_perm shm_perm;	/* operation perms */
@@ -13,7 +13,7 @@ struct shmid_ds {
 	short	shm_nattch;		/* no. of current attaches */
 	/* the following are private */
 	unsigned short   shm_npages;  /* size of segment (pages) */
-	unsigned long   *shm_pages;   /* array of ptrs to frames -> SHMMAX */ 
+	unsigned long   *shm_pages;   /* array of ptrs to frames -> SHMMAX */
 	struct shm_desc *attaches;    /* descriptors for attaches */
 };
 
@@ -27,11 +27,11 @@ struct shmid_ds {
 #define SHM_UNLOCK 	12
 
 struct	shminfo {
-    int shmmax;	
-    int shmmin;	
-    int shmmni;	
-    int shmseg;	
-    int shmall;	
+    int shmmax;
+    int shmmin;
+    int shmmni;
+    int shmseg;
+    int shmall;
 };
 
 #define SHM_RANGE_START	0x40000000
@@ -105,5 +105,3 @@ struct	shm_desc {
 #endif /* __KERNEL__ */
 
 #endif /* _LINUX_SHM_H_ */
-
-

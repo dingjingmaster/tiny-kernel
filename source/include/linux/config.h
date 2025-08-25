@@ -1,10 +1,10 @@
 #ifndef _LINUX_CONFIG_H
 #define _LINUX_CONFIG_H
 
-#include <linux/autoconf.h>
+#include "autoconf.h"
 
 /*
- * Defines for what uname() should return 
+ * Defines for what uname() should return
  */
 #ifndef UTS_SYSNAME
 #define UTS_SYSNAME "Linux"
@@ -74,7 +74,7 @@
 */
 
 #undef HD_TYPE
- 
+
 /*
 	File type specific stuff goes into this.
 */

@@ -8,9 +8,9 @@
 #error I want gcc!
 #endif
 
-#include <linux/types.h>
+#include "../include/linux/types.h"
 
 #define extern
 #define inline
 #define __LIBRARY__
-#include <linux/string.h>
+#include "../include/linux/string.h"

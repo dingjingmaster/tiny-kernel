@@ -11,19 +11,19 @@
  * management can be a bitch. See 'mm/mm.c': 'copy_page_tables()'
  */
 
-#include <linux/errno.h>
-#include <linux/sched.h>
-#include <linux/kernel.h>
-#include <linux/mm.h>
-#include <linux/stddef.h>
-#include <linux/unistd.h>
-#include <linux/segment.h>
-#include <linux/ptrace.h>
-#include <linux/malloc.h>
-#include <linux/ldt.h>
+#include "../include/linux/errno.h"
+#include "../include/linux/sched.h"
+#include "../include/linux/kernel.h"
+#include "../include/linux/mm.h"
+#include "../include/linux/stddef.h"
+#include "../include/linux/unistd.h"
+#include "../include/linux/segment.h"
+#include "../include/linux/ptrace.h"
+#include "../include/linux/malloc.h"
+#include "../include/linux/ldt.h"
 
-#include <asm/segment.h>
-#include <asm/system.h>
+#include "../include/asm/segment.h"
+#include "../include/asm/system.h"
 
 asmlinkage void ret_from_sys_call(void) __asm__("ret_from_sys_call");
 

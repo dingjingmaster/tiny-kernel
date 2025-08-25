@@ -7,9 +7,9 @@
  *
  */
 
-#include <linux/mm.h>
-#include <asm/system.h>
-#include <linux/delay.h>
+#include "../include/linux/mm.h"
+#include "../include/asm/system.h"
+#include "../include/linux/delay.h"
 
 #define GFP_LEVEL_MASK 0xf
 
@@ -31,18 +31,18 @@
 #define MF_FREE 0x0055ffaa
 
 
-/* 
+/*
  * Much care has gone into making these routines in this file reentrant.
  *
  * The fancy bookkeeping of nbytesmalloced and the like are only used to
- * report them to the user (oooohhhhh, aaaaahhhhh....) are not 
+ * report them to the user (oooohhhhh, aaaaahhhhh....) are not
  * protected by cli(). (If that goes wrong. So what?)
  *
  * These routines restore the interrupt status to allow calling with ints
- * off. 
+ * off.
  */
 
-/* 
+/*
  * A block header. This is in front of every malloc-block, whether free or not.
  */
 struct block_header {
@@ -59,8 +59,8 @@ struct block_header {
 #define BH(p) ((struct block_header *)(p))
 
 
-/* 
- * The page descriptor is at the front of every page that malloc has in use. 
+/*
+ * The page descriptor is at the front of every page that malloc has in use.
  */
 struct page_descriptor {
 	struct page_descriptor *next;
@@ -89,7 +89,7 @@ struct size_descriptor {
 };
 
 
-struct size_descriptor sizes[] = { 
+struct size_descriptor sizes[] = {
 	{ NULL,  32,127, 0,0,0,0 },
 	{ NULL,  64, 63, 0,0,0,0 },
 	{ NULL, 128, 31, 0,0,0,0 },
@@ -111,17 +111,17 @@ long kmalloc_init (long start_mem,long end_mem)
 {
 	int order;
 
-/* 
+/*
  * Check the static info array. Things will blow up terribly if it's
  * incorrect. This is a late "compile time" check.....
  */
 for (order = 0;BLOCKSIZE(order);order++)
     {
     if ((NBLOCKS (order)*BLOCKSIZE(order) + sizeof (struct page_descriptor)) >
-        PAGE_SIZE) 
+        PAGE_SIZE)
         {
         printk ("Cannot use %d bytes out of %d in order = %d block mallocs\n",
-                NBLOCKS (order) * BLOCKSIZE(order) + 
+                NBLOCKS (order) * BLOCKSIZE(order) +
                         sizeof (struct page_descriptor),
                 (int) PAGE_SIZE,
                 BLOCKSIZE (order));
@@ -138,10 +138,10 @@ int get_order (int size)
 	int order;
 
 	/* Add the size of the header */
-	size += sizeof (struct block_header); 
+	size += sizeof (struct block_header);
 	for (order = 0;BLOCKSIZE(order);order++)
 		if (size <= BLOCKSIZE (order))
-			return order; 
+			return order;
 	return -1;
 }
 
@@ -159,7 +159,7 @@ void * kmalloc (size_t size, int priority)
 			((unsigned long *)&size)[-1]);
 		priority = GFP_ATOMIC;
 	}
-if (size > MAX_KMALLOC_K * 1024) 
+if (size > MAX_KMALLOC_K * 1024)
      {
      printk ("kmalloc: I refuse to allocate %d bytes (for now max = %d).\n",
                 size,MAX_KMALLOC_K*1024);
@@ -175,9 +175,9 @@ if (order < 0)
 
 save_flags(flags);
 
-/* It seems VERY unlikely to me that it would be possible that this 
+/* It seems VERY unlikely to me that it would be possible that this
    loop will get executed more than once. */
-tries = MAX_GET_FREE_PAGE_TRIES; 
+tries = MAX_GET_FREE_PAGE_TRIES;
 while (tries --)
     {
     /* Try to allocate a "recently" freed memory block */
@@ -214,7 +214,7 @@ while (tries --)
 
     /* This can be done with ints on: This is private to this invocation */
     page = (struct page_descriptor *) __get_free_page (priority & GFP_LEVEL_MASK);
-    if (!page) 
+    if (!page)
         {
         printk ("Couldn't get a free page.....\n");
         return NULL;
@@ -225,7 +225,7 @@ while (tries --)
     sizes[order].npages++;
 
     /* Loop for all but last block: */
-    for (i=NBLOCKS(order),p=BH (page+1);i > 1;i--,p=p->bh_next) 
+    for (i=NBLOCKS(order),p=BH (page+1);i > 1;i--,p=p->bh_next)
         {
         p->bh_flags = MF_FREE;
         p->bh_next = BH ( ((long)p)+sz);
@@ -235,7 +235,7 @@ while (tries --)
     p->bh_next = NULL;
 
     page->order = order;
-    page->nfree = NBLOCKS(order); 
+    page->nfree = NBLOCKS(order);
     page->firstfree = BH(page+1);
 #if 0
     printk ("%d blocks per page\n",page->nfree);
@@ -243,9 +243,9 @@ while (tries --)
     /* Now we're going to muck with the "global" freelist for this size:
        this should be uniterruptible */
     cli ();
-    /* 
+    /*
      * sizes[order].firstfree used to be NULL, otherwise we wouldn't be
-     * here, but you never know.... 
+     * here, but you never know....
      */
     page->next = sizes[order].firstfree;
     sizes[order].firstfree = page;
@@ -260,7 +260,7 @@ printk ("Hey. This is very funny. I tried %d times to allocate a whole\n"
         "message is soooo very long to catch your attention. I'd appreciate\n"
         "it if you'd be so kind as to report what conditions caused this to\n"
         "the author of this kmalloc: wolff@dutecai.et.tudelft.nl.\n"
-        "(Executive summary: This can't happen)\n", 
+        "(Executive summary: This can't happen)\n",
                 MAX_GET_FREE_PAGE_TRIES,
                 size);
 return NULL;
@@ -276,7 +276,7 @@ struct page_descriptor *page,*pg2;
 
 page = PAGE_DESC (p);
 order = page->order;
-if ((order < 0) || 
+if ((order < 0) ||
     (order > sizeof (sizes)/sizeof (sizes[0])) ||
     (((long)(page->next)) & ~PAGE_MASK) ||
     (p->bh_flags != MF_USED))

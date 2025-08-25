@@ -4,13 +4,13 @@
  * Copyright (C) 1992 Krishna Balasubramanian and Linus Torvalds
  */
 
-#include <linux/config.h>
-#include <linux/errno.h>
-#include <linux/sched.h>
-#include <linux/string.h>
-#include <asm/segment.h>
-#include <asm/system.h>
-#include <linux/ldt.h>
+#include "../include/linux/config.h"
+#include "../include/linux/errno.h"
+#include "../include/linux/sched.h"
+#include "../include/linux/string.h"
+#include "../include/asm/segment.h"
+#include "../include/asm/system.h"
+#include "../include/linux/ldt.h"
 
 static int read_ldt(void * ptr, unsigned long bytecount)
 {
@@ -71,7 +71,7 @@ static int write_ldt(void * ptr, unsigned long bytecount)
 			}
 		}
 	}
-	
+
 	lp = (unsigned long *) &current->ldt[ldt_info.entry_number];
    	/* Allow LDTs to be cleared by the user. */
    	if (ldt_info.base_addr == 0 && ldt_info.limit == 0) {

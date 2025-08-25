@@ -4,15 +4,15 @@
  *  Copyright (C) 1991, 1992  Linus Torvalds
  */
 
-#include <linux/sched.h>
-#include <linux/kernel.h>
-#include <linux/signal.h>
-#include <linux/errno.h>
-#include <linux/wait.h>
-#include <linux/ptrace.h>
-#include <linux/unistd.h>
+#include "../include/linux/sched.h"
+#include "../include/linux/kernel.h"
+#include "../include/linux/signal.h"
+#include "../include/linux/errno.h"
+#include "../include/linux/wait.h"
+#include "../include/linux/ptrace.h"
+#include "../include/linux/unistd.h"
 
-#include <asm/segment.h>
+#include "../include/asm/segment.h"
 
 #define _S(nr) (1<<((nr)-1))
 
@@ -153,7 +153,7 @@ static void check_pending(int signum)
 			return;
 		current->signal &= ~_S(signum);
 		return;
-	}	
+	}
 }
 
 asmlinkage int sys_signal(int signum, unsigned long handler)
@@ -361,7 +361,7 @@ asmlinkage int do_signal(unsigned long oldmask, struct pt_regs * regs)
 					continue;
 				current->state = TASK_STOPPED;
 				current->exit_code = signr;
-				if (!(current->p_pptr->sigaction[SIGCHLD-1].sa_flags & 
+				if (!(current->p_pptr->sigaction[SIGCHLD-1].sa_flags &
 						SA_NOCLDSTOP))
 					notify_parent(current);
 				schedule();

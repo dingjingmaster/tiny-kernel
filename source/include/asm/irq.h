@@ -7,15 +7,15 @@
  *	(C) 1992, 1993 Linus Torvalds
  */
 
-#include <linux/segment.h>
-#include <linux/linkage.h>
+#include "../linux/segment.h"
+#include "../linux/linkage.h"
 
 extern void disable_irq(unsigned int);
 extern void enable_irq(unsigned int);
 
 #define __STR(x) #x
 #define STR(x) __STR(x)
- 
+
 #define SAVE_ALL \
 	"cld\n\t" \
 	"push %gs\n\t" \
@@ -122,7 +122,7 @@ extern void enable_irq(unsigned int);
 #define IRQ_NAME(nr) IRQ_NAME2(IRQ##nr)
 #define FAST_IRQ_NAME(nr) IRQ_NAME2(fast_IRQ##nr)
 #define BAD_IRQ_NAME(nr) IRQ_NAME2(bad_IRQ##nr)
-	
+
 #define BUILD_IRQ(chip,nr,mask) \
 asmlinkage void IRQ_NAME(nr); \
 asmlinkage void FAST_IRQ_NAME(nr); \

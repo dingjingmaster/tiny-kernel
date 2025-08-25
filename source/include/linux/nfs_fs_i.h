@@ -1,7 +1,7 @@
 #ifndef _NFS_FS_I
 #define _NFS_FS_I
 
-#include <linux/nfs.h>
+#include "nfs.h"
 
 /*
  * nfs fs inode data in memory

@@ -28,18 +28,18 @@
  * 20.12.91  -  Ok, making the swap-device changeable like the root.
  */
 
-#include <asm/system.h>
-#include <linux/config.h>
+#include "../include/asm/system.h"
+#include "../include/linux/config.h"
 
-#include <linux/signal.h>
-#include <linux/sched.h>
-#include <linux/head.h>
-#include <linux/kernel.h>
-#include <linux/errno.h>
-#include <linux/string.h>
-#include <linux/types.h>
-#include <linux/ptrace.h>
-#include <linux/mman.h>
+#include "../include/linux/signal.h"
+#include "../include/linux/sched.h"
+#include "../include/linux/head.h"
+#include "../include/linux/kernel.h"
+#include "../include/linux/errno.h"
+#include "../include/linux/string.h"
+#include "../include/linux/types.h"
+#include "../include/linux/ptrace.h"
+#include "../include/linux/mman.h"
 
 unsigned long high_memory = 0;
 
@@ -97,7 +97,7 @@ static void free_one_table(unsigned long * page_dir)
 	page_table = (unsigned long *) (pg_table & PAGE_MASK);
 	for (j = 0 ; j < PTRS_PER_PAGE ; j++,page_table++) {
 		unsigned long pg = *page_table;
-		
+
 		if (!pg)
 			continue;
 		*page_table = 0;
@@ -897,7 +897,7 @@ asmlinkage void do_page_fault(struct pt_regs *regs, unsigned long error_code)
 				bit = (address - 0xA0000) >> PAGE_SHIFT;
 				if (bit < 32)
 					current->screen_bitmap |= 1 << bit;
-			} else 
+			} else
 				user_esp = regs->esp;
 		}
 		if (error_code & 1)
@@ -1189,7 +1189,7 @@ void file_mmap_free(struct vm_area_struct * area)
 		iput(area->vm_inode);
 #if 0
 	if (area->vm_inode)
-		printk("Free inode %x:%d (%d)\n",area->vm_inode->i_dev, 
+		printk("Free inode %x:%d (%d)\n",area->vm_inode->i_dev,
 				 area->vm_inode->i_ino, area->vm_inode->i_count);
 #endif
 }
@@ -1198,8 +1198,8 @@ void file_mmap_free(struct vm_area_struct * area)
  * Compare the contents of the mmap entries, and decide if we are allowed to
  * share the pages
  */
-int file_mmap_share(struct vm_area_struct * area1, 
-		    struct vm_area_struct * area2, 
+int file_mmap_share(struct vm_area_struct * area1,
+		    struct vm_area_struct * area2,
 		    unsigned long address)
 {
 	if (area1->vm_inode != area2->vm_inode)

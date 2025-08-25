@@ -28,7 +28,7 @@ all:	local.h sound.a
 	@echo "Please make a new /usr/include/sys/soundcard.h containing"
 	@echo "just a line #include <linux/soundcard.h>"
 
-sound.a: $(OBJS) 
+sound.a: $(OBJS)
 	-rm -f sound.a
 	$(AR) rcs sound.a $(OBJS)
 	sync
@@ -53,7 +53,7 @@ config: configure /usr/include/sys/soundcard.h
 	@echo \#define SOUND_CONFIG_DATE \"`date`\" >> local.h
 	@echo \#define SOUND_CONFIG_BY \"`whoami`\" >> local.h
 	@echo \#define SOUND_CONFIG_HOST \"`hostname`\" >> local.h
-	@echo \#define SOUND_CONFIG_DOMAIN \"`domainname`\" >> local.h
+	@echo \#define SOUND_CONFIG_DOMAIN \"`hostname -f`\" >> local.h
 
 clrconf:
 	rm -f local.h .depend

@@ -1,10 +1,10 @@
 #ifndef _LINUX_MM_H
 #define _LINUX_MM_H
 
-#include <linux/page.h>
-#include <linux/sched.h>
-#include <linux/errno.h>
-#include <linux/kernel.h>
+#include "page.h"
+#include "sched.h"
+#include "errno.h"
+#include "kernel.h"
 
 #define VERIFY_READ 0
 #define VERIFY_WRITE 1
@@ -189,7 +189,7 @@ extern unsigned short * mem_map;
 
 
 /* vm_ops not present page codes */
-#define SHM_SWP_TYPE 0x41        
+#define SHM_SWP_TYPE 0x41
 extern void shm_no_page (ulong *);
 
 #endif

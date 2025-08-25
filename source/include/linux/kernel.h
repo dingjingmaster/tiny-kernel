@@ -7,7 +7,7 @@
 
 #ifdef __KERNEL__
 
-#include <linux/linkage.h>
+#include "linkage.h"
 
 #define INT_MAX		((int)(~0U>>1))
 #define UINT_MAX	(~0U)

@@ -4,7 +4,7 @@
  *  Copyright (C) 1991, 1992  Linus Torvalds
  */
 
-#include <linux/ctype.h>
+#include "../include/linux/ctype.h"
 
 char _ctmp;
 unsigned char _ctype[] = {0x00,			/* EOF */
@@ -32,4 +32,3 @@ _L,_L,_L,_P,_P,_P,_P,_C,			/* 120-127 */
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,		/* 208-223 */
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,		/* 224-239 */
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};		/* 240-255 */
-

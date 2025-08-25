@@ -1,8 +1,8 @@
 /*
  * sound/configure.c	- Configuration program for the Linux Sound Driver
- * 
+ *
  * Copyright by Hannu Savolainen 1993
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met: 1. Redistributions of source code must retain the above copyright
@@ -10,7 +10,7 @@
  * Redistributions in binary form must reproduce the above copyright notice,
  * this list of conditions and the following disclaimer in the documentation
  * and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND ANY
  * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -22,10 +22,13 @@
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
- * 
+ *
  */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 #define B(x)	(1 << (x))
 
@@ -77,10 +80,10 @@ hw_entry;
  * second field is a set of options which are not allowed with this one. If
  * the fourth field is zero, the option is selected without asking
  * confirmation from the user.
- * 
+ *
  * With this version of the rule table it is possible to select just one type of
  * hardware.
- * 
+ *
  * NOTE!	Keep the following table and the questions array in sync with the
  * option numbering!
  */
@@ -274,8 +277,8 @@ main (int argc, char *argv[])
 		{
 		  int def_answ = hw_table[i].default_answ;
 
-		  fprintf (stderr, 
-		     def_answ ? "  %s (y/n) ? " : "  %s (n/y) ? ", 
+		  fprintf (stderr,
+		     def_answ ? "  %s (y/n) ? " : "  %s (n/y) ? ",
 		     questions[i]);
 		  if (think_positively (def_answ))
 		    if (hw_table[i].alias)
@@ -519,7 +522,7 @@ main (int argc, char *argv[])
 	def_size = 32768;
 
 #ifndef __386BSD__
-      if (((selected_options & B (OPT_PAS)) || (selected_options & B (OPT_SB16))) && 
+      if (((selected_options & B (OPT_PAS)) || (selected_options & B (OPT_SB16))) &&
           !full_driver)
 	def_size = 65536;	/* PAS16 or SB16 */
 #endif

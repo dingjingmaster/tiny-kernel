@@ -10,8 +10,8 @@
  */
 #include <stdarg.h>
 
-#include <linux/kernel.h>
-#include <linux/sched.h>
+#include "../include/linux/kernel.h"
+#include "../include/linux/sched.h"
 
 asmlinkage void sys_sync(void);	/* it's really int */
 

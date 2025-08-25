@@ -1,11 +1,11 @@
-#include <linux/errno.h>
-#include <linux/kernel.h>
-#include <asm/segment.h>
-#include <linux/mm.h>		/* defines GFP_KERNEL */
-#include <linux/string.h>
-#include <linux/module.h>
-#include <linux/sched.h>
-#include <linux/malloc.h>
+#include "../include/linux/errno.h"
+#include "../include/linux/kernel.h"
+#include "../include/asm/segment.h"
+#include "../include/linux/mm.h"		/* defines GFP_KERNEL */
+#include "../include/linux/string.h"
+#include "../include/linux/module.h"
+#include "../include/linux/sched.h"
+#include "../include/linux/malloc.h"
 
 struct module *module_list = NULL;
 int freeing_modules;		/* true if some modules are marked for deletion */

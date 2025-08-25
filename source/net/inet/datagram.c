@@ -16,7 +16,7 @@
  *		Alan Cox	:	Fixed write select of non IP protocol crash.
  */
 
-#include <linux/config.h>
+#include "../../include/linux/config.h"
 #include <linux/types.h>
 #include <linux/kernel.h>
 #include <asm/segment.h>

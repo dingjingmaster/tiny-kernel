@@ -1,9 +1,9 @@
 #ifndef _LINUX_IPC_H
 #define _LINUX_IPC_H
-#include <linux/types.h>
+#include "types.h"
 
 typedef int key_t; 		/* should go in <types.h> type for IPC key */
-#define IPC_PRIVATE ((key_t) 0)  
+#define IPC_PRIVATE ((key_t) 0)
 
 struct ipc_perm
 {
@@ -23,8 +23,8 @@ struct ipc_perm
 #define IPC_NOWAIT 00004000   /* return error on wait */
 
 
-/* 
- * Control commands used with semctl, msgctl and shmctl 
+/*
+ * Control commands used with semctl, msgctl and shmctl
  * see also specific commands in sem.h, msg.h and shm.h
  */
 #define IPC_RMID 0     /* remove resource */
@@ -38,8 +38,8 @@ struct ipc_perm
 #define IPC_UNUSED	((void *) -1)
 #define IPC_NOID	((void *) -2)		/* being allocated/destroyed */
 
-/* 
- * These are used to wrap system calls. See ipc/util.c, libipc.c 
+/*
+ * These are used to wrap system calls. See ipc/util.c, libipc.c
  */
 struct ipc_kludge {
     struct msgbuf *msgp;
@@ -61,5 +61,3 @@ struct ipc_kludge {
 #endif /* __KERNEL__ */
 
 #endif /* _LINUX_IPC_H */
-
-

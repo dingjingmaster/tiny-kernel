@@ -9,30 +9,30 @@
  */
 /*
  * Modification history kernel/time.c
- * 
+ *
  * 02 Sep 93    Philip Gladstone
- *      Created file with time related functions from sched.c and adjtimex() 
+ *      Created file with time related functions from sched.c and adjtimex()
  * 08 Oct 93    Torsten Duwe
  *      adjtime interface update and CMOS clock write code
  */
 
-#include <linux/config.h>
-#include <linux/errno.h>
-#include <linux/sched.h>
-#include <linux/kernel.h>
-#include <linux/param.h>
-#include <linux/string.h>
+#include "../include/linux/config.h"
+#include "../include/linux/errno.h"
+#include "../include/linux/sched.h"
+#include "../include/linux/kernel.h"
+#include "../include/linux/param.h"
+#include "../include/linux/string.h"
 
-#include <asm/segment.h>
-#include <asm/io.h>
+#include "../include/asm/segment.h"
+#include "../include/asm/io.h"
 
-#include <linux/mc146818rtc.h>
+#include "../include/linux/mc146818rtc.h"
 #define RTC_ALWAYS_BCD 1
 
-#include <linux/timex.h>
+#include "../include/linux/timex.h"
 extern struct timeval xtime;
 
-#include <linux/mktime.h>
+#include "../include/linux/mktime.h"
 extern long kernel_mktime(struct mktime * time);
 
 void time_init(void)
@@ -72,7 +72,7 @@ void time_init(void)
 	time.mon--;
 	xtime.tv_sec = kernel_mktime(&time);
       }
-/* 
+/*
  * The timezone where the local system is located.  Used as a default by some
  * programs who obtain this value by using gettimeofday.
  */
@@ -106,9 +106,9 @@ asmlinkage int sys_stime(long * tptr)
 	return 0;
 }
 
-/* This function must be called with interrupts disabled 
+/* This function must be called with interrupts disabled
  * It was inspired by Steve McCanne's microtime-i386 for BSD.  -- jrs
- * 
+ *
  * However, the pc-audio speaker driver changes the divisor so that
  * it gets interrupted rather more often - it loads 64 into the
  * counter rather than 11932! This has an adverse impact on
@@ -122,7 +122,7 @@ asmlinkage int sys_stime(long * tptr)
  * using either the RTC or the 8253 timer. The decision would be
  * based on whether there was any other device around that needed
  * to trample on the 8253. I'd set up the RTC to interrupt at 1024Hz,
- * and then do some jiggery to have a version of do_timer that 
+ * and then do some jiggery to have a version of do_timer that
  * advanced the clock by 1/1024 sec. Every time that reached over 1/100
  * of a second, then do all the old code. If the time was kept correct
  * then do_gettimeoffset could just return 0 - there is no low order
@@ -133,7 +133,7 @@ asmlinkage int sys_stime(long * tptr)
  * often than every 120us or so.
  *
  * Anyway, this needs more thought....		pjsg (28 Aug 93)
- * 
+ *
  * If you are really that interested, you should be reading
  * comp.protocols.time.ntp!
  */
@@ -208,17 +208,17 @@ asmlinkage int sys_gettimeofday(struct timeval *tv, struct timezone *tz)
 /*
  * Adjust the time obtained from the CMOS to be GMT time instead of
  * local time.
- * 
+ *
  * This is ugly, but preferable to the alternatives.  Otherwise we
  * would either need to write a program to do it in /etc/rc (and risk
- * confusion if the program gets run more than once; it would also be 
+ * confusion if the program gets run more than once; it would also be
  * hard to make the program warp the clock precisely n hours)  or
  * compile in the timezone information into the kernel.  Bad, bad....
  *
  * XXX Currently does not adjust for daylight savings time.  May not
  * need to do anything, depending on how smart (dumb?) the BIOS
  * is.  Blast it all.... the best thing to do not depend on the CMOS
- * clock at all, but get the time via NTP or timed if you're on a 
+ * clock at all, but get the time via NTP or timed if you're on a
  * network....				- TYT, 1/1/92
  */
 inline static void warp_clock(void)
@@ -230,7 +230,7 @@ inline static void warp_clock(void)
 
 /*
  * The first time we set the timezone, we will warp the clock so that
- * it is ticking GMT time instead of local time.  Presumably, 
+ * it is ticking GMT time instead of local time.  Presumably,
  * if someone is setting the timezone then we are running in an
  * environment where the programs understand about timezones.
  * This should be done at boot time in the /etc/rc script, as
@@ -257,7 +257,7 @@ asmlinkage int sys_settimeofday(struct timeval *tv, struct timezone *tz)
 
 		sec = get_fs_long((unsigned long *)tv);
 		usec = get_fs_long(((unsigned long *)tv)+1);
-	
+
 		cli();
 		/* This is revolting. We need to set the xtime.tv_usec
 		 * correctly. However, the value in this location is

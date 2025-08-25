@@ -6,17 +6,17 @@
 
 #define DEBUG_PROC_TREE
 
-#include <linux/wait.h>
-#include <linux/errno.h>
-#include <linux/signal.h>
-#include <linux/sched.h>
-#include <linux/kernel.h>
-#include <linux/resource.h>
-#include <linux/mm.h>
-#include <linux/tty.h>
-#include <linux/malloc.h>
+#include "../include/linux/wait.h"
+#include "../include/linux/errno.h"
+#include "../include/linux/signal.h"
+#include "../include/linux/sched.h"
+#include "../include/linux/kernel.h"
+#include "../include/linux/resource.h"
+#include "../include/linux/mm.h"
+#include "../include/linux/tty.h"
+#include "../include/linux/malloc.h"
 
-#include <asm/segment.h>
+#include "../include/asm/segment.h"
 extern void shm_exit (void);
 extern void sem_exit (void);
 
@@ -60,7 +60,7 @@ int send_sig(unsigned long sig,struct task_struct * p,int priv)
 				(1<<(SIGTTIN-1)) | (1<<(SIGTTOU-1)) );
 	}
 	/* Depends on order SIGSTOP, SIGTSTP, SIGTTIN, SIGTTOU */
-	if ((sig >= SIGSTOP) && (sig <= SIGTTOU)) 
+	if ((sig >= SIGSTOP) && (sig <= SIGTTOU))
 		p->signal &= ~(1<<(SIGCONT-1));
 	/* Actually generate the signal */
 	generate(sig,p);
@@ -112,14 +112,14 @@ int bad_task_ptr(struct task_struct *p)
 			return 0;
 	return 1;
 }
-	
+
 /*
  * This routine scans the pid tree and make sure the rep invarient still
  * holds.  Used for debugging only, since it's very slow....
  *
  * It looks a lot scarier than it really is.... we're doing nothing more
- * than verifying the doubly-linked list found in p_ysptr and p_osptr, 
- * and checking it corresponds with the process tree defined by p_cptr and 
+ * than verifying the doubly-linked list found in p_ysptr and p_osptr,
+ * and checking it corresponds with the process tree defined by p_cptr and
  * p_pptr;
  */
 void audit_ptree(void)
@@ -292,7 +292,7 @@ asmlinkage int sys_kill(int pid,int sig)
 		}
 		return(count ? retval : -ESRCH);
 	}
-	if (pid < 0) 
+	if (pid < 0)
 		return(kill_pg(-pid,sig,0));
 	/* Normal kill */
 	return(kill_proc(pid,sig,0));
@@ -301,9 +301,9 @@ asmlinkage int sys_kill(int pid,int sig)
 /*
  * Determine if a process group is "orphaned", according to the POSIX
  * definition in 2.2.2.52.  Orphaned process groups are not to be affected
- * by terminal-generated stop signals.  Newly orphaned process groups are 
+ * by terminal-generated stop signals.  Newly orphaned process groups are
  * to receive a SIGHUP and a SIGCONT.
- * 
+ *
  * "I ask you, have you ever known what it is to be an orphan?"
  */
 int is_orphaned_pgrp(int pgrp)
@@ -311,7 +311,7 @@ int is_orphaned_pgrp(int pgrp)
 	struct task_struct *p;
 
 	for_each_task(p) {
-		if ((p->pgrp != pgrp) || 
+		if ((p->pgrp != pgrp) ||
 		    (p->state == TASK_ZOMBIE) ||
 		    (p->p_pptr->pid == 1))
 			continue;
@@ -370,7 +370,7 @@ fake_volatile:
 	iput(current->executable);
 	current->executable = NULL;
 	/* Release all of the old mmap stuff. */
-	
+
 	{
 		struct vm_area_struct * mpnt, *mpnt1;
 		mpnt = current->mmap;
@@ -398,7 +398,7 @@ fake_volatile:
 	current->state = TASK_ZOMBIE;
 	current->exit_code = code;
 	current->rss = 0;
-	/* 
+	/*
 	 * Check to see if any process groups have become orphaned
 	 * as a result of our exiting, and if they have any stopped
 	 * jobs, send them a SIGUP and then a SIGCONT.  (POSIX 3.2.2.2)
@@ -416,10 +416,10 @@ fake_volatile:
 	}
 	/* Let father know we died */
 	notify_parent(current);
-	
+
 	/*
 	 * This loop does two things:
-	 * 
+	 *
   	 * A.  Make init inherit all the child processes
 	 * B.  Check to see if any process groups have become orphaned
 	 *	as a result of our exiting, and if they have any stopped
@@ -440,7 +440,7 @@ fake_volatile:
 			notify_parent(p);
 		/*
 		 * process group orphan check
-		 * Case ii: Our child is in a different pgrp 
+		 * Case ii: Our child is in a different pgrp
 		 * than we are, and it was the only connection
 		 * outside, so the child pgrp is now orphaned.
 		 */

@@ -6,13 +6,13 @@
 
 /* These are all the functions necessary to implement itimers */
 
-#include <linux/signal.h>
-#include <linux/sched.h>
-#include <linux/string.h>
-#include <linux/errno.h>
-#include <linux/time.h>
+#include "../include/linux/signal.h"
+#include "../include/linux/sched.h"
+#include "../include/linux/string.h"
+#include "../include/linux/errno.h"
+#include "../include/linux/time.h"
 
-#include <asm/segment.h>
+#include "../include/asm/segment.h"
 
 static unsigned long tvtojiffies(struct timeval *value)
 {
