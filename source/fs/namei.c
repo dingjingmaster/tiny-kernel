@@ -8,14 +8,14 @@
  * Some corrections by tytso.
  */
 
-#include <asm/segment.h>
+#include "../include/asm/segment.h"
 
-#include <linux/errno.h>
-#include <linux/sched.h>
-#include <linux/kernel.h>
-#include <linux/string.h>
-#include <linux/fcntl.h>
-#include <linux/stat.h>
+#include "../include/linux/errno.h"
+#include "../include/linux/sched.h"
+#include "../include/linux/kernel.h"
+#include "../include/linux/string.h"
+#include "../include/linux/fcntl.h"
+#include "../include/linux/stat.h"
 
 #define ACC_MODE(x) ("\000\004\002\006"[(x)&O_ACCMODE])
 
@@ -724,7 +724,7 @@ static int do_rename(const char * oldname, const char * newname)
 		return -EPERM;
 	}
 	down(&new_dir->i_sem);
-	error = old_dir->i_op->rename(old_dir, old_base, old_len, 
+	error = old_dir->i_op->rename(old_dir, old_base, old_len,
 		new_dir, new_base, new_len);
 	up(&new_dir->i_sem);
 	return error;

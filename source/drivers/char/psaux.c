@@ -25,17 +25,17 @@
 
 /* #define INITIALIZE_DEVICE */
 
-#include <linux/timer.h>
-#include <linux/sched.h>
-#include <linux/kernel.h>
-#include <linux/fcntl.h>
-#include <linux/errno.h>
+#include "../../include/linux/timer.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/fcntl.h"
+#include "../../include/linux/errno.h"
 
-#include <asm/io.h>
-#include <asm/segment.h>
-#include <asm/system.h>
+#include "../../include/asm/io.h"
+#include "../../include/asm/segment.h"
+#include "../../include/asm/system.h"
 
-#include <linux/config.h>
+#include "../../include/linux/config.h"
 
 /* aux controller ports */
 #define AUX_INPUT_PORT	0x60		/* Aux device output buffer */
@@ -130,7 +130,7 @@ static void aux_write_dev(int val)
 /*
  * Write to device & handle returned ack
  */
- 
+
 #if defined INITIALIZE_DEVICE
 static int aux_write_ack(int val)
 {
@@ -390,8 +390,8 @@ repeat:
 			goto repeat;
 		}
 		current->state = TASK_RUNNING;
-		remove_wait_queue(&queue->proc_list, &wait);			
-	}		
+		remove_wait_queue(&queue->proc_list, &wait);
+	}
 	while (i > 0 && !queue_empty()) {
 		c = get_from_queue();
 		put_fs_byte(c, buffer++);

@@ -8,17 +8,17 @@
  *  isofs directory handling functions
  */
 
-#include <linux/errno.h>
+#include "../../include/linux/errno.h"
 
-#include <asm/segment.h>
+#include "../../include/asm/segment.h"
 
-#include <linux/fs.h>
-#include <linux/iso_fs.h>
-#include <linux/kernel.h>
-#include <linux/stat.h>
-#include <linux/string.h>
-#include <linux/mm.h>
-#include <linux/malloc.h>
+#include "../../include/linux/fs.h"
+#include "../../include/linux/iso_fs.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/stat.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/mm.h"
+#include "../../include/linux/malloc.h"
 
 static int isofs_readdir(struct inode *, struct file *, struct dirent *, int);
 
@@ -75,15 +75,15 @@ static int isofs_readdir(struct inode * inode, struct file * filp,
 	int dlen, rrflag;
 	char * dpnt;
 	struct iso_directory_record * de;
-	
+
 	if (!inode || !S_ISDIR(inode->i_mode))
 		return -EBADF;
-	
+
 	offset = filp->f_pos & (bufsize - 1);
 	block = isofs_bmap(inode,filp->f_pos>>bufbits);
 	if (!block || !(bh = bread(inode->i_dev,block,bufsize)))
 		return 0;
-	
+
 	while (filp->f_pos < inode->i_size) {
 #ifdef DEBUG
 		printk("Block, offset: %x %x %x\n",
@@ -91,11 +91,11 @@ static int isofs_readdir(struct inode * inode, struct file * filp,
 #endif
 		de = (struct iso_directory_record *) (bh->b_data + offset);
 		inode_number = (block << bufbits) + (offset & (bufsize - 1));
-		
+
 		/* If the length byte is zero, we should move on to the next
 		   CDROM sector.  If we are at the end of the directory, we
 		   kick out of the while loop. */
-		
+
 		if (*((unsigned char *) de) == 0)  {
 			brelse(bh);
 			offset = 0;
@@ -132,7 +132,7 @@ static int isofs_readdir(struct inode * inode, struct file * filp,
 			};
 			memcpy((char *)cpnt+bufsize, bh->b_data, bufsize);
 		}
-		
+
 		/* Handle the case of the '.' directory */
 
 		rrflag = 0;
@@ -142,9 +142,9 @@ static int isofs_readdir(struct inode * inode, struct file * filp,
 			inode_number = inode->i_ino;
 			dpnt = ".";
 		}
-		
+
 		/* Handle the case of the '..' directory */
-		
+
 		else if (de->name_len[0] == 1 && de->name[0] == 1) {
 			put_fs_byte('.',dirent->d_name);
 			put_fs_byte('.',dirent->d_name+1);
@@ -155,10 +155,10 @@ static int isofs_readdir(struct inode * inode, struct file * filp,
 				inode_number = inode->u.isofs_i.i_backlink;
 			else
 				inode_number = inode->i_ino;
-			
+
 			/* This should never happen, but who knows.  Try to be forgiving */
 			if(inode_number == -1) {
-				inode_number = 
+				inode_number =
 					isofs_lookup_grandparent(inode,
 					     find_rock_ridge_relocation(de, inode));
 				if(inode_number == -1){ /* Should never happen */
@@ -167,10 +167,10 @@ static int isofs_readdir(struct inode * inode, struct file * filp,
 				};
 			}
 		}
-		
+
 		/* Handle everything else.  Do name translation if there
 		   is no Rock Ridge NM field. */
-		
+
 		else {
 			dlen = de->name_len[0];
 			dpnt = de->name;
@@ -193,12 +193,12 @@ static int isofs_readdir(struct inode * inode, struct file * filp,
 			      if (c >= 'A' && c <= 'Z') c |= 0x20;  /* lower case */
 			      if (c == '.' && i == dlen-3 && de->name[i+1] == ';' && de->name[i+2] == '1')
 				break;  /* Drop trailing '.;1' (ISO9660:1988 7.5.1 requires period) */
-			      if (c == ';' && i == dlen-2 && de->name[i+1] == '1') 
+			      if (c == ';' && i == dlen-2 && de->name[i+1] == '1')
 				break;  /* Drop trailing ';1' */
 			      if (c == ';') c = '.';  /* Convert remaining ';' to '.' */
 			      dpnt[i] = c;
 			  };
-			
+
 			for(j=0; j<i; j++)
 			  put_fs_byte(dpnt[j],j+dirent->d_name); /* And save it */
 		      };
@@ -219,7 +219,7 @@ static int isofs_readdir(struct inode * inode, struct file * filp,
 			kfree_s(cpnt, 1 << ISOFS_BLOCK_BITS);
 			cpnt = NULL;
 		};
-		
+
 		if (i) {
 			put_fs_long(inode_number, &dirent->d_ino);
 			put_fs_byte(0,i+dirent->d_name);
@@ -236,6 +236,3 @@ static int isofs_readdir(struct inode * inode, struct file * filp,
 	brelse(bh);
 	return 0;
 }
-
-
-

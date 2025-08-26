@@ -10,29 +10,29 @@
  * Authors:	Ross Biro, <bir7@leland.Stanford.Edu>
  *		Fred N. van Kempen, <waltje@uWalt.NL.Mugnet.ORG>
  *		Mark Evans, <evansmp@uhura.aston.ac.uk>
- * 
+ *
  * Fixes:
  *		Mr Linux	: Arp problems
  *		Alan Cox	: Generic queue tidyup (very tiny here)
  *		Alan Cox	: eth_header ntohs should be htons
  *		Alan Cox	: eth_rebuild_header missing an htons and
  *				  minor other things.
- *		Tegge		: Arp bug fixes. 
+ *		Tegge		: Arp bug fixes.
  *
  *		This program is free software; you can redistribute it and/or
  *		modify it under the terms of the GNU General Public License
  *		as published by the Free Software Foundation; either version
  *		2 of the License, or (at your option) any later version.
  */
-#include <asm/segment.h>
-#include <asm/system.h>
-#include <linux/types.h>
-#include <linux/kernel.h>
-#include <linux/sched.h>
-#include <linux/string.h>
-#include <linux/mm.h>
-#include <linux/socket.h>
-#include <linux/in.h>
+#include "../../include/asm/segment.h"
+#include "../../include/asm/system.h"
+#include "../../include/linux/types.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/mm.h"
+#include "../../include/linux/socket.h"
+#include "../../include/linux/in.h"
 #include "inet.h"
 #include "dev.h"
 #include "eth.h"
@@ -42,7 +42,7 @@
 #include "tcp.h"
 #include "skbuff.h"
 #include "sock.h"
-#include <linux/errno.h>
+#include "../../include/linux/errno.h"
 #include "arp.h"
 
 
@@ -125,13 +125,13 @@ eth_header(unsigned char *buff, struct device *dev, unsigned short type,
   cli();
   memcpy(eth->h_source, &saddr, 4);
   /* No. Ask ARP to resolve the Ethernet address. */
-  if (arp_find(eth->h_dest, daddr, dev, dev->pa_addr)) 
+  if (arp_find(eth->h_dest, daddr, dev, dev->pa_addr))
   {
         sti();
         if(type!=ETH_P_IP)
         	printk("Erk: protocol %X got into an arp request state!\n",type);
 	return(-dev->hard_header_len);
-  } 
+  }
   else
   {
   	memcpy(eth->h_source,dev->dev_addr,dev->addr_len);	/* This was missing causing chaos if the

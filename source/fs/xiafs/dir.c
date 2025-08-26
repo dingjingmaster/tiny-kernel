@@ -1,21 +1,21 @@
 /*
  *  linux/fs/xiafs/dir.c
- *  
+ *
  *  Copyright (C) Q. Frank Xia, 1993.
- *  
+ *
  *  Based on Linus' minix/dir.c
  *  Copyright (C) Linus Torvalds, 1991, 1992.
  *
  *  This software may be redistributed per Linux Copyright.
  */
 
-#include <asm/segment.h>
-#include <linux/sched.h>
-#include <linux/errno.h>
-#include <linux/kernel.h>
-#include <linux/fs.h>
-#include <linux/xia_fs.h>
-#include <linux/stat.h>
+#include "../../include/asm/segment.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/fs.h"
+#include "../../include/linux/xia_fs.h"
+#include "../../include/linux/stat.h"
 
 #include "xiafs_mac.h"
 
@@ -56,13 +56,13 @@ struct inode_operations xiafs_dir_inode_operations = {
     NULL			/* permission */
 };
 
-static int xiafs_dir_read(struct inode * inode, 
+static int xiafs_dir_read(struct inode * inode,
 			struct file * filp, char * buf, int count)
 {
   return -EISDIR;
 }
 
-static int xiafs_readdir(struct inode * inode, 
+static int xiafs_readdir(struct inode * inode,
 		       struct file * filp, struct dirent * dirent, int count)
 {
     u_int offset, i;
@@ -83,7 +83,7 @@ static int xiafs_readdir(struct inode * inode,
 	de = (struct xiafs_direct *) (offset + bh->b_data);
 	while (offset < XIAFS_ZSIZE(inode->i_sb) && filp->f_pos < inode->i_size) {
 	    if (de->d_ino > inode->i_sb->u.xiafs_sb.s_ninodes ||
-		de->d_rec_len < 12 || 
+		de->d_rec_len < 12 ||
 		(char *)de+de->d_rec_len > XIAFS_ZSIZE(inode->i_sb)+bh->b_data ||
 		de->d_name_len < 1 || de->d_name_len + 8 > de->d_rec_len ||
 		de->d_name_len > _XIAFS_NAME_LEN ||
@@ -91,7 +91,7 @@ static int xiafs_readdir(struct inode * inode,
 	        printk("XIA-FS: bad directory entry (%s %d)\n", WHERE_ERR);
 		brelse(bh);
 		return 0;
-	    }  
+	    }
 	    offset += de->d_rec_len;
 	    filp->f_pos += de->d_rec_len;
 	    if (de->d_ino) {
@@ -102,7 +102,7 @@ static int xiafs_readdir(struct inode * inode,
 		put_fs_word(i,&dirent->d_reclen);
 		brelse(bh);
 		if (!IS_RDONLY (inode)) {
-		    inode->i_atime=CURRENT_TIME;		    
+		    inode->i_atime=CURRENT_TIME;
 		    inode->i_dirt=1;
 		}
 		return i;
@@ -116,7 +116,7 @@ static int xiafs_readdir(struct inode * inode,
 	}
     }
     if (!IS_RDONLY (inode)) {
-	inode->i_atime=CURRENT_TIME;		    
+	inode->i_atime=CURRENT_TIME;
 	inode->i_dirt=1;
     }
     return 0;

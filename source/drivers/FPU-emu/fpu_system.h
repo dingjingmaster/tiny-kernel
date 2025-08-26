@@ -12,8 +12,8 @@
 
 /* system dependent definitions */
 
-#include <linux/sched.h>
-#include <linux/kernel.h>
+#include "../../include/linux/sched.h"
+#include "../../include/linux/kernel.h"
 
 /* This sets the pointer FPU_info to point to the argument part
    of the stack frame of math_emulate() */

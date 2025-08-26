@@ -4,13 +4,13 @@
  *  Copyright (C) 1991, 1992  Linus Torvalds
  */
 
-#include <linux/stat.h>
-#include <linux/sched.h>
-#include <linux/kernel.h>
-#include <linux/mm.h>
-#include <linux/string.h>
+#include "../include/linux/stat.h"
+#include "../include/linux/sched.h"
+#include "../include/linux/kernel.h"
+#include "../include/linux/mm.h"
+#include "../include/linux/string.h"
 
-#include <asm/system.h>
+#include "../include/asm/system.h"
 
 static struct inode_hash_entry {
 	struct inode * inode;
@@ -220,7 +220,7 @@ static void write_inode(struct inode * inode)
 		inode->i_dirt = 0;
 		return;
 	}
-	inode->i_lock = 1;	
+	inode->i_lock = 1;
 	inode->i_sb->s_op->write_inode(inode);
 	unlock_inode(inode);
 }

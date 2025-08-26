@@ -11,18 +11,18 @@
 
 #include <stdio.h>
 #include <unistd.h>
-#include <a.out.h>
+#include "../include/a.out.h"
 
 int main(int argc, char *argv[])
 {
 	int c, n=0, len=0;
 	char tmp_buf[512*1024];
-	
+
 	struct exec obj = {0x00640107};	/* object header */
 	char string_names[] = {"_input_data\0_input_len\0"};
 
 	struct nlist var_names[2] = /* Symbol table */
-		{	
+		{
 			{	/* _input_data	*/
 				(char *)4, 7, 0, 0, 0
 			},

@@ -1,10 +1,10 @@
 #ifndef _BLK_H
 #define _BLK_H
 
-#include <linux/major.h>
-#include <linux/sched.h>
-#include <linux/locks.h>
-#include <linux/genhd.h>
+#include "../../include/linux/major.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/locks.h"
+#include "../../include/linux/genhd.h"
 
 /*
  * NR_REQUEST is the number of entries in the request-queue.
@@ -96,7 +96,7 @@ extern unsigned long xd_init(unsigned long mem_start, unsigned long mem_end);
 		 set_device_ro((dev),get_fs_long((long *) (where))); return 0; \
   case BLKROGET: { int __err = verify_area(VERIFY_WRITE, (void *) (where), sizeof(long)); \
 		   if (!__err) put_fs_long(is_read_only(dev),(long *) (where)); return __err; }
-		 
+
 #ifdef MAJOR_NR
 
 /*
@@ -110,7 +110,7 @@ extern unsigned long xd_init(unsigned long mem_start, unsigned long mem_end);
 #define DEVICE_NAME "ramdisk"
 #define DEVICE_REQUEST do_rd_request
 #define DEVICE_NR(device) ((device) & 7)
-#define DEVICE_ON(device) 
+#define DEVICE_ON(device)
 #define DEVICE_OFF(device)
 
 #elif (MAJOR_NR == FLOPPY_MAJOR)
@@ -140,7 +140,7 @@ static void floppy_off(unsigned int nr);
 #elif (MAJOR_NR == SCSI_DISK_MAJOR)
 
 #define DEVICE_NAME "scsidisk"
-#define DEVICE_INTR do_sd  
+#define DEVICE_INTR do_sd
 #define TIMEOUT_VALUE 200
 #define DEVICE_REQUEST do_sd_request
 #define DEVICE_NR(device) (MINOR(device) >> 4)
@@ -150,7 +150,7 @@ static void floppy_off(unsigned int nr);
 #elif (MAJOR_NR == SCSI_TAPE_MAJOR)
 
 #define DEVICE_NAME "scsitape"
-#define DEVICE_INTR do_st  
+#define DEVICE_INTR do_st
 #define DEVICE_NR(device) (MINOR(device))
 #define DEVICE_ON(device)
 #define DEVICE_OFF(device)
@@ -255,7 +255,7 @@ static void end_request(int uptodate)
 		req->nr_sectors--;
 		req->nr_sectors &= ~SECTOR_MASK;
 		req->sector += (BLOCK_SIZE / 512);
-		req->sector &= ~SECTOR_MASK;		
+		req->sector &= ~SECTOR_MASK;
 	}
 
 	if ((bh = req->bh) != NULL) {

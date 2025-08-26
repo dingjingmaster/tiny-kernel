@@ -23,7 +23,7 @@ static char *version =
 
 /* Always include 'config.h' first in case the user wants to turn on
    or override something. */
-#include <linux/config.h>
+#include "../../include/linux/config.h"
 
 /*
   Sources:
@@ -40,26 +40,26 @@ static char *version =
 	under the GPL.
 */
 
-#include <linux/kernel.h>
-#include <linux/sched.h>
-#include <linux/types.h>
-#include <linux/fcntl.h>
-#include <linux/interrupt.h>
-#include <linux/ptrace.h>
-#include <linux/ioport.h>
-#include <linux/in.h>
-#include <linux/malloc.h>
-#include <linux/string.h>
-#include <asm/system.h>
-#include <asm/bitops.h>
-#include <asm/io.h>
-#include <asm/dma.h>
-#include <errno.h>
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/types.h"
+#include "../../include/linux/fcntl.h"
+#include "../../include/linux/interrupt.h"
+#include "../../include/linux/ptrace.h"
+#include "../../include/linux/ioport.h"
+#include "../../include/linux/in.h"
+#include "../../include/linux/malloc.h"
+#include "../../include/linux/string.h"
+#include "../../include/asm/system.h"
+#include "../../include/asm/bitops.h"
+#include "../../include/asm/io.h"
+#include "../../include/asm/dma.h"
+#include "../../include/linux/errno.h"
 
-#include "dev.h"
-#include "eth.h"
-#include "skbuff.h"
-#include "arp.h"
+#include "../../net/inet/dev.h"
+#include "../../net/inet/eth.h"
+#include "../../net/inet/skbuff.h"
+#include "../../net/inet/arp.h"
 
 #ifndef HAVE_AUTOIRQ
 /* From auto_irq.c, in ioport.h for later versions. */
@@ -162,7 +162,7 @@ int netcard_probe1(struct device *dev, short ioaddr)
 	for (i = 0; i < 6; i++) {
 		station_addr[i] = inb(ioaddr + i);
 	}
-	/* Check the first three octets of the S.A. for the manufactor's code. */ 
+	/* Check the first three octets of the S.A. for the manufactor's code. */
 	if (station_addr[0] != SA_ADDR0
 		||	 station_addr[1] != SA_ADDR1 || station_addr[2] != SA_ADDR2) {
 		return ENODEV;
@@ -394,7 +394,7 @@ net_rx(struct device *dev)
 	do {
 		int status = inw(ioaddr);
 		int pkt_len = inw(ioaddr);
-	  
+
 		if (pkt_len == 0)		/* Read all the frames? */
 			break;			/* Done for now */
 

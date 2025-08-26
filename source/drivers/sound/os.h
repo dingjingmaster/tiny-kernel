@@ -1,6 +1,6 @@
 /*
  *	OS Specific settings for Linux
- * 
+ *
  * Copyright by Hannu Savolainen 1993
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,23 +28,23 @@
 
 #define ALLOW_SELECT
 
-#include <linux/param.h>
-#include <linux/types.h>
-#include <linux/errno.h>
-#include <linux/signal.h>
-#include <linux/fcntl.h>
-#include <linux/sched.h>
-#include <linux/timer.h>
-#include <linux/tty.h>
-#include <linux/ctype.h>
-#include <asm/io.h>
-#include <asm/segment.h>
-#include <asm/system.h>
-#include <asm/dma.h>
-#include <sys/kd.h>
-#include <linux/wait.h>
-#include <linux/malloc.h>
-#include <linux/soundcard.h>
+#include "../../include/linux/param.h"
+#include "../../include/linux/types.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/signal.h"
+#include "../../include/linux/fcntl.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/timer.h"
+#include "../../include/linux/tty.h"
+#include "../../include/linux/ctype.h"
+#include "../../include/asm/io.h"
+#include "../../include/asm/segment.h"
+#include "../../include/asm/system.h"
+#include "../../include/asm/dma.h"
+#include "../../include/sys/kd.h"
+#include "../../include/linux/wait.h"
+#include "../../include/linux/malloc.h"
+#include "../../include/linux/soundcard.h"
 
 typedef char snd_rw_buf;
 
@@ -107,9 +107,9 @@ struct snd_wait {
 #define DISABLE_INTR(flags)	__asm__ __volatile__("pushfl ; popl %0 ; cli":"=r" (flags));
 #define RESTORE_INTR(flags)	__asm__ __volatile__("pushl %0 ; popfl": \
 							:"r" (flags));
-/* 
-   KERNEL_MALLOC() allocates requested number of memory  and 
-   KERNEL_FREE is used to free it. 
+/*
+   KERNEL_MALLOC() allocates requested number of memory  and
+   KERNEL_FREE is used to free it.
    These macros are never called from interrupt, in addition the
    nbytes will never be more than 4096 bytes. Generally the driver
    will allocate memory in blocks of 4k. If the kernel has just a

@@ -6,16 +6,16 @@
  *  minix regular file handling primitives
  */
 
-#include <asm/segment.h>
-#include <asm/system.h>
+#include "../../include/asm/segment.h"
+#include "../../include/asm/system.h"
 
-#include <linux/sched.h>
-#include <linux/minix_fs.h>
-#include <linux/kernel.h>
-#include <linux/errno.h>
-#include <linux/fcntl.h>
-#include <linux/stat.h>
-#include <linux/locks.h>
+#include "../../include/linux/sched.h"
+#include "../../include/linux/minix_fs.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/fcntl.h"
+#include "../../include/linux/stat.h"
+#include "../../include/linux/locks.h"
 
 #define	NBUF	32
 

@@ -8,18 +8,18 @@
  *  isofs regular file handling primitives
  */
 
-#include <asm/segment.h>
-#include <asm/system.h>
+#include "../../include/asm/segment.h"
+#include "../../include/asm/system.h"
 
-#include <linux/sched.h>
-#include <linux/iso_fs.h>
-#include <linux/fcntl.h>
-#include <linux/kernel.h>
-#include <linux/errno.h>
-#include <linux/stat.h>
-#include <linux/locks.h>
+#include "../../include/linux/sched.h"
+#include "../../include/linux/iso_fs.h"
+#include "../../include/linux/fcntl.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/stat.h"
+#include "../../include/linux/locks.h"
 
-#include <linux/dirent.h>
+#include "../../include/linux/dirent.h"
 
 #define	NBUF	32
 
@@ -92,7 +92,7 @@ static void isofs_determine_filetype(struct inode * inode)
 	int result, i;
 	struct buffer_head * bh;
 	unsigned char * pnt;
-	
+
 	block = isofs_bmap(inode,0);
 	if (block && (bh = bread(inode->i_dev,block, ISOFS_BUFFER_SIZE(inode)))) {
 		pnt = (unsigned char *) bh->b_data;
@@ -120,7 +120,7 @@ static int isofs_file_read(struct inode * inode, struct file * filp, char * buf,
 	struct buffer_head ** bhb, ** bhe;
 	struct buffer_head * bhreq[NBUF];
 	struct buffer_head * buflist[NBUF];
-	
+
 	if (!inode) {
 		printk("isofs_file_read: inode = NULL\n");
 		return -EINVAL;
@@ -183,7 +183,7 @@ static int isofs_file_read(struct inode * inode, struct file * filp, char * buf,
 				break;
 		      }
 
-		if(blocks == 0 && bhrequest && filp->f_reada && bhb != bhe) { 
+		if(blocks == 0 && bhrequest && filp->f_reada && bhb != bhe) {
 		  /* If we are going to read something anyways, add in the
 		     read-ahead blocks */
 		  while(ra_blocks){
@@ -200,10 +200,10 @@ static int isofs_file_read(struct inode * inode, struct file * filp, char * buf,
 		      nextblock = (*bhb)->b_blocknr + 1;
 		      bhreq[bhrequest++] = *bhb;
 		    };
-		    
+
 		    if (++bhb == &buflist[NBUF])
 		      bhb = buflist;
-		    
+
 		    if (bhb == bhe)
 		      break;
 		  };
@@ -223,7 +223,7 @@ static int isofs_file_read(struct inode * inode, struct file * filp, char * buf,
 		      break;
 		    }
 		  }
-		  
+
 		  if (left < ISOFS_BUFFER_SIZE(inode) - offset)
 		    chars = left;
 		  else
@@ -246,7 +246,7 @@ static int isofs_file_read(struct inode * inode, struct file * filp, char * buf,
 		  offset = 0;
 		  if (++bhe == &buflist[NBUF])
 		    bhe = buflist;
-		} while( bhe != bhb && (*bhe == 0 || !(*bhe)->b_lock) && 
+		} while( bhe != bhb && (*bhe == 0 || !(*bhe)->b_lock) &&
 			(left > 0));
 	} while (left > 0);
 

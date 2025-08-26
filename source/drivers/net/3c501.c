@@ -9,7 +9,7 @@
 
     This is a device driver for the 3Com Etherlink 3c501.
     Do not purchase this card, even as a joke.  It's performance is horrible,
-    and it breaks in many ways.  
+    and it breaks in many ways.
 
     The Author may be reached as becker@super.org or
     C/O Supercomputing Research Ctr., 17100 Science Dr., Bowie MD 20715
@@ -24,23 +24,23 @@ static char *version =
   The 3c501 board.
   */
 
-#include <linux/config.h>
-#include <linux/kernel.h>
-#include <linux/sched.h>
-#include <linux/ptrace.h>
-#include <linux/fcntl.h>
-#include <linux/ioport.h>
-#include <linux/interrupt.h>
-#include <linux/malloc.h>
-#include <linux/ioport.h>
-#include <asm/bitops.h>
-#include <asm/io.h>
-#include <errno.h>
+#include "../../include/linux/config.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/ptrace.h"
+#include "../../include/linux/fcntl.h"
+#include "../../include/linux/ioport.h"
+#include "../../include/linux/interrupt.h"
+#include "../../include/linux/malloc.h"
+#include "../../include/linux/ioport.h"
+#include "../../include/asm/bitops.h"
+#include "../../include/asm/io.h"
+#include "../../include/linux/errno.h"
 
-#include "dev.h"
-#include "eth.h"
-#include "skbuff.h"
-#include "arp.h"
+#include "../../net/inet/dev.h"
+#include "../../net/inet/eth.h"
+#include "../../net/inet/skbuff.h"
+#include "../../net/inet/arp.h"
 
 #ifndef HAVE_AUTOIRQ
 /* From auto_irq.c, should be in a *.h file. */
@@ -76,7 +76,7 @@ static void set_multicast_list(struct device *dev, int num_addrs, void *addrs);
 static int el_debug = EL_DEBUG;
 static int el_base;
 static struct device *eldev;	/* Only for consistency checking.  */
- 
+
 /* We could easily have this struct kmalloc()ed per-board, but
    who would want more than one 3c501?. */
 static struct {
@@ -152,7 +152,7 @@ el1_probe(struct device *dev)
 	outw(i, ioaddr + EL1_DATAPTR);
 	station_addr[i] = inb(ioaddr + EL1_SAPROM);
     }
-    /* Check the first three octets of the S.A. for 3Com's code. */ 
+    /* Check the first three octets of the S.A. for 3Com's code. */
     if (station_addr[0] != 0x02  ||  station_addr[1] != 0x60
 	|| station_addr[2] != 0x8c) {
 	return ENODEV;
@@ -477,7 +477,7 @@ el_receive(struct device *dev)
     return;
 }
 
-static void 
+static void
 el_reset(struct device *dev)
 {
     if (el_debug> 2)
@@ -489,7 +489,7 @@ el_reset(struct device *dev)
 	for (i = 0; i < 6; i++)	/* Set the station address. */
 	    outb(dev->dev_addr[i], el_base + i);
     }
-    
+
     outb(0, RX_BUF_CLR);		/* Set rx packet area to 0. */
     cli();			/* Avoid glitch on writes to CMD regs */
     outb(TX_NORM, TX_CMD);		/* tx irq on done, collision */

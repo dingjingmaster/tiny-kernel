@@ -14,13 +14,13 @@
  *  ext2 directory handling functions
  */
 
-#include <asm/segment.h>
+#include "../../include/asm/segment.h"
 
-#include <linux/errno.h>
-#include <linux/fs.h>
-#include <linux/ext2_fs.h>
-#include <linux/sched.h>
-#include <linux/stat.h>
+#include "../../include/linux/errno.h"
+#include "../../include/linux/fs.h"
+#include "../../include/linux/ext2_fs.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/stat.h"
 
 static int ext2_dir_read (struct inode * inode, struct file * filp,
 			    char * buf, int count)
@@ -97,7 +97,7 @@ static int ext2_readdir (struct inode * inode, struct file * filp,
 	struct ext2_dir_entry * de;
 	struct super_block * sb;
 	int err;
-	
+
 	if (!inode || !S_ISDIR(inode->i_mode))
 		return -EBADF;
 	sb = inode->i_sb;
@@ -128,7 +128,7 @@ static int ext2_readdir (struct inode * inode, struct file * filp,
 					brelse (bha[i]);
 			}
 		}
-		
+
 		de = (struct ext2_dir_entry *) (offset + bh->b_data);
 		while (offset < sb->s_blocksize && filp->f_pos < inode->i_size) {
 			if (!ext2_check_dir_entry ("ext2_readdir", inode, de,

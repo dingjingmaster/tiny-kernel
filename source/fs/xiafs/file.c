@@ -2,24 +2,24 @@
  *  linux/fs/xiafs/file.c
  *
  *  Copyright (C) Q. Frank Xia, 1993.
- *  
+ *
  *  Based on Linus' minix/file.c
  *  Copyright (C) Linus Torvalds, 1991, 1992.
  *
  *  This software may be redistributed per Linux Copyright.
  */
 
-#include <asm/segment.h>
-#include <asm/system.h>
+#include "../../include/asm/segment.h"
+#include "../../include/asm/system.h"
 
-#include <linux/sched.h>
-#include <linux/fs.h>
-#include <linux/xia_fs.h>
-#include <linux/kernel.h>
-#include <linux/errno.h>
-#include <linux/fcntl.h>
-#include <linux/stat.h>
-#include <linux/locks.h>
+#include "../../include/linux/sched.h"
+#include "../../include/linux/fs.h"
+#include "../../include/linux/xia_fs.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/fcntl.h"
+#include "../../include/linux/stat.h"
+#include "../../include/linux/locks.h"
 
 #include "xiafs_mac.h"
 
@@ -66,7 +66,7 @@ struct inode_operations xiafs_file_inode_operations = {
     NULL			/* permission */
 };
 
-static int 
+static int
 xiafs_file_read(struct inode * inode, struct file * filp, char * buf, int count)
 {
     int read, left, chars;
@@ -108,7 +108,7 @@ xiafs_file_read(struct inode * inode, struct file * filp, char * buf, int count)
        done.  This routine is rather generic, in that it can be used
        in a filesystem by substituting the appropriate function in
        for getblk.
-       
+
        This routine is optimized to make maximum use of the various
        buffers and caches. */
 
@@ -124,7 +124,7 @@ xiafs_file_read(struct inode * inode, struct file * filp, char * buf, int count)
 
 	    if (++bhb == &buflist[NBUF])
 	        bhb = buflist;
-	    
+
 	    /* If the block we have on hand is uptodate, go ahead
 	       and complete processing. */
 	    if (uptodate)
@@ -185,7 +185,7 @@ xiafs_file_read(struct inode * inode, struct file * filp, char * buf, int count)
     return read;
 }
 
-static int 
+static int
 xiafs_file_write(struct inode * inode, struct file * filp, char * buf, int count)
 {
     off_t pos;

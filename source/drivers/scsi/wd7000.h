@@ -1,4 +1,5 @@
 #ifndef _WD7000_H
+#include "../../include/linux/types.h"
 
 /* $Id: $
  *
@@ -84,7 +85,7 @@
  */
 #define BUS_ON            48    /* x 125ns, 48 = 6000ns, BIOS uses 8000ns */
 #define BUS_OFF           24    /* x 125ns, 24 = 3000ns, BIOS uses 1875ns */
- 
+
 #define INTR_ACK ASC_STAT+1
 
 

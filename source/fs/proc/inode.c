@@ -4,17 +4,17 @@
  *  Copyright (C) 1991, 1992  Linus Torvalds
  */
 
-#include <linux/sched.h>
-#include <linux/proc_fs.h>
-#include <linux/kernel.h>
-#include <linux/mm.h>
-#include <linux/string.h>
-#include <linux/stat.h>
-#include <linux/locks.h>
-#include <linux/limits.h>
+#include "../../include/linux/sched.h"
+#include "../../include/linux/proc_fs.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/mm.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/stat.h"
+#include "../../include/linux/locks.h"
+#include "../../include/linux/limits.h"
 
-#include <asm/system.h>
-#include <asm/segment.h>
+#include "../../include/asm/system.h"
+#include "../../include/asm/segment.h"
 
 void proc_put_inode(struct inode *inode)
 {
@@ -30,7 +30,7 @@ void proc_put_super(struct super_block *sb)
 	unlock_super(sb);
 }
 
-static struct super_operations proc_sops = { 
+static struct super_operations proc_sops = {
 	proc_read_inode,
 	NULL,
 	proc_write_inode,
@@ -41,7 +41,7 @@ static struct super_operations proc_sops = {
 	NULL
 };
 
-struct super_block *proc_read_super(struct super_block *s,void *data, 
+struct super_block *proc_read_super(struct super_block *s,void *data,
 				    int silent)
 {
 	lock_super(s);
@@ -76,7 +76,7 @@ void proc_read_inode(struct inode * inode)
 	unsigned long ino, pid;
 	struct task_struct * p;
 	int i;
-	
+
 	inode->i_op = NULL;
 	inode->i_mode = 0;
 	inode->i_uid = 0;

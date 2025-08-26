@@ -4,17 +4,17 @@
  *  Copyright (C) 1991, 1992  Linus Torvalds
  */
 
-#include <linux/sched.h>
-#include <linux/minix_fs.h>
-#include <linux/kernel.h>
-#include <linux/mm.h>
-#include <linux/string.h>
-#include <linux/stat.h>
-#include <linux/locks.h>
+#include "../../include/linux/sched.h"
+#include "../../include/linux/minix_fs.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/mm.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/stat.h"
+#include "../../include/linux/locks.h"
 
-#include <asm/system.h>
-#include <asm/segment.h>
-#include <asm/bitops.h>
+#include "../../include/asm/system.h"
+#include "../../include/asm/segment.h"
+#include "../../include/asm/bitops.h"
 
 void minix_put_inode(struct inode *inode)
 {
@@ -66,7 +66,7 @@ void minix_put_super(struct super_block *sb)
 	return;
 }
 
-static struct super_operations minix_sops = { 
+static struct super_operations minix_sops = {
 	minix_read_inode,
 	NULL,
 	minix_write_inode,
@@ -112,7 +112,7 @@ int minix_remount (struct super_block * sb, int * flags, char * data)
 }
 
 
-struct super_block *minix_read_super(struct super_block *s,void *data, 
+struct super_block *minix_read_super(struct super_block *s,void *data,
 				     int silent)
 {
 	struct buffer_head *bh;
@@ -304,7 +304,7 @@ repeat:
 	return result;
 }
 
-static struct buffer_head * block_getblk(struct inode * inode, 
+static struct buffer_head * block_getblk(struct inode * inode,
 	struct buffer_head * bh, int nr, int create)
 {
 	int tmp;

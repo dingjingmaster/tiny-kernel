@@ -1,5 +1,6 @@
 #ifndef _LINUX_KD_H
 #define _LINUX_KD_H
+#include "types.h"
 
 /* 0x4B is 'K', to avoid collision with termios and vt */
 

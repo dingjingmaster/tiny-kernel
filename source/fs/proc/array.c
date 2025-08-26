@@ -7,19 +7,19 @@
  *  stat,statm extensions by Michael K. Johnson, johnsonm@stolaf.edu
  */
 
-#include <linux/types.h>
-#include <linux/errno.h>
-#include <linux/sched.h>
-#include <linux/kernel.h>
-#include <linux/kernel_stat.h>
-#include <linux/tty.h>
-#include <linux/user.h>
-#include <linux/a.out.h>
-#include <linux/string.h>
-#include <linux/mman.h>
+#include "../../include/linux/types.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/kernel_stat.h"
+#include "../../include/linux/tty.h"
+#include "../../include/linux/user.h"
+#include "../../include/linux/a.out.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/mman.h"
 
-#include <asm/segment.h>
-#include <asm/io.h>
+#include "../../include/asm/segment.h"
+#include "../../include/asm/io.h"
 
 #define LOAD_INT(x) ((x) >> FSHIFT)
 #define LOAD_FRAC(x) LOAD_INT(((x) & (FIXED_1-1)) * 100)
@@ -399,7 +399,7 @@ static int get_maps(int pid, char *buf)
 		 * intel page permissions.  The vm_area_struct should
 		 * probably have the original mmap args preserved.
 		 */
-		
+
 		flags = perms = 0;
 
 		if ((prot & PAGE_READONLY) == PAGE_READONLY)
@@ -415,12 +415,12 @@ static int get_maps(int pid, char *buf)
 		*cp++ = flags & MAP_SHARED ? 's' : '-';
 		*cp++ = flags & MAP_PRIVATE ? 'p' : '-';
 		*cp++ = 0;
-		
+
 		if (end >= PAGE_SIZE) {
 			sprintf(buf+sz, "...\n");
 			break;
 		}
-		
+
 		if (map->vm_inode != NULL) {
 			dev = map->vm_inode->i_dev;
 			ino = map->vm_inode->i_ino;
@@ -437,7 +437,7 @@ static int get_maps(int pid, char *buf)
 			break;
 		}
 	}
-	
+
 	return sz;
 }
 

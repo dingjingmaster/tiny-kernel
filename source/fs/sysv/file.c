@@ -13,24 +13,24 @@
  *  SystemV/Coherent regular file handling primitives
  */
 
-#include <asm/segment.h>
+#include "../../include/asm/segment.h"
 
-#include <linux/kernel.h>
-#include <linux/fs.h>
-#include <linux/sysv_fs.h>
-#include <linux/errno.h>
-#include <linux/fcntl.h>
-#include <linux/stat.h>
-#include <linux/string.h>
-#include <linux/locks.h>
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/fs.h"
+#include "../../include/linux/sysv_fs.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/fcntl.h"
+#include "../../include/linux/stat.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/locks.h"
 
 #define	NBUF	32
 
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
 
-#include <linux/fs.h>
-#include <linux/sysv_fs.h>
+#include "../../include/linux/fs.h"
+#include "../../include/linux/sysv_fs.h"
 
 static int sysv_file_read(struct inode *, struct file *, char *, int);
 static int sysv_file_write(struct inode *, struct file *, char *, int);

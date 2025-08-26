@@ -4,16 +4,16 @@
  *  Written 1992,1993 by Werner Almesberger
  */
 
-#include <linux/msdos_fs.h>
-#include <linux/kernel.h>
-#include <linux/sched.h>
-#include <linux/errno.h>
-#include <linux/string.h>
-#include <linux/ctype.h>
-#include <linux/stat.h>
-#include <linux/locks.h>
+#include "../../include/linux/msdos_fs.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/ctype.h"
+#include "../../include/linux/stat.h"
+#include "../../include/linux/locks.h"
 
-#include <asm/segment.h>
+#include "../../include/asm/segment.h"
 
 
 void msdos_put_inode(struct inode *inode)
@@ -54,7 +54,7 @@ void msdos_put_super(struct super_block *sb)
 }
 
 
-static struct super_operations msdos_sops = { 
+static struct super_operations msdos_sops = {
 	msdos_read_inode,
 	msdos_notify_change,
 	msdos_write_inode,
@@ -172,14 +172,14 @@ struct super_block *msdos_read_super(struct super_block *s,void *data,
 	s->s_blocksize_bits = 10;	/* we cannot handle anything else yet */
 
 /*
- * The DOS3 partition size limit is *not* 32M as many people think.  
+ * The DOS3 partition size limit is *not* 32M as many people think.
  * Instead, it is 64K sectors (with the usual sector size being
  * 512 bytes, leading to a 32M limit).
- * 
- * DOS 3 partition managers got around this problem by faking a 
- * larger sector size, ie treating multiple physical sectors as 
+ *
+ * DOS 3 partition managers got around this problem by faking a
+ * larger sector size, ie treating multiple physical sectors as
  * a single logical sector.
- * 
+ *
  * We can accommodate this scheme by adjusting our cluster size,
  * fat_start, and data_start by an appropriate value.
  *
@@ -367,7 +367,7 @@ void msdos_read_inode(struct inode *inode)
 		inode->i_mode = MSDOS_MKMODE(raw_entry->attr,(IS_NOEXEC(inode)
 		    ? S_IRUGO|S_IWUGO : S_IRWXUGO) & ~MSDOS_SB(inode->i_sb)->fs_umask) |
 		    S_IFREG;
-		inode->i_op = MSDOS_CAN_BMAP(MSDOS_SB(inode->i_sb)) ? 
+		inode->i_op = MSDOS_CAN_BMAP(MSDOS_SB(inode->i_sb)) ?
 		    &msdos_file_inode_operations :
 		    &msdos_file_inode_operations_no_bmap;
 		MSDOS_I(inode)->i_start = CF_LE_W(raw_entry->start);

@@ -20,15 +20,15 @@
  *  the superblock.
  */
 
-#include <linux/sched.h>
-#include <linux/kernel.h>
-#include <linux/fs.h>
-#include <linux/sysv_fs.h>
-#include <linux/stat.h>
-#include <linux/string.h>
-#include <linux/locks.h>
+#include "../../include/linux/sched.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/fs.h"
+#include "../../include/linux/sysv_fs.h"
+#include "../../include/linux/stat.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/locks.h"
 
-#include <asm/segment.h>
+#include "../../include/asm/segment.h"
 
 void _coh_wait_on_inode (struct inode * inode)
 {
@@ -55,7 +55,7 @@ void sysv_put_inode(struct inode *inode)
 }
 
 
-static struct super_operations sysv_sops = { 
+static struct super_operations sysv_sops = {
 	sysv_read_inode,
 	sysv_notify_change,
 	sysv_write_inode,
@@ -86,7 +86,7 @@ static void detected_bs512 (struct super_block *sb)
 	sb->sv_inodes_per_block = 512/64;
 	sb->sv_inodes_per_block_1 = 512/64-1;
 	sb->sv_inodes_per_block_bits = 9-6;
-	sb->sv_toobig_block = 10 + 
+	sb->sv_toobig_block = 10 +
 	  (sb->sv_ind_per_block = 512/4) +
 	  (sb->sv_ind_per_block_2 = (512/4)*(512/4)) +
 	  (sb->sv_ind_per_block_3 = (512/4)*(512/4)*(512/4));
@@ -107,7 +107,7 @@ static void detected_bs1024 (struct super_block *sb)
 	sb->sv_inodes_per_block = 1024/64;
 	sb->sv_inodes_per_block_1 = 1024/64-1;
 	sb->sv_inodes_per_block_bits = 10-6;
-	sb->sv_toobig_block = 10 + 
+	sb->sv_toobig_block = 10 +
 	  (sb->sv_ind_per_block = 1024/4) +
 	  (sb->sv_ind_per_block_2 = (1024/4)*(1024/4)) +
 	  (sb->sv_ind_per_block_3 = (1024/4)*(1024/4)*(1024/4));
@@ -262,7 +262,7 @@ static const char* detect_coherent (struct super_block *sb, struct buffer_head *
 	return "Coherent";
 }
 
-struct super_block *sysv_read_super(struct super_block *sb,void *data, 
+struct super_block *sysv_read_super(struct super_block *sb,void *data,
 				     int silent)
 {
 	struct buffer_head *bh;
@@ -507,7 +507,7 @@ repeat:
 	return result;
 }
 
-static struct buffer_head * block_getblk(struct inode * inode, 
+static struct buffer_head * block_getblk(struct inode * inode,
 	struct buffer_head * bh, int nr, int create, char * *start)
 {
 	struct super_block *sb;
@@ -805,4 +805,3 @@ int sysv_sync_inode(struct inode * inode)
         brelse (bh);
         return err;
 }
-

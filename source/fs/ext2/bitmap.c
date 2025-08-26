@@ -6,8 +6,8 @@
  *                                  Universite Pierre et Marie Curie (Paris VI)
  */
 
-#include <linux/fs.h>
-#include <linux/ext2_fs.h>
+#include "../../include/linux/fs.h"
+#include "../../include/linux/ext2_fs.h"
 
 static int nibblemap[] = {4, 3, 3, 2, 3, 2, 2, 1, 3, 2, 2, 1, 2, 1, 1, 0};
 
@@ -15,8 +15,8 @@ unsigned long ext2_count_free (struct buffer_head * map, unsigned int numchars)
 {
 	unsigned int i;
 	unsigned long sum = 0;
-	
-	if (!map) 
+
+	if (!map)
 		return (0);
 	for (i = 0; i < numchars; i++)
 		sum += nibblemap[map->b_data[i] & 0xf] +

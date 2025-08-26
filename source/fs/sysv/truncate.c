@@ -11,10 +11,10 @@
  *  Copyright (C) 1993  Bruno Haible
  */
 
-#include <linux/sched.h>
-#include <linux/fs.h>
-#include <linux/sysv_fs.h>
-#include <linux/stat.h>
+#include "../../include/linux/sched.h"
+#include "../../include/linux/fs.h"
+#include "../../include/linux/sysv_fs.h"
+#include "../../include/linux/stat.h"
 
 
 /* There are two different implementations of truncate() here.

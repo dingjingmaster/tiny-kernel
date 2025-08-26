@@ -2,18 +2,18 @@
  *  linux/fs/xiafs/truncate.c
  *
  *  Copyright (C) Q. Frank Xia, 1993.
- *  
+ *
  *  Based on Linus' minix/truncate.c
  *  Copyright (C) Linus Torvalds, 1991, 1992.
  *
  *  This software may be redistributed per Linux Copyright.
  */
 
-#include <linux/errno.h>
-#include <linux/sched.h>
-#include <linux/xia_fs.h>
-#include <linux/stat.h>
-#include <linux/fcntl.h>
+#include "../../include/linux/errno.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/xia_fs.h"
+#include "../../include/linux/stat.h"
+#include "../../include/linux/fcntl.h"
 
 #include "xiafs_mac.h"
 
@@ -125,7 +125,7 @@ repeat:
     brelse(ind_bh);
     return retry;
 }
-		
+
 static int trunc_dindirect(struct inode * inode)
 {
 
@@ -154,8 +154,8 @@ repeat:
         if (i < DINDT_ZONE)
 	    goto repeat;
         dindp = i+(u_long *) dind_bh->b_data;
-	retry |= trunc_indirect(inode, 
-				8+((1+i)<<XIAFS_ADDRS_PER_Z_BITS(inode->i_sb)), 
+	retry |= trunc_indirect(inode,
+				8+((1+i)<<XIAFS_ADDRS_PER_Z_BITS(inode->i_sb)),
 				dindp);
 	dind_bh->b_dirt = 1;
     }
@@ -185,7 +185,7 @@ void xiafs_truncate(struct inode * inode)
         return;
     while (1) {
         retry = trunc_direct(inode);
-        retry |= trunc_indirect(inode, 8, &(inode->u.xiafs_i.i_ind_zone)); 
+        retry |= trunc_indirect(inode, 8, &(inode->u.xiafs_i.i_ind_zone));
         retry |= trunc_dindirect(inode);
 	if (!retry)
 	    break;

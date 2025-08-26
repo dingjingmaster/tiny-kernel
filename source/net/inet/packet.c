@@ -10,7 +10,7 @@
  * Authors:	Ross Biro, <bir7@leland.Stanford.Edu>
  *		Fred N. van Kempen, <waltje@uWalt.NL.Mugnet.ORG>
  *
- * Fixes:	
+ * Fixes:
  *		Alan Cox	:	verify_area() now used correctly
  *		Alan Cox	:	new skbuff lists, look ma no backlogs!
  *		Alan Cox	:	tidied skbuff lists.
@@ -26,11 +26,11 @@
  *		as published by the Free Software Foundation; either version
  *		2 of the License, or (at your option) any later version.
  */
-#include <linux/types.h>
-#include <linux/sched.h>
-#include <linux/fcntl.h>
-#include <linux/socket.h>
-#include <linux/in.h>
+#include "../../include/linux/types.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/fcntl.h"
+#include "../../include/linux/socket.h"
+#include "../../include/linux/in.h"
 #include "inet.h"
 #include "dev.h"
 #include "ip.h"
@@ -38,10 +38,10 @@
 #include "tcp.h"
 #include "skbuff.h"
 #include "sock.h"
-#include <linux/errno.h>
-#include <linux/timer.h>
-#include <asm/system.h>
-#include <asm/segment.h>
+#include "../../include/linux/errno.h"
+#include "../../include/linux/timer.h"
+#include "../../include/asm/system.h"
+#include "../../include/asm/segment.h"
 #include "udp.h"
 #include "raw.h"
 
@@ -104,7 +104,7 @@ packet_sendto(struct sock *sk, unsigned char *from, int len,
 	memcpy_fromfs(&saddr, usin, sizeof(saddr));
   } else
 	return(-EINVAL);
-	
+
   err=verify_area(VERIFY_READ,from,len);
   if(err)
   	return(err);
@@ -118,7 +118,7 @@ packet_sendto(struct sock *sk, unsigned char *from, int len,
   if(len>dev->mtu)
   	return -EMSGSIZE;
 
-/* Now allocate the buffer, knowing 4K pagelimits wont break this line */  
+/* Now allocate the buffer, knowing 4K pagelimits wont break this line */
   skb = sk->prot->wmalloc(sk, len+sizeof(*skb), 0, GFP_KERNEL);
 
   /* This shouldn't happen, but it could. */
@@ -142,7 +142,7 @@ packet_sendto(struct sock *sk, unsigned char *from, int len,
 
 
 static int
-packet_write(struct sock *sk, unsigned char *buff, 
+packet_write(struct sock *sk, unsigned char *buff,
 	     int len, int noblock,  unsigned flags)
 {
   return(packet_sendto(sk, buff, len, noblock, flags, NULL, 0));
@@ -173,7 +173,7 @@ packet_init(struct sock *sk)
   p->type = sk->num;
   p->data = (void *)sk;
   dev_add_pack(p);
-   
+
   /* We need to remember this somewhere. */
   sk->pair = (struct sock *)p;
 
@@ -206,7 +206,7 @@ packet_recvfrom(struct sock *sk, unsigned char *to, int len,
 	  	return err;
 	  put_fs_long(sizeof(*saddr), addr_len);
   }
-  
+
   err=verify_area(VERIFY_WRITE,to,len);
   if(err)
   	return err;
@@ -261,7 +261,7 @@ struct proto packet_prot = {
   ip_retransmit,
   NULL,
   NULL,
-  NULL, 
+  NULL,
   datagram_select,
   NULL,
   packet_init,

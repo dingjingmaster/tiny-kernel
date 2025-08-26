@@ -17,13 +17,13 @@
  * Idea from Pierre del Perugia <delperug@gla.ecoledoc.ibp.fr>
  */
 
-#include <linux/errno.h>
-#include <linux/fs.h>
-#include <linux/ext2_fs.h>
-#include <linux/fcntl.h>
-#include <linux/sched.h>
-#include <linux/stat.h>
-#include <linux/locks.h>
+#include "../../include/linux/errno.h"
+#include "../../include/linux/fs.h"
+#include "../../include/linux/ext2_fs.h"
+#include "../../include/linux/fcntl.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/stat.h"
+#include "../../include/linux/locks.h"
 
 #define clear_block(addr,size,value) \
 	__asm__("cld\n\t" \
@@ -325,7 +325,7 @@ repeat:
 	brelse (tind_bh);
 	return retry;
 }
-		
+
 void ext2_truncate (struct inode * inode)
 {
 	int retry;

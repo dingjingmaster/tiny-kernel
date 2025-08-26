@@ -12,15 +12,15 @@
  */
 
 #include <stdarg.h>
-#include <linux/kernel.h>
-#include <linux/head.h>
-#include <linux/types.h>
-#include <linux/string.h>
-#include <linux/sched.h>
-#include <asm/system.h>
-#include <asm/dma.h>
-#include <asm/io.h>
-#include <linux/ioport.h>
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/head.h"
+#include "../../include/linux/types.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/sched.h"
+#include "../../include/asm/system.h"
+#include "../../include/asm/dma.h"
+#include "../../include/asm/io.h"
+#include "../../include/linux/ioport.h"
 
 #include "../block/blk.h"
 #include "scsi.h"
@@ -64,7 +64,7 @@
 */
 
 static struct {
-       struct wd_mailbox ogmb[OGMB_CNT]; 
+       struct wd_mailbox ogmb[OGMB_CNT];
        struct wd_mailbox icmb[ICMB_CNT];
 } mb;
 static int next_ogmb = 0;   /* to reduce contention at mailboxes */
@@ -180,8 +180,8 @@ static inline void init_scbs(void)
     scbs[MAX_SCBS-1].next = NULL;
 
     restore_flags(flags);
-}    
-    
+}
+
 
 static int mail_out( Scb *scbptr )
 /*
@@ -217,7 +217,7 @@ static int mail_out( Scb *scbptr )
         return 0;
     }
 
-    wd7000_enable_intr(); 
+    wd7000_enable_intr();
     do  {
         WAIT(ASC_STAT,STATMASK,CMD_RDY,0);
 	outb(START_OGMB|ogmb, COMMAND);
@@ -234,7 +234,7 @@ fail:
 
 
 int make_code(unsigned hosterr, unsigned scsierr)
-{   
+{
 #ifdef DEBUG
     int in_error = hosterr;
 #endif
@@ -246,7 +246,7 @@ int make_code(unsigned hosterr, unsigned scsierr)
 	case 1:	/* Command Complete, no errors */
 		hosterr = DID_OK;
 		break;
-	case 2: /* Command complete, error logged in scb status (scsierr) */ 
+	case 2: /* Command complete, error logged in scb status (scsierr) */
 		hosterr = DID_OK;
 		break;
 	case 4:	/* Command failed to complete - timeout */
@@ -300,10 +300,10 @@ void wd7000_intr_handle(int irq)
     flag = inb(INTR_STAT);
     DEB(printk("wd7000_intr_handle: intr stat = %02x",flag);)
 
-    if (!(inb(ASC_STAT)&0x80)){ 
+    if (!(inb(ASC_STAT)&0x80)){
 	DEB(printk("\nwd7000_intr_handle: phantom interrupt...\n");)
 	wd7000_intr_ack();
-	return; 
+	return;
     }
 
     /* check for an incoming mailbox */
@@ -329,7 +329,7 @@ void wd7000_intr_handle(int irq)
 	if (--(SCpnt->SCp.phase) <= 0)  {  /* all scbs for SCpnt are done */
 	    host_error = scb->vue | (icmb_status << 8);
 	    scsi_error = scb->status;
-	    errstatus = make_code(host_error,scsi_error);    
+	    errstatus = make_code(host_error,scsi_error);
 	    SCpnt->result = errstatus;
 
  	    if (SCpnt->host_scribble != NULL)
@@ -449,10 +449,10 @@ int wd7000_init(void)
     WAIT(ASC_STAT, STATMASK, CMD_RDY, 0);
     DEB(printk("wd7000_init: Power-on Diagnostics finished\n");)
     if (((i=inb(INTR_STAT)) != 1) && (i != 7)) {
-	panic("wd7000_init: Power-on Diagnostics error\n"); 
+	panic("wd7000_init: Power-on Diagnostics error\n");
 	return 0;
     }
-    
+
     /* Clear mailboxes */
     memset(&mb,0,sizeof (mb));
     /* Set up SCB free list */
@@ -462,13 +462,13 @@ int wd7000_init(void)
     any2scsi(init_block+5,&mb);
     /* Execute init command */
     if (!command_out(init_block,sizeof(init_block)))  {
-	panic("WD-7000 Initialization failed.\n"); 
+	panic("WD-7000 Initialization failed.\n");
 	return 0;
     }
-    
+
     /* Wait until init finished */
     WAIT(ASC_STAT, STATMASK, CMD_RDY | ASC_INI, 0);
-    outb(DISABLE_UNS_INTR, COMMAND); 
+    outb(DISABLE_UNS_INTR, COMMAND);
     WAIT(ASC_STAT, STATMASK, CMD_RDY | ASC_INI, 0);
 
     /* Enable Interrupt and DMA */
@@ -522,7 +522,7 @@ static const Signature signatures[] = {{"SSTBIOS",0xd,0x7}};
 
 
 int wd7000_detect(int hostnum)
-/* 
+/*
  *  return non-zero on detection
  */
 {
@@ -536,7 +536,7 @@ int wd7000_detect(int hostnum)
 		(void *) signatures[j].signature,signatures[j].length)){
 		    base_address=wd_bases[i];
 		    printk("WD-7000 detected.\n");
-	    }	
+	    }
 	}
     }
     if (base_address == NULL) return 0;
@@ -545,7 +545,7 @@ int wd7000_detect(int hostnum)
     /* Store our host number */
     wd7000_host = hostnum;
 
-    wd7000_init();    
+    wd7000_init();
     wd7000_revision();  /* will set scatter/gather by rev level */
 
     return 1;
@@ -619,4 +619,3 @@ int wd7000_biosparam(int size, int dev, int* ip)
 /*  if (ip[2] >= 1024) ip[2] = 1024; */
   return 0;
 }
-

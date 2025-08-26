@@ -1,5 +1,6 @@
 #ifndef _LINUX_VT_H
 #define _LINUX_VT_H
+#include "../../include/linux/types.h"
 
 /* 0x56 is 'V', to avoid collision with termios and kd */
 

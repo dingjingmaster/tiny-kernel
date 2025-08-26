@@ -6,18 +6,18 @@
  * Copyright (C) 1993 by Nigel Gamble (added interrupt code)
  */
 
-#include <linux/errno.h>
-#include <linux/kernel.h>
-#include <linux/major.h>
-#include <linux/sched.h>
-#include <linux/lp.h>
-#include <linux/malloc.h>
+#include "../../include/linux/errno.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/major.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/lp.h"
+#include "../../include/linux/malloc.h"
 
-#include <asm/io.h>
-#include <asm/segment.h>
-#include <asm/system.h>
+#include "../../include/asm/io.h"
+#include "../../include/asm/segment.h"
+#include "../../include/asm/system.h"
 
-/* 
+/*
  * All my debugging code assumes that you debug with only one printer at
  * a time. RWWH
  */
@@ -46,7 +46,7 @@ static int lp_max_count = 1;
 static int lp_char_polled(char lpchar, int minor)
 {
 	int status = 0, wait = 0;
-	unsigned long count  = 0; 
+	unsigned long count  = 0;
 
 	do {
 		status = LP_S(minor);

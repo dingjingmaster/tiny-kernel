@@ -22,16 +22,16 @@
  *		as published by the Free Software Foundation; either version
  *		2 of the License, or (at your option) any later version.
  */
-#include <asm/segment.h>
-#include <asm/system.h>
-#include <linux/types.h>
-#include <linux/kernel.h>
-#include <linux/sched.h>
-#include <linux/string.h>
-#include <linux/socket.h>
-#include <linux/sockios.h>
-#include <linux/errno.h>
-#include <linux/in.h>
+#include "../../include/asm/segment.h"
+#include "../../include/asm/system.h"
+#include "../../include/linux/types.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/socket.h"
+#include "../../include/linux/sockios.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/in.h"
 #include "inet.h"
 #include "dev.h"
 #include "ip.h"
@@ -84,7 +84,7 @@ static void rt_del(unsigned long dst)
 		if (rt_loopback == r)
 			rt_loopback = NULL;
 		kfree_s(r, sizeof(struct rtable));
-	} 
+	}
 	restore_flags(flags);
 }
 
@@ -111,7 +111,7 @@ void rt_flush(struct device *dev)
 		if (rt_loopback == r)
 			rt_loopback = NULL;
 		kfree_s(r, sizeof(struct rtable));
-	} 
+	}
 	restore_flags(flags);
 }
 
@@ -335,7 +335,7 @@ rt_get_info(char *buffer)
 
   pos += sprintf(pos,
 		 "Iface\tDestination\tGateway \tFlags\tRefCnt\tUse\tMetric\tMask\n");
-  
+
   /* This isn't quite right -- r->rt_dst is a struct! */
   for (r = rt_base; r != NULL; r = r->rt_next) {
         pos += sprintf(pos, "%s\t%08lX\t%08lX\t%02X\t%d\t%lu\t%d\t%08lX\n",

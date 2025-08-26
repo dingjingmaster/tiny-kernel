@@ -36,7 +36,7 @@ static char *version =
  *
  *	You should have received a copy of the GNU General Public License
  *	along with this program; if not, write to the Free Software
- *	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA. 
+ *	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  **************************************************************/
 /* Add another "; SLOW_DOWN_IO" here if your adapter won't work OK: */
@@ -63,29 +63,29 @@ static char *version =
 #endif
 static unsigned int d_link_debug = D_LINK_DEBUG;
 
-#include <linux/config.h>
-#include <linux/kernel.h>
-#include <linux/sched.h>
-#include <linux/types.h>
-#include <linux/fcntl.h>
-#include <linux/string.h>
-#include <linux/interrupt.h>
-#include <asm/io.h>
-#include <netinet/in.h>
-#include <linux/ptrace.h>
-#include <asm/system.h>
-#include <errno.h>
+#include "../../include/linux/config.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/types.h"
+#include "../../include/linux/fcntl.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/interrupt.h"
+#include "../../include/asm/io.h"
+#include "../../include/netinet/in.h"
+#include "../../include/linux/ptrace.h"
+#include "../../include/asm/system.h"
+#include "../../include/linux/errno.h"
 
-#include "inet.h"
-#include "dev.h"
-#include "eth.h"
-#include "ip.h"
-#include "route.h"
-#include "protocol.h"
-#include "tcp.h"
-#include "skbuff.h"
-#include "sock.h"
-#include "arp.h"
+#include "../../net/inet/inet.h"
+#include "../../net/inet/dev.h"
+#include "../../net/inet/eth.h"
+#include "../../net/inet/ip.h"
+#include "../../net/inet/route.h"
+#include "../../net/inet/protocol.h"
+#include "../../net/inet/tcp.h"
+#include "../../net/inet/skbuff.h"
+#include "../../net/inet/sock.h"
+#include "../../net/inet/arp.h"
 
 #define netstats enet_statistics
 
@@ -451,9 +451,9 @@ d_link_start_xmit(struct sk_buff *skb, struct device *dev)
 		dev->tbusy = !free_tx_pages;
 		select_prn();
 	}
-	
+
 	sti(); /* interrupts back on */
-	
+
 	if (skb->free)
 		kfree_skb (skb, FREE_WRITE);
 
@@ -597,7 +597,7 @@ d_link_rx_intr(struct device *dev)
 	d_link_setup_address(read_from, RW_ADDR);
 	for (i = size; i > 0; --i, ++buffer)
 		*buffer = d_link_read_byte(READ_DATA, dev);
-	
+
 	((struct netstats *)(dev->priv))->rx_packets++; /* count all receives */
 
 	if (dev_rint((unsigned char *)skb, size, IN_SKBUFF, dev))

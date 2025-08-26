@@ -8,17 +8,17 @@
  *  minix fsync primitive
  */
 
-#include <asm/segment.h>
-#include <asm/system.h>
+#include "../../include/asm/segment.h"
+#include "../../include/asm/system.h"
 
-#include <linux/errno.h>
-#include <linux/sched.h>
-#include <linux/stat.h>
-#include <linux/fcntl.h>
-#include <linux/locks.h>
+#include "../../include/linux/errno.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/stat.h"
+#include "../../include/linux/fcntl.h"
+#include "../../include/linux/locks.h"
 
-#include <linux/fs.h>
-#include <linux/minix_fs.h>
+#include "../../include/linux/fs.h"
+#include "../../include/linux/minix_fs.h"
 
 
 #define blocksize BLOCK_SIZE
@@ -28,7 +28,7 @@ static int sync_block (struct inode * inode, unsigned short * block, int wait)
 {
 	struct buffer_head * bh;
 	unsigned short tmp;
-	
+
 	if (!*block)
 		return 0;
 	tmp = *block;
@@ -53,12 +53,12 @@ static int sync_block (struct inode * inode, unsigned short * block, int wait)
 	return 0;
 }
 
-static int sync_iblock (struct inode * inode, unsigned short * iblock, 
-			struct buffer_head **bh, int wait) 
+static int sync_iblock (struct inode * inode, unsigned short * iblock,
+			struct buffer_head **bh, int wait)
 {
 	int rc;
 	unsigned short tmp;
-	
+
 	*bh = NULL;
 	tmp = *iblock;
 	if (!tmp)
@@ -102,9 +102,9 @@ static int sync_indirect(struct inode *inode, unsigned short *iblock, int wait)
 	rc = sync_iblock (inode, iblock, &ind_bh, wait);
 	if (rc || !ind_bh)
 		return rc;
-	
+
 	for (i = 0; i < addr_per_block; i++) {
-		rc = sync_block (inode, 
+		rc = sync_block (inode,
 				 ((unsigned short *) ind_bh->b_data) + i,
 				 wait);
 		if (rc > 0)
@@ -126,7 +126,7 @@ static int sync_dindirect(struct inode *inode, unsigned short *diblock,
 	rc = sync_iblock (inode, diblock, &dind_bh, wait);
 	if (rc || !dind_bh)
 		return rc;
-	
+
 	for (i = 0; i < addr_per_block; i++) {
 		rc = sync_indirect (inode,
 				    ((unsigned short *) dind_bh->b_data) + i,
@@ -143,7 +143,7 @@ static int sync_dindirect(struct inode *inode, unsigned short *diblock,
 int minix_sync_file(struct inode * inode, struct file * file)
 {
 	int wait, err = 0;
-	
+
 	if (!(S_ISREG(inode->i_mode) || S_ISDIR(inode->i_mode) ||
 	     S_ISLNK(inode->i_mode)))
 		return -EINVAL;

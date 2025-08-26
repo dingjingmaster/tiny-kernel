@@ -23,8 +23,8 @@
  | math_emulate() is the sole entry point for wm-FPU-emu                     |
  +---------------------------------------------------------------------------*/
 
-#include <linux/signal.h>
-#include <linux/segment.h>
+#include "../../include/linux/signal.h"
+#include "../../include/linux/segment.h"
 
 #include "fpu_system.h"
 #include "fpu_emu.h"
@@ -32,7 +32,7 @@
 #include "control_w.h"
 #include "status_w.h"
 
-#include <asm/segment.h>
+#include "../../include/asm/segment.h"
 
 #define __BAD__ FPU_illegal   /* Illegal on an 80486, causes SIGILL */
 
@@ -326,7 +326,7 @@ do_another_FPU_instruction:
 		  reg_load_int16();
 		  break;
 		}
-	      
+
 	      /* No more access to user memory, it is safe
 		 to use static data now */
 	      FPU_st0_ptr = &st(0);
@@ -527,7 +527,7 @@ FPU_instruction_done:
 #ifdef PECULIAR_486
   *(unsigned short *)&operand_selector = FPU_data_selector;
 #endif PECULIAR_486
-  
+
 FPU_fwait_done:
 
 #ifdef DEBUG

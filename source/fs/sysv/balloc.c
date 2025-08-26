@@ -19,11 +19,11 @@
  *  This file contains code for allocating/freeing blocks.
  */
 
-#include <linux/kernel.h>
-#include <linux/fs.h>
-#include <linux/sysv_fs.h>
-#include <linux/string.h>
-#include <linux/locks.h>
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/fs.h"
+#include "../../include/linux/sysv_fs.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/locks.h"
 
 /* We don't trust the value of
    sb->sv_sbd->s_tfree = *sb->sv_sb_total_free_blocks
@@ -346,4 +346,3 @@ unsigned long sysv_count_free_blocks(struct super_block * sb)
 	return count;
 #endif
 }
-

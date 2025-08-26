@@ -15,15 +15,15 @@
 static char *version =
 	"hp.c:v0.99.15k 3/3/94 Donald Becker (becker@super.org)\n";
 
-#include <linux/config.h>
-#include <linux/kernel.h>
-#include <linux/sched.h>
-#include <linux/errno.h>
-#include <linux/ioport.h>
-#include <asm/system.h>
-#include <asm/io.h>
+#include "../../include/linux/config.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/ioport.h"
+#include "../../include/asm/system.h"
+#include "../../include/asm/io.h"
 
-#include "dev.h"
+#include "../../net/inet/dev.h"
 #include "8390.h"
 
 #ifndef HAVE_PORTRESERVE
@@ -187,7 +187,7 @@ hp_reset_8390(struct device *dev)
 
 	outb_p(saved_config, hp_base + HP_CONFIGURE);
 	SLOW_DOWN_IO; SLOW_DOWN_IO;
-	
+
 	if ((inb_p(hp_base+NIC_OFFSET+EN0_ISR) & ENISR_RESET) == 0)
 		printk("%s: hp_reset_8390() did not complete.\n", dev->name);
 

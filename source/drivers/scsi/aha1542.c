@@ -11,18 +11,18 @@
  *	  Don't call request_dma if dma mask is 0 (for BusLogic BT-445S VL-Bus controller).
  */
 
-#include <linux/kernel.h>
-#include <linux/head.h>
-#include <linux/types.h>
-#include <linux/string.h>
-#include <linux/ioport.h>
-#include <linux/config.h>
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/head.h"
+#include "../../include/linux/types.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/ioport.h"
+#include "../../include/linux/config.h"
 
-#include <linux/sched.h>
-#include <asm/dma.h>
+#include "../../include/linux/sched.h"
+#include "../../include/asm/dma.h"
 
-#include <asm/system.h>
-#include <asm/io.h>
+#include "../../include/asm/system.h"
+#include "../../include/asm/io.h"
 #include "../block/blk.h"
 #include "scsi.h"
 #include "hosts.h"
@@ -45,7 +45,7 @@ card, which also used 0x330 */
 
 static unsigned int bases[]={0x330, 0x334};
 
-/* The DMA-Controller.  We need to fool with this because we want to 
+/* The DMA-Controller.  We need to fool with this because we want to
    be able to use the aha1542 without having to have the bios enabled */
 #define DMA_MODE_REG	0xd6
 #define DMA_MASK_REG	0xd4
@@ -185,23 +185,23 @@ static int aha1542_test_port(int bse, struct Scsi_Host * shpnt)
     unchar *cmdp;
     int len;
     volatile int debug = 0;
-    
+
     /* Quick and dirty test for presence of the card. */
     if(inb(STATUS(bse)) == 0xff) return 0;
 
     /* Reset the adapter. I ought to make a hard reset, but it's not really nessesary */
-    
+
     /*  DEB(printk("aha1542_test_port called \n")); */
-    
+
     outb(SRST|IRST/*|SCRST*/, CONTROL(bse));
 
     i = jiffies + 2;
     while (i>jiffies); /* Wait a little bit for things to settle down. */
-    
+
     debug = 1;
     /* Expect INIT and IDLE, any of the others are bad */
     WAIT(STATUS(bse), STATMASK, INIT|IDLE, STST|DIAGF|INVDCMD|DF|CDF);
-    
+
     debug = 2;
     /* Shouldn't have generated any interrupts during reset */
     if (inb(INTRFLAGS(bse))&INTRMASK) goto fail;
@@ -221,22 +221,22 @@ static int aha1542_test_port(int bse, struct Scsi_Host * shpnt)
 	  WAIT(STATUS(bse), DF, DF, 0);
 	  *cmdp++ = inb(DATA(bse));
       }
-    
+
     debug = 8;
     /* Reading port should reset DF */
     if (inb(STATUS(bse)) & DF) goto fail;
-    
+
     debug = 9;
     /* When HACC, command is completed, and we're though testing */
     WAIT(INTRFLAGS(bse), HACC, HACC, 0);
     /* now initialize adapter */
-    
+
     debug = 10;
     /* Clear interrupts */
     outb(IRST, CONTROL(bse));
-    
+
     debug = 11;
-    
+
     return debug;				/* 1 = ok */
   fail:
     return 0;					/* 0 = not ok */
@@ -292,13 +292,13 @@ static void aha1542_intr_handle(int foo)
       cli();
       mbi = HOSTDATA(shost)->aha1542_last_mbi_used + 1;
       if (mbi >= 2*AHA1542_MAILBOXES) mbi = AHA1542_MAILBOXES;
-      
+
       do{
 	if(mb[mbi].status != 0) break;
 	mbi++;
 	if (mbi >= 2*AHA1542_MAILBOXES) mbi = AHA1542_MAILBOXES;
       } while (mbi != HOSTDATA(shost)->aha1542_last_mbi_used);
-      
+
       if(mb[mbi].status == 0){
 	sti();
 	/* Hmm, no mail.  Must have read it the last time around */
@@ -312,11 +312,11 @@ static void aha1542_intr_handle(int foo)
       mb[mbi].status = 0;
       HOSTDATA(shost)->aha1542_last_mbi_used = mbi;
       sti();
-      
+
 #ifdef DEBUG
       {
 	if (ccb[mbo].tarstat|ccb[mbo].hastat)
-	  printk("aha1542_command: returning %x (status %d)\n", 
+	  printk("aha1542_command: returning %x (status %d)\n",
 		 ccb[mbo].tarstat + ((int) ccb[mbo].hastat << 16), mb[mbi].status);
       };
 #endif
@@ -326,36 +326,36 @@ static void aha1542_intr_handle(int foo)
 #ifdef DEBUG
       printk("...done %d %d\n",mbo, mbi);
 #endif
-      
+
       SCtmp = HOSTDATA(shost)->SCint[mbo];
 
       if (!SCtmp || !SCtmp->scsi_done) {
 	printk("aha1542_intr_handle: Unexpected interrupt\n");
 	return;
       }
-      
+
       my_done = SCtmp->scsi_done;
       if (SCtmp->host_scribble) scsi_free(SCtmp->host_scribble, 512);
-      
+
       /* Fetch the sense data, and tuck it away, in the required slot.  The
 	 Adaptec automatically fetches it, and there is no guarantee that
 	 we will still have it in the cdb when we come back */
       if (ccb[mbo].tarstat == 2)
-	memcpy(SCtmp->sense_buffer, &ccb[mbo].cdb[ccb[mbo].cdblen], 
+	memcpy(SCtmp->sense_buffer, &ccb[mbo].cdb[ccb[mbo].cdblen],
 	       sizeof(SCtmp->sense_buffer));
-      
-      
+
+
       /* is there mail :-) */
-      
+
       /* more error checking left out here */
       if (mbistatus != 1)
 	/* This is surely wrong, but I don't know what's right */
 	errstatus = makecode(ccb[mbo].hastat, ccb[mbo].tarstat);
       else
 	errstatus = 0;
-      
+
 #ifdef DEBUG
-      if(errstatus) printk("(aha1542 error:%x %x %x) ",errstatus, 
+      if(errstatus) printk("(aha1542 error:%x %x %x) ",errstatus,
 			   ccb[mbo].hastat, ccb[mbo].tarstat);
 #endif
 
@@ -406,7 +406,7 @@ int aha1542_queuecommand(Scsi_Cmnd * SCpnt, void (*done)(Scsi_Cmnd *))
     DEB(if (target > 1) {
       SCpnt->result = DID_TIME_OUT << 16;
       done(SCpnt); return 0;});
-    
+
     if(*cmd == REQUEST_SENSE){
 #ifndef DEBUG
       if (bufflen != sizeof(SCpnt->sense_buffer)) {
@@ -415,7 +415,7 @@ int aha1542_queuecommand(Scsi_Cmnd * SCpnt, void (*done)(Scsi_Cmnd *))
       };
 #endif
       SCpnt->result = 0;
-      done(SCpnt); 
+      done(SCpnt);
       return 0;
     };
 
@@ -457,7 +457,7 @@ int aha1542_queuecommand(Scsi_Cmnd * SCpnt, void (*done)(Scsi_Cmnd *))
     HOSTDATA(SCpnt->host)->SCint[mbo] = SCpnt;  /* This will effectively prevent someone else from
 			    screwing with this cdb. */
 
-    HOSTDATA(SCpnt->host)->aha1542_last_mbo_used = mbo;    
+    HOSTDATA(SCpnt->host)->aha1542_last_mbo_used = mbo;
     sti();
 
 #ifdef DEBUG
@@ -488,10 +488,10 @@ int aha1542_queuecommand(Scsi_Cmnd * SCpnt, void (*done)(Scsi_Cmnd *))
       ccb[mbo].op = 2;	      /* SCSI Initiator Command  w/scatter-gather*/
       SCpnt->host_scribble = (unsigned char *) scsi_malloc(512);
       sgpnt = (struct scatterlist *) SCpnt->request_buffer;
-      cptr = (struct chain *) SCpnt->host_scribble; 
+      cptr = (struct chain *) SCpnt->host_scribble;
       if (cptr == NULL) panic("aha1542.c: unable to allocate DMA memory\n");
       for(i=0; i<SCpnt->use_sg; i++) {
-	if(sgpnt[i].length == 0 || SCpnt->use_sg > 16 || 
+	if(sgpnt[i].length == 0 || SCpnt->use_sg > 16 ||
 	   (((int)sgpnt[i].address) & 1) || (sgpnt[i].length & 1)){
 	  unsigned char * ptr;
 	  printk("Bad segment list supplied to aha1542.c (%d, %d)\n",SCpnt->use_sg,i);
@@ -534,7 +534,7 @@ int aha1542_queuecommand(Scsi_Cmnd * SCpnt, void (*done)(Scsi_Cmnd *))
       printk("%02x ", ((unchar *)&ccb[mbo])[i]);
     };
 #endif
-    
+
     if (done) {
 	DEB(printk("aha1542_queuecommand: now waiting for interrupt "); aha1542_stat());
 	SCpnt->scsi_done = done;
@@ -544,7 +544,7 @@ int aha1542_queuecommand(Scsi_Cmnd * SCpnt, void (*done)(Scsi_Cmnd *))
     }
     else
       printk("aha1542_queuecommand: done can't be NULL\n");
-    
+
     return 0;
  baddma:
     panic("Buffer at address  > 16Mb used for 1542B");
@@ -582,7 +582,7 @@ static void setup_mailboxes(int bse, struct Scsi_Host * shpnt)
       mb[i].status = mb[AHA1542_MAILBOXES+i].status = 0;
       any2scsi(mb[i].ccbptr, &ccb[i]);
     };
-    aha1542_intr_reset(bse);     /* reset interrupts, so they don't block */	
+    aha1542_intr_reset(bse);     /* reset interrupts, so they don't block */
     any2scsi((cmd+2), mb);
     aha1542_out(bse, cmd, 5);
     WAIT(INTRFLAGS(bse), INTRMASK, HACC, 0);
@@ -666,7 +666,7 @@ static int aha1542_mbenable(int base)
   static unchar mbenable_cmd[3];
   static unchar mbenable_result[2];
   int retval;
-  
+
   retval = BIOS_TRANSLATION_6432;
 
   mbenable_cmd[0]=CMD_EXTBIOS;
@@ -674,7 +674,7 @@ static int aha1542_mbenable(int base)
   aha1542_in(base,mbenable_result,2);
   WAIT(INTRFLAGS(base),INTRMASK,HACC,0);
   aha1542_intr_reset(base);
-  
+
   if ((mbenable_result[0] & 0x08) || mbenable_result[1]) {
      mbenable_cmd[0]=CMD_MBENABLE;
      mbenable_cmd[1]=0;
@@ -744,9 +744,9 @@ int aha1542_detect(int hostnum)
     int indx;
 
     DEB(printk("aha1542_detect: \n"));
-    
+
     for(indx = 0; indx < sizeof(bases)/sizeof(bases[0]); indx++)
-	    if(!check_region(bases[indx], 4)) { 
+	    if(!check_region(bases[indx], 4)) {
 		    shpnt = scsi_register(hostnum,
 					  sizeof(struct aha1542_hostdata));
 
@@ -754,12 +754,12 @@ int aha1542_detect(int hostnum)
 
 
 		    base_io = bases[indx];
-		    
+
 		    /* Set the Bus on/off-times as not to ruin floppy performance */
 	    {
 		    unchar oncmd[] = {CMD_BUSON_TIME, 7};
 		    unchar offcmd[] = {CMD_BUSOFF_TIME, 5};
-		    
+
 		    aha1542_intr_reset(base_io);
 		    aha1542_out(base_io, oncmd, 2);
 		    WAIT(INTRFLAGS(base_io), INTRMASK, HACC, 0);
@@ -773,33 +773,33 @@ int aha1542_detect(int hostnum)
 		    aha1542_intr_reset(base_io);
 	    }
 		    if(aha1542_query(base_io, &trans))  goto unregister;
-		    
+
 		    if (aha1542_getconfig(base_io, &irq_level, &dma_chan) == -1)  goto unregister;
-		    
+
 		    printk("Configuring Adaptec at IO:%x, IRQ %d",base_io, irq_level);
 		    if (dma_chan != 0xFF)
 			    printk(", DMA priority %d", dma_chan);
 		    printk("\n");
-		    
+
 		    DEB(aha1542_stat());
 		    setup_mailboxes(base_io, shpnt);
-		    
+
 		    DEB(aha1542_stat());
-		    
+
 		    DEB(printk("aha1542_detect: enable interrupt channel %d\n", irq_level));
 		    cli();
 		    if (request_irq(irq_level,aha1542_intr_handle)) {
 			    printk("Unable to allocate IRQ for adaptec controller.\n");
 			    goto unregister;
 		    }
-		    
+
 		    if (dma_chan != 0xFF) {
 			    if (request_dma(dma_chan)) {
 				    printk("Unable to allocate DMA channel for Adaptec.\n");
 				    free_irq(irq_level);
 				    goto unregister;
 			    }
-			    
+
 			    if (dma_chan >= 5) {
 				    outb((dma_chan - 4) | CASCADE, DMA_MODE_REG);
 				    outb(dma_chan - 4, DMA_MASK_REG);
@@ -810,7 +810,7 @@ int aha1542_detect(int hostnum)
 		    shpnt->dma_channel = dma_chan;
 		    shpnt->irq = irq_level;
 		    HOSTDATA(shpnt)->bios_translation  = trans;
-		    if(trans == 2) 
+		    if(trans == 2)
 		      printk("aha1542.c: Using extended bios translation\n");
 		    HOSTDATA(shpnt)->aha1542_last_mbi_used  = (2*AHA1542_MAILBOXES - 1);
 		    HOSTDATA(shpnt)->aha1542_last_mbo_used  = (AHA1542_MAILBOXES - 1);
@@ -818,12 +818,12 @@ int aha1542_detect(int hostnum)
 		    sti();
 #if 0
 		    DEB(printk(" *** READ CAPACITY ***\n"));
-		    
+
 	    {
 		    unchar buf[8];
 		    static unchar cmd[] = {	READ_CAPACITY, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 		    int i;
-		    
+
 		    for (i = 0; i < sizeof(buf); ++i) buf[i] = 0x87;
 		    for (i = 0; i < 2; ++i)
 			    if (!aha1542_command(i, cmd, buf, sizeof(buf))) {
@@ -831,14 +831,14 @@ int aha1542_detect(int hostnum)
 					   i, xscsi2int(buf+4), xscsi2int(buf));
 			    }
 	    }
-		    
+
 		    DEB(printk(" *** NOW RUNNING MY OWN TEST *** \n"));
-		    
+
 		    for (i = 0; i < 4; ++i)
 		    {
 			    unsigned char cmd[10];
 			    static buffer[512];
-			    
+
 			    cmd[0] = READ_10;
 			    cmd[1] = 0;
 			    xany2scsi(cmd+2, i);
@@ -848,14 +848,14 @@ int aha1542_detect(int hostnum)
 			    cmd[9] = 0;
 			    aha1542_command(0, cmd, buffer, 512);
 		    }
-#endif    
+#endif
 		    snarf_region(bases[indx], 4);  /* Register the IO ports that we use */
 		    count++;
 		    continue;
 	    unregister:
 		    scsi_unregister(shpnt, sizeof(struct aha1542_hostdata));
 		    continue;
-		    
+
 	    };
     return count;
 }

@@ -16,23 +16,23 @@
 
 static char *version = "lance.c:v0.14g 12/21/93 becker@super.org\n";
 
-#include <linux/config.h>
-#include <linux/kernel.h>
-#include <linux/sched.h>
-#include <linux/string.h>
-#include <linux/ptrace.h>
-#include <linux/errno.h>
-#include <linux/ioport.h>
-#include <linux/malloc.h>
-#include <linux/interrupt.h>
-#include <asm/bitops.h>
-#include <asm/io.h>
-#include <asm/dma.h>
+#include "../../include/linux/config.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/ptrace.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/ioport.h"
+#include "../../include/linux/malloc.h"
+#include "../../include/linux/interrupt.h"
+#include "../../include/asm/bitops.h"
+#include "../../include/asm/io.h"
+#include "../../include/asm/dma.h"
 
-#include "dev.h"
-#include "eth.h"
-#include "skbuff.h"
-#include "arp.h"
+#include "../../net/inet/dev.h"
+#include "../../net/inet/eth.h"
+#include "../../net/inet/skbuff.h"
+#include "../../net/inet/arp.h"
 
 #ifndef HAVE_PORTRESERVE
 #define check_region(addr, size)	0
@@ -624,7 +624,7 @@ lance_interrupt(int reg_ptr)
 	    int entry = dirty_tx & TX_RING_MOD_MASK;
 	    int status = lp->tx_ring[entry].base;
 	    void *databuff;
-	    
+
 	    if (status < 0)
 		break;		/* It still hasn't been Txed */
 
@@ -701,7 +701,7 @@ lance_rx(struct device *dev)
 {
     struct lance_private *lp = (struct lance_private *)dev->priv;
     int entry = lp->cur_rx & RX_RING_MOD_MASK;
-	
+
     /* If we own the next entry, it's a new packet. Send it up. */
     while (lp->rx_ring[entry].base >= 0) {
 	int status = lp->rx_ring[entry].base >> 24;

@@ -8,7 +8,7 @@
  *
  *  This file is aha1740.c, written and
  *  Copyright (C) 1992,1993  Brad McLean
- *  
+ *
  *  Modifications to makecode and queuecommand
  *  for proper handling of multiple devices courteously
  *  provided by Michael Weller, March, 1993
@@ -17,17 +17,17 @@
  * if it doesn't work for your devices, take a look.
  */
 
-#include <linux/kernel.h>
-#include <linux/head.h>
-#include <linux/types.h>
-#include <linux/string.h>
-#include <linux/ioport.h>
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/head.h"
+#include "../../include/linux/types.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/ioport.h"
 
-#include <linux/sched.h>
-#include <asm/dma.h>
+#include "../../include/linux/sched.h"
+#include "../../include/asm/dma.h"
 
-#include <asm/system.h>
-#include <asm/io.h>
+#include "../../include/asm/system.h"
+#include "../../include/asm/io.h"
 #include "../block/blk.h"
 #include "scsi.h"
 #include "hosts.h"
@@ -107,7 +107,7 @@ sense[0],sense[1],sense[2],sense[3]);
 		break;
 	    default:
 		retval=DID_ERROR; /* No further diagnostics possible */
-	    } 
+	    }
 	}
 	else
 	{ /* Michael suggests, and Brad concurs: */
@@ -157,7 +157,7 @@ int aha1740_test_port(void)
 
     if ( inb(PORTADR) & PORTADDR_ENH )
 	return 1;   /* Okay, we're all set */
-	
+
     printk("aha1740: Board detected, but not in enhanced mode, so disabled it.\n");
     return 0;
 }
@@ -184,7 +184,7 @@ void aha1740_intr_handle(int foo)
 	DEB(printk("aha1740_intr top of loop.\n"));
 	adapstat = inb(G2INTST);
 	outb(G2CNTRL_IRST,G2CNTRL); /* interrupt reset */
-      
+
         switch ( adapstat & G2INTST_MASK )
 	{
 	case	G2INTST_CCBRETRY:
@@ -203,7 +203,7 @@ void aha1740_intr_handle(int foo)
 	     we will still have it in the cdb when we come back */
 	    if ( (adapstat & G2INTST_MASK) == G2INTST_CCBERROR )
 	      {
-		memcpy(SCtmp->sense_buffer, ecbptr->sense, 
+		memcpy(SCtmp->sense_buffer, ecbptr->sense,
 		       sizeof(SCtmp->sense_buffer));
 		errstatus = aha1740_makecode(ecbptr->sense,ecbptr->status);
 	      }
@@ -212,7 +212,7 @@ void aha1740_intr_handle(int foo)
 	    DEB(if (errstatus) printk("aha1740_intr_handle: returning %6x\n", errstatus));
 	    SCtmp->result = errstatus;
 	    my_done = ecbptr->done;
-	    memset(ecbptr,0,sizeof(struct ecb)); 
+	    memset(ecbptr,0,sizeof(struct ecb));
 	    if ( my_done )
 		my_done(SCtmp);
 	    break;
@@ -245,7 +245,7 @@ int aha1740_queuecommand(Scsi_Cmnd * SCpnt, void (*done)(Scsi_Cmnd *))
     int ecbno;
     DEB(int i);
 
-    
+
     if(*cmd == REQUEST_SENSE)
     {
         if (bufflen != sizeof(SCpnt->sense_buffer))
@@ -254,7 +254,7 @@ int aha1740_queuecommand(Scsi_Cmnd * SCpnt, void (*done)(Scsi_Cmnd *))
 	    panic("aha1740.c");
         }
         SCpnt->result = 0;
-        done(SCpnt); 
+        done(SCpnt);
         return 0;
     }
 
@@ -289,7 +289,7 @@ int aha1740_queuecommand(Scsi_Cmnd * SCpnt, void (*done)(Scsi_Cmnd *))
 
     ecb[ecbno].cmdw = AHA1740CMD_INIT;	/* SCSI Initiator Command doubles as reserved flag */
 
-    aha1740_last_ecb_used = ecbno;    
+    aha1740_last_ecb_used = ecbno;
     sti();
 
 #ifdef DEBUG
@@ -317,7 +317,7 @@ int aha1740_queuecommand(Scsi_Cmnd * SCpnt, void (*done)(Scsi_Cmnd *))
         ecb[ecbno].sg = 1;	  /* SCSI Initiator Command  w/scatter-gather*/
         SCpnt->host_scribble = (unsigned char *) scsi_malloc(512);
         sgpnt = (struct scatterlist *) SCpnt->request_buffer;
-        cptr = (struct aha1740_chain *) SCpnt->host_scribble; 
+        cptr = (struct aha1740_chain *) SCpnt->host_scribble;
         if (cptr == NULL) panic("aha1740.c: unable to allocate DMA memory\n");
         for(i=0; i<SCpnt->use_sg; i++)
 	{
@@ -393,7 +393,7 @@ int aha1740_queuecommand(Scsi_Cmnd * SCpnt, void (*done)(Scsi_Cmnd *))
     }
     else
       printk("aha1740_queuecommand: done can't be NULL\n");
-    
+
     return 0;
 }
 
@@ -429,7 +429,7 @@ int aha1740_detect(int hostnum)
 {
     memset(&ecb, 0, sizeof(struct ecb));
     DEB(printk("aha1740_detect: \n"));
-    
+
     for ( slot=MINEISA; slot <= MAXEISA; slot++ )
     {
 	base = SLOTBASE(slot);
@@ -449,7 +449,7 @@ int aha1740_detect(int hostnum)
     if ( (inb(G2STAT) & (G2STAT_MBXOUT | G2STAT_BUSY) ) != G2STAT_MBXOUT )
     {	/* If the card isn't ready, hard reset it */
         outb(G2CNTRL_HRST,G2CNTRL);
-        outb(0,G2CNTRL);    
+        outb(0,G2CNTRL);
     }
 
     printk("Configuring Adaptec at IO:%x, IRQ %d\n",base,

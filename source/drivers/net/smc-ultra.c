@@ -5,7 +5,7 @@
     Director, National Security Agency.  This software may be used and
     distributed according to the terms of the GNU Public License,
     incorporated herein by reference.
-    
+
     This is a driver for the SMC Ultra ethercard.
 
     The Author may be reached as becker@super.org or
@@ -16,15 +16,15 @@
 static char *version =
     "smc-ultra.c:v0.07 3/1/94 Donald Becker (becker@super.org)\n";
 
-#include <linux/config.h>
-#include <linux/kernel.h>
-#include <linux/sched.h>
-#include <linux/errno.h>
-#include <linux/string.h>
-#include <asm/io.h>
-#include <asm/system.h>
+#include "../../include/linux/config.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/string.h"
+#include "../../include/asm/io.h"
+#include "../../include/asm/system.h"
 
-#include "dev.h"
+#include "../../net/inet/dev.h"
 #include "8390.h"
 
 /* Compatibility definitions for earlier kernel versions. */
@@ -96,7 +96,7 @@ int ultraprobe1(int ioaddr, struct device *dev)
       checksum += inb(ioaddr + 8 + i);
   if ((checksum & 0xff) != 0xFF)
       return ENODEV;
-  
+
   printk("%s: SMC Ultra at %#3x,", dev->name, ioaddr);
   for (i = 0; i < 6; i++)
       printk(" %2.2X", station_addr[i] = inb(ioaddr + 8 + i));
@@ -138,7 +138,7 @@ int ultraprobe1(int ioaddr, struct device *dev)
   /* The 8390 isn't at the base address, so fake the offset */
   dev->base_addr = ioaddr+ULTRA_NIC_OFFSET;
 
-  { 
+  {
       int addr_tbl[4] = {0x0C0000, 0x0E0000, 0xFC0000, 0xFE0000};
       short num_pages_tbl[4] = {0x20, 0x40, 0x80, 0xff};
 

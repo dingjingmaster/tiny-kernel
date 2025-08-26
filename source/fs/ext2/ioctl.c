@@ -6,13 +6,13 @@
  *                           Universite Pierre et Marie Curie (Paris VI)
  */
 
-#include <asm/segment.h>
+#include "../../include/asm/segment.h"
 
-#include <linux/errno.h>
-#include <linux/fs.h>
-#include <linux/ext2_fs.h>
-#include <linux/ioctl.h>
-#include <linux/sched.h>
+#include "../../include/linux/errno.h"
+#include "../../include/linux/fs.h"
+#include "../../include/linux/ext2_fs.h"
+#include "../../include/linux/ioctl.h"
+#include "../../include/linux/sched.h"
 
 int ext2_ioctl (struct inode * inode, struct file * filp, unsigned int cmd,
 		unsigned long arg)

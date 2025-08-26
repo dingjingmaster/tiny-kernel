@@ -8,14 +8,14 @@
  */
 
 
-#include <linux/config.h>
-#include <linux/sched.h>
-#include <linux/minix_fs.h>
-#include <linux/fs.h>
-#include <linux/kernel.h>
-#include <linux/string.h>
-#include <asm/system.h>
-#include <asm/segment.h>
+#include "../../include/linux/config.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/minix_fs.h"
+#include "../../include/linux/fs.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/string.h"
+#include "../../include/asm/system.h"
+#include "../../include/asm/segment.h"
 
 #define MAJOR_NR  MEM_MAJOR
 #include "blk.h"
@@ -47,7 +47,7 @@ repeat:
 			      CURRENT->buffer,
 			      len);
 	} else if (CURRENT->cmd == READ) {
-		(void) memcpy(CURRENT->buffer, 
+		(void) memcpy(CURRENT->buffer,
 			      addr,
 			      len);
 	} else
@@ -153,12 +153,12 @@ void rd_load(void)
 		/* We found an image file system.  Load it into core! */
 		cp = rd_start;
 		while (nblocks) {
-			if (nblocks > 2) 
+			if (nblocks > 2)
 				bh = breada(ROOT_DEV, block, block+1, block+2, -1);
 			else
 				bh = bread(ROOT_DEV, block, BLOCK_SIZE);
 			if (!bh) {
-				printk("RAMDISK: I/O error on block %d, aborting!\n", 
+				printk("RAMDISK: I/O error on block %d, aborting!\n",
 				block);
 				return;
 			}

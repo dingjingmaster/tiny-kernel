@@ -5,13 +5,13 @@
  *
  *  Rock Ridge Extensions to iso9660
  */
-#include <linux/config.h>
-#include <linux/stat.h>
-#include <linux/sched.h>
-#include <linux/iso_fs.h>
-#include <linux/string.h>
-#include <linux/mm.h>
-#include <linux/malloc.h>
+#include "../../include/linux/config.h"
+#include "../../include/linux/stat.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/iso_fs.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/mm.h"
+#include "../../include/linux/malloc.h"
 
 #include "rock.h"
 
@@ -88,7 +88,7 @@
 /* This is the inner layer of the get filename routine, and is called
    for each system area and continuation record related to the file */
 
-int find_rock_ridge_relocation(struct iso_directory_record * de, 
+int find_rock_ridge_relocation(struct iso_directory_record * de,
 			       struct inode * inode) {
   int flag;
   int len;
@@ -96,14 +96,14 @@ int find_rock_ridge_relocation(struct iso_directory_record * de,
   unsigned char * chr;
   CONTINUE_DECLS;
   flag = 0;
-  
+
   /* If this is a '..' then we are looking for the parent, otherwise we
      are looking for the child */
-  
+
   if (de->name[0]==1 && de->name_len[0]==1) flag = 1;
   /* Return value if we do not find appropriate record. */
   retval = isonum_733 (de->extent);
-  
+
   if (!inode->i_sb->u.isofs_sb.s_rock) return retval;
 
   SETUP_ROCK_RIDGE(de, chr, len);
@@ -111,12 +111,12 @@ int find_rock_ridge_relocation(struct iso_directory_record * de,
   {
     int rrflag, sig;
     struct rock_ridge * rr;
-    
+
     while (len > 1){ /* There may be one byte for padding somewhere */
       rr = (struct rock_ridge *) chr;
       if (rr->len == 0) goto out; /* Something got screwed up here */
       sig = (chr[0] << 8) + chr[1];
-      chr += rr->len; 
+      chr += rr->len;
       len -= rr->len;
 
       switch(sig){
@@ -169,7 +169,7 @@ int get_rock_ridge_filename(struct iso_directory_record * de,
   CONTINUE_DECLS;
   char * retname = NULL;
   int retnamlen = 0, truncate=0;
- 
+
   if (!inode->i_sb->u.isofs_sb.s_rock) return 0;
 
   SETUP_ROCK_RIDGE(de, chr, len);
@@ -177,12 +177,12 @@ int get_rock_ridge_filename(struct iso_directory_record * de,
   {
     struct rock_ridge * rr;
     int sig;
-    
+
     while (len > 1){ /* There may be one byte for padding somewhere */
       rr = (struct rock_ridge *) chr;
       if (rr->len == 0) goto out; /* Something got screwed up here */
       sig = (chr[0] << 8) + chr[1];
-      chr += rr->len; 
+      chr += rr->len;
       len -= rr->len;
 
       switch(sig){
@@ -259,17 +259,17 @@ int parse_rock_ridge_inode(struct iso_directory_record * de,
     struct inode * reloc;
     struct rock_ridge * rr;
     int rootflag;
-    
+
     while (len > 1){ /* There may be one byte for padding somewhere */
       rr = (struct rock_ridge *) chr;
       if (rr->len == 0) goto out; /* Something got screwed up here */
       sig = (chr[0] << 8) + chr[1];
-      chr += rr->len; 
+      chr += rr->len;
       len -= rr->len;
-      
+
       switch(sig){
       case SIG('R','R'):
-	if((rr->u.RR.flags[0] & 
+	if((rr->u.RR.flags[0] &
  	    (RR_PX | RR_TF | RR_SL | RR_CL)) == 0) goto out;
 	break;
       case SIG('S','P'):
@@ -302,13 +302,13 @@ int parse_rock_ridge_inode(struct iso_directory_record * de,
 	/* Some RRIP writers incorrectly place ctime in the TF_CREATE field.
 	   Try and handle this correctly for either case. */
 	cnt = 0; /* Rock ridge never appears on a High Sierra disk */
-	if(rr->u.TF.flags & TF_CREATE) 
+	if(rr->u.TF.flags & TF_CREATE)
 	  inode->i_ctime = iso_date(rr->u.TF.times[cnt++].time, 0);
-	if(rr->u.TF.flags & TF_MODIFY) 
+	if(rr->u.TF.flags & TF_MODIFY)
 	  inode->i_mtime = iso_date(rr->u.TF.times[cnt++].time, 0);
-	if(rr->u.TF.flags & TF_ACCESS) 
+	if(rr->u.TF.flags & TF_ACCESS)
 	  inode->i_atime = iso_date(rr->u.TF.times[cnt++].time, 0);
-	if(rr->u.TF.flags & TF_ATTRIBUTES) 
+	if(rr->u.TF.flags & TF_ATTRIBUTES)
 	  inode->i_ctime = iso_date(rr->u.TF.times[cnt++].time, 0);
 	break;
       case SIG('S','L'):
@@ -397,22 +397,22 @@ char * get_rock_ridge_symlink(struct inode * inode)
   int len;
   unsigned char * chr;
   struct rock_ridge * rr;
-  
+
   if (!inode->i_sb->u.isofs_sb.s_rock)
     panic("Cannot have symlink with high sierra variant of iso filesystem\n");
 
   rpnt = 0;
-  
+
   block = inode->i_ino >> bufbits;
   if (!(bh=bread(inode->i_dev,block, bufsize))) {
     printk("unable to read i-node block");
     return NULL;
   };
-  
+
   pnt = ((unsigned char *) bh->b_data) + (inode->i_ino & (bufsize - 1));
-  
+
   raw_inode = ((struct iso_directory_record *) pnt);
-  
+
   if ((inode->i_ino & (bufsize - 1)) + *pnt > bufsize){
     cpnt = kmalloc(1 << ISOFS_BLOCK_BITS, GFP_KERNEL);
     memcpy(cpnt, bh->b_data, bufsize);
@@ -426,21 +426,21 @@ char * get_rock_ridge_symlink(struct inode * inode)
     pnt = ((unsigned char *) cpnt) + (inode->i_ino & (bufsize - 1));
     raw_inode = ((struct iso_directory_record *) pnt);
   };
-  
+
   /* Now test for possible Rock Ridge extensions which will override some of
      these numbers in the inode structure. */
-  
+
   SETUP_ROCK_RIDGE(raw_inode, chr, len);
-  
+
  repeat:
   while (len > 1){ /* There may be one byte for padding somewhere */
     if (rpnt) break;
     rr = (struct rock_ridge *) chr;
     if (rr->len == 0) goto out; /* Something got screwed up here */
     sig = (chr[0] << 8) + chr[1];
-    chr += rr->len; 
+    chr += rr->len;
     len -= rr->len;
-    
+
     switch(sig){
     case SIG('R','R'):
       if((rr->u.RR.flags[0] & RR_SL) == 0) goto out;
@@ -490,7 +490,7 @@ char * get_rock_ridge_symlink(struct inode * inode)
   };
   MAYBE_CONTINUE(repeat,inode);
   brelse(bh);
-  
+
   if (cpnt) {
     kfree(cpnt);
     cpnt = NULL;
@@ -501,9 +501,3 @@ char * get_rock_ridge_symlink(struct inode * inode)
   if(buffer) kfree(buffer);
   return 0;
 }
-
-
-
-
-
-

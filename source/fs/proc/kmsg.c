@@ -5,13 +5,13 @@
  *
  */
 
-#include <linux/types.h>
-#include <linux/errno.h>
-#include <linux/sched.h>
-#include <linux/kernel.h>
+#include "../../include/linux/types.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/kernel.h"
 
-#include <asm/segment.h>
-#include <asm/io.h>
+#include "../../include/asm/segment.h"
+#include "../../include/asm/io.h"
 
 extern unsigned long log_size;
 extern struct wait_queue * log_wait;

@@ -27,26 +27,26 @@
  *		2 of the License, or(at your option) any later version.
  */
 
-#include <linux/config.h>
-#include <linux/kernel.h>
-#include <linux/major.h>
-#include <linux/signal.h>
-#include <linux/sched.h>
-#include <linux/errno.h>
-#include <linux/string.h>
-#include <linux/stat.h>
-#include <linux/socket.h>
-#include <linux/un.h>
-#include <linux/fcntl.h>
-#include <linux/termios.h>
-#include <linux/sockios.h>
-#include <linux/net.h>
-#include <linux/fs.h>
-#include <linux/ddi.h>
-#include <linux/malloc.h>
+#include "../../include/linux/config.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/major.h"
+#include "../../include/linux/signal.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/stat.h"
+#include "../../include/linux/socket.h"
+#include "../../include/linux/un.h"
+#include "../../include/linux/fcntl.h"
+#include "../../include/linux/termios.h"
+#include "../../include/linux/sockios.h"
+#include "../../include/linux/net.h"
+#include "../../include/linux/fs.h"
+#include "../../include/linux/ddi.h"
+#include "../../include/linux/malloc.h"
 
-#include <asm/system.h>
-#include <asm/segment.h>
+#include "../../include/asm/system.h"
+#include "../../include/asm/segment.h"
 
 #include <stdarg.h>
 
@@ -64,7 +64,7 @@ static int unix_proto_bind(struct socket *sock, struct sockaddr *umyaddr,
 static int unix_proto_connect(struct socket *sock, struct sockaddr *uservaddr,
 			      int sockaddr_len, int flags);
 static int unix_proto_socketpair(struct socket *sock1, struct socket *sock2);
-static int unix_proto_accept(struct socket *sock, struct socket *newsock, 
+static int unix_proto_accept(struct socket *sock, struct socket *newsock,
 			     int flags);
 static int unix_proto_getname(struct socket *sock, struct sockaddr *usockaddr,
 			      int *usockaddr_len, int peer);
@@ -141,9 +141,9 @@ sockaddr_un_printk(struct sockaddr_un *sockun, int sockaddr_len)
 	printk("\"%s\"[%lu]\n", buf, sockaddr_len + UN_PATH_OFFSET);
   }
 }
-  
 
-/* Support routines doing anti page fault locking 
+
+/* Support routines doing anti page fault locking
  * FvK & Matt Dillon (borrowed From NET2E3)
  */
 
@@ -190,18 +190,18 @@ unix_proto_getsockopt(struct socket *sock, int level, int optname,
 }
 
 static int
-unix_proto_sendto(struct socket *sock, void *buff, int len, int nonblock, 
+unix_proto_sendto(struct socket *sock, void *buff, int len, int nonblock,
 		  unsigned flags,  struct sockaddr *addr, int addr_len)
 {
   return(-EOPNOTSUPP);
-}     
+}
 
 static int
-unix_proto_recvfrom(struct socket *sock, void *buff, int len, int nonblock, 
+unix_proto_recvfrom(struct socket *sock, void *buff, int len, int nonblock,
 		    unsigned flags, struct sockaddr *addr, int *addr_len)
 {
   return(-EOPNOTSUPP);
-}     
+}
 
 
 static int
@@ -624,7 +624,7 @@ unix_proto_read(struct socket *sock, char *ubuf, int size, int nonblock)
    * Copy from the read buffer into the user's buffer,
    * watching for wraparound. Then we wake up the writer.
    */
-   
+
   unix_lock(upd);
   do {
 	int part, cando;
@@ -699,9 +699,9 @@ unix_proto_write(struct socket *sock, char *ubuf, int size, int nonblock)
    * Copy from the user's buffer to the write buffer,
    * watching for wraparound. Then we wake up the reader.
    */
-   
+
   unix_lock(pupd);
-  
+
   do {
 	int part, cando;
 

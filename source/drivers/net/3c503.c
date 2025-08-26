@@ -18,14 +18,14 @@
 static char *version =
     "3c503.c:v0.99.15k 3/3/93 Donald Becker (becker@super.org)\n";
 
-#include <linux/config.h>
-#include <linux/kernel.h>
-#include <linux/sched.h>
-#include <linux/errno.h>
-#include <asm/io.h>
-#include <asm/system.h>
+#include "../../include/linux/config.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/errno.h"
+#include "../../include/asm/io.h"
+#include "../../include/asm/system.h"
 
-#include "dev.h"
+#include "../../net/inet/dev.h"
 
 #include "8390.h"
 #include "3c503.h"
@@ -334,7 +334,7 @@ el2_init_card(struct device *dev)
    out through the ASIC FIFO.  The latter is probably much slower. */
 static void
 el2_block_output(struct device *dev, int count,
-		 const unsigned char *buf, const start_page)
+		 const unsigned char *buf, const int start_page)
 {
     int i;				/* Buffer index */
     int boguscount = 0;		/* timeout counter */

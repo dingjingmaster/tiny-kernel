@@ -21,7 +21,7 @@
 static char *version =
 	"eexpress.c:v0.07 1/19/94 Donald Becker (becker@super.org)\n";
 
-#include <linux/config.h>
+#include "../../include/linux/config.h"
 
 /*
   Sources:
@@ -34,31 +34,31 @@ static char *version =
 	info that the casual reader might think that it documents the i82586.
 */
 
-#include <linux/kernel.h>
-#include <linux/sched.h>
-#include <linux/types.h>
-#include <linux/fcntl.h>
-#include <linux/interrupt.h>
-#include <linux/ptrace.h>
-#include <linux/ioport.h>
-#include <linux/in.h>
-#include <asm/system.h>
-#include <asm/bitops.h>
-#include <asm/io.h>
-#include <asm/dma.h>
-#include <errno.h>
-#include <memory.h>
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/types.h"
+#include "../../include/linux/fcntl.h"
+#include "../../include/linux/interrupt.h"
+#include "../../include/linux/ptrace.h"
+#include "../../include/linux/ioport.h"
+#include "../../include/linux/in.h"
+#include "../../include/asm/system.h"
+#include "../../include/asm/bitops.h"
+#include "../../include/asm/io.h"
+#include "../../include/asm/dma.h"
+#include "../../include/linux/errno.h"
+#include "memory.h"
 
-#include "dev.h"
-#include "eth.h"
-#include "skbuff.h"
-#include "arp.h"
+#include "../../net/inet/dev.h"
+#include "../../net/inet/eth.h"
+#include "../../net/inet/skbuff.h"
+#include "../../net/inet/arp.h"
 
 #ifndef HAVE_ALLOC_SKB
 #define alloc_skb(size, priority) (struct sk_buff *) kmalloc(size,priority)
 #else
 /* This isn't quite right, but it's the best version define I can find right now. */
-#include <linux/malloc.h>
+#include "../../include/linux/malloc.h"
 #endif
 
 /* use 0 for production, 1 for verification, 2..7 for debug */
@@ -560,12 +560,12 @@ eexp_interrupt(int reg_ptr)
 		return;
 	}
 	dev->interrupt = 1;
-	
+
 	ioaddr = dev->base_addr;
 	lp = (struct net_local *)dev->priv;
-	
+
 	status = inw(ioaddr + SCB_STATUS);
-	
+
     if (net_debug > 4) {
 		printk("%s: EExp interrupt, status %4.4x.\n", dev->name, status);
     }
@@ -747,9 +747,9 @@ read_eeprom(int ioaddr, int location)
 	short ee_addr = ioaddr + EEPROM_Ctrl;
 	int read_cmd = location | EE_READ_CMD;
 	short ctrl_val = EE_CS | _586_RESET;
-	
+
 	outb(ctrl_val, ee_addr);
-	
+
 	/* Shift the read command bits out. */
 	for (i = 8; i >= 0; i--) {
 		short outval = (read_cmd & (1 << i)) ? ctrl_val | EE_DATA_WRITE
@@ -761,7 +761,7 @@ read_eeprom(int ioaddr, int location)
 		eeprom_delay();
 	}
 	outb(ctrl_val, ee_addr);
-	
+
 	for (i = 16; i > 0; i--) {
 		outb(ctrl_val | EE_SHIFT_CLK, ee_addr);	 eeprom_delay();
 		retval = (retval << 1) | ((inb(ee_addr) & EE_DATA_READ) ? 1 : 0);
@@ -842,7 +842,7 @@ static void init_rx_bufs(struct device *dev)
 	short ioaddr = dev->base_addr;
 
 	int cur_rxbuf = lp->rx_head = RX_BUF_START;
-	
+
 	/* Initialize each Rx frame + data buffer. */
 	do {	/* While there is room for one more. */
 		outw(cur_rxbuf, ioaddr + WRITE_PTR);
@@ -864,11 +864,11 @@ static void init_rx_bufs(struct device *dev)
 		outw(0x0000, ioaddr);
 		/* Finally, the number of bytes in the buffer. */
 		outw(0x8000 + RX_BUF_SIZE-0x20, ioaddr);
-		
+
 		lp->rx_tail = cur_rxbuf;
 		cur_rxbuf += RX_BUF_SIZE;
 	} while (cur_rxbuf <= RX_BUF_END - RX_BUF_SIZE);
-	
+
 	/* Terminate the list by setting the EOL bit, and wrap the pointer to make
 	   the list a ring. */
 	outw(lp->rx_tail + 2, ioaddr + WRITE_PTR);
@@ -943,7 +943,7 @@ eexp_rx(struct device *dev)
 		short next_rx_frame = inw(ioaddr);
 		short data_buffer_addr = inw(ioaddr);
 		short pkt_len;
-		
+
 		/* Set the read pointer the data buffer. */
 		outw(data_buffer_addr, ioaddr + READ_PTR);
 		pkt_len = inw(ioaddr);
@@ -983,7 +983,7 @@ eexp_rx(struct device *dev)
 			outw(data_buffer_addr + 10, ioaddr + READ_PTR);
 
 			insw(ioaddr, skb->data, (pkt_len + 1) >> 1);
-		
+
 #ifdef HAVE_NETIF_RX
 			netif_rx(skb);
 #else
@@ -1030,10 +1030,10 @@ eexp_rx(struct device *dev)
 			break;
 		outw(rx_head, ioaddr + READ_PTR);
 	}
-	
+
 	lp->rx_head = rx_head;
 	lp->rx_tail = rx_tail;
-	
+
 	/* Restore the original write pointer. */
 	outw(saved_write_ptr, ioaddr + WRITE_PTR);
 }

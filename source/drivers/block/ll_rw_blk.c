@@ -7,15 +7,15 @@
 /*
  * This handles all read/write requests to block devices
  */
-#include <linux/sched.h>
-#include <linux/kernel.h>
-#include <linux/kernel_stat.h>
-#include <linux/errno.h>
-#include <linux/string.h>
-#include <linux/config.h>
-#include <linux/locks.h>
+#include "../../include/linux/sched.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/kernel_stat.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/config.h"
+#include "../../include/linux/locks.h"
 
-#include <asm/system.h>
+#include "../../include/asm/system.h"
 
 #include "blk.h"
 
@@ -265,7 +265,7 @@ repeat:
 			    	req->bh = bh;
 			    	sti();
 			    	return;
-			}    
+			}
 
 			req = req->next;
 		}
@@ -449,7 +449,7 @@ void ll_rw_swap_file(int rw, int dev, unsigned int *b, int nb, char *buf)
 		printk("Can't swap to read-only device 0x%X\n",dev);
 		return;
 	}
-	
+
 	buffersize = PAGE_SIZE / nb;
 
 	for (i=0; i<nb; i++, buf += buffersize)

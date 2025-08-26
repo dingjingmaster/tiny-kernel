@@ -5,18 +5,18 @@
  * patches by Peter MacDonald. Heavily edited by Linus.
  */
 
-#include <linux/types.h>
-#include <linux/time.h>
-#include <linux/fs.h>
-#include <linux/kernel.h>
-#include <linux/sched.h>
-#include <linux/string.h>
-#include <linux/stat.h>
-#include <linux/signal.h>
-#include <linux/errno.h>
+#include "../include/linux/types.h"
+#include "../include/linux/time.h"
+#include "../include/linux/fs.h"
+#include "../include/linux/kernel.h"
+#include "../include/linux/sched.h"
+#include "../include/linux/string.h"
+#include "../include/linux/stat.h"
+#include "../include/linux/signal.h"
+#include "../include/linux/errno.h"
 
-#include <asm/segment.h>
-#include <asm/system.h>
+#include "../include/asm/segment.h"
+#include "../include/asm/system.h"
 
 #define ROUND_UP(x,y) (((x)+(y)-1)/(y))
 

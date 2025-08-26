@@ -8,22 +8,22 @@
  *	console.c
  *
  * This module exports the console io functions:
- * 
+ *
  *	'long con_init(long)'
  *	'int con_open(struct tty_struct *tty, struct file * filp)'
  * 	'void update_screen(int new_console)'
  * 	'void blank_screen(void)'
  * 	'void unblank_screen(void)'
  *
- *      'int  con_get_font(char *)' 
- *      'int  con_set_font(char *)' 
+ *      'int  con_get_font(char *)'
+ *      'int  con_set_font(char *)'
  *      'int  con_get_trans(char *)'
  *      'int  con_set_trans(char *)'
- * 
+ *
  * Hopefully this will be a rather complete VT102 implementation.
  *
  * Beeping thanks to John T Kohl.
- * 
+ *
  * Virtual Consoles, Screen Blanking, Screen Dumping, Color, Graphics
  *   Chars, and VT100 enhancements by Peter MacDonald.
  *
@@ -46,24 +46,24 @@
  * interrupt, as we use trap-gates. Hopefully all is well.
  */
 
-#include <linux/sched.h>
-#include <linux/timer.h>
-#include <linux/tty.h>
-#include <linux/config.h>
-#include <linux/kernel.h>
-#include <linux/string.h>
-#include <linux/errno.h>
-#include <linux/kd.h>
+#include "../../include/linux/sched.h"
+#include "../../include/linux/timer.h"
+#include "../../include/linux/tty.h"
+#include "../../include/linux/config.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/kd.h"
 
-#include <asm/io.h>
-#include <asm/system.h>
-#include <asm/segment.h>
+#include "../../include/asm/io.h"
+#include "../../include/asm/system.h"
+#include "../../include/asm/segment.h"
 
 #include "kbd_kern.h"
 #include "vt_kern.h"
 
 #ifdef CONFIG_SELECTION
-#include <linux/ctype.h>
+#include "../../include/linux/ctype.h"
 
 /* Routines for selection control. */
 int set_selection(const int arg);
@@ -170,7 +170,7 @@ static int console_blanked = 0;
 #define saved_G1	(vc_cons[currcons].vc_saved_G1)
 #define video_mem_start	(vc_cons[currcons].vc_video_mem_start)
 #define video_mem_end	(vc_cons[currcons].vc_video_mem_end)
-#define video_erase_char (vc_cons[currcons].vc_video_erase_char)	
+#define video_erase_char (vc_cons[currcons].vc_video_erase_char)
 #define decscnm		(vc_cons[currcons].vc_decscnm)
 #define decom		(vc_cons[currcons].vc_decom)
 #define decawm		(vc_cons[currcons].vc_decawm)
@@ -498,7 +498,7 @@ static void lf(int currcons)
 		y++;
 		pos += video_size_row;
 		return;
-	} else 
+	} else
 		scrup(currcons,top,bottom);
 	need_wrap = 0;
 }
@@ -690,7 +690,7 @@ static void csi_m(int currcons)
 			default:
 				if (par[i] >= 30 && par[i] <= 37)
 					color = color_table[par[i]-30]
-						| background; 
+						| background;
 				else if (par[i] >= 40 && par[i] <= 47)
 					color = (color_table[par[i]-40]<<4)
 						| foreground;
@@ -946,7 +946,7 @@ static void restore_cur(int currcons)
 	need_wrap = 0;
 }
 
-enum { ESnormal, ESesc, ESsquare, ESgetpars, ESgotpars, ESfunckey, 
+enum { ESnormal, ESesc, ESsquare, ESgetpars, ESgotpars, ESfunckey,
 	EShash, ESsetG0, ESsetG1, ESignore };
 
 static void reset_terminal(int currcons, int do_clear)
@@ -1122,7 +1122,7 @@ void con_write(struct tty_struct * tty)
 				  case '=':  /* Appl. keypad */
 					set_kbd(kbdapplic);
 				 	continue;
-				}	
+				}
 				continue;
 			case ESsquare:
 				for(npar = 0 ; npar < NPAR ; npar++)
@@ -1408,7 +1408,7 @@ long con_init(long kmem_start)
 		timer_table[BLANK_TIMER].expires = jiffies+blankinterval;
 		timer_active |= 1<<BLANK_TIMER;
 	}
-	
+
 	if (ORIG_VIDEO_MODE == 7)	/* Is this a monochrome display? */
 	{
 		video_mem_base = 0xb0000;
@@ -1446,7 +1446,7 @@ long con_init(long kmem_start)
 			display_desc = "*CGA";
 		}
 	}
-	
+
 	/* Initialize the variables used for scrolling (mostly EGA/VGA)	*/
 
 	base = (long)vc_scrmembuf;
@@ -1580,9 +1580,9 @@ void update_screen(int new_console)
 		return;
 	lock = 1;
 	kbdsave(new_console);
-	get_scrmem(fg_console); 
+	get_scrmem(fg_console);
 	fg_console = new_console;
-	set_scrmem(fg_console); 
+	set_scrmem(fg_console);
 	set_origin(fg_console);
 	set_cursor(new_console);
 	set_leds();
@@ -1603,12 +1603,12 @@ int do_screendump(int arg)
 	currcons = get_fs_byte(buf+1);
 	if ((currcons<0) || (currcons>NR_CONSOLES))
 		return -EIO;
-	put_fs_byte((char)(video_num_lines),buf++);	
+	put_fs_byte((char)(video_num_lines),buf++);
 	put_fs_byte((char)(video_num_columns),buf++);
 	currcons = (currcons ? currcons-1 : fg_console);
 	sptr = (char *) origin;
 	for (l=video_num_lines*video_num_columns; l>0 ; l--, sptr++)
-		put_fs_byte(*sptr++,buf++);	
+		put_fs_byte(*sptr++,buf++);
 	return(0);
 }
 

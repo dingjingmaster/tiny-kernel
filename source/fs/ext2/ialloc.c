@@ -5,7 +5,7 @@
  *                                  Laboratoire MASI - Institut Blaise Pascal
  *                                  Universite Pierre et Marie Curie (Paris VI)
  *
- *  BSD ufs-inspired inode and directory allocation by 
+ *  BSD ufs-inspired inode and directory allocation by
  *  Stephen Tweedie (sct@dcs.ed.ac.uk), 1993
  */
 
@@ -24,14 +24,14 @@
  * when a file system is mounted (see ext2_read_super).
  */
 
-#include <linux/fs.h>
-#include <linux/ext2_fs.h>
-#include <linux/sched.h>
-#include <linux/stat.h>
-#include <linux/string.h>
-#include <linux/locks.h>
+#include "../../include/linux/fs.h"
+#include "../../include/linux/ext2_fs.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/stat.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/locks.h"
 
-#include <asm/bitops.h>
+#include "../../include/asm/bitops.h"
 
 static inline int find_first_zero_bit (unsigned long * addr, unsigned size)
 {
@@ -80,7 +80,7 @@ static struct ext2_group_desc * get_group_desc (struct super_block * sb,
 			    "Group descriptor not loaded\n"
 			    "block_group = %d, group_desc = %lu, desc = %lu",
 			     block_group, group_desc, desc);
-	gdp = (struct ext2_group_desc *) 
+	gdp = (struct ext2_group_desc *)
 		sb->u.ext2_sb.s_group_desc[group_desc]->b_data;
 	if (bh)
 		*bh = sb->u.ext2_sb.s_group_desc[group_desc];
@@ -348,7 +348,7 @@ struct inode * ext2_new_inode (const struct inode * dir, int mode)
 	es = sb->u.ext2_sb.s_es;
 repeat:
 	gdp = NULL; i=0;
-	
+
 	if (S_ISDIR(mode)) {
 		avefreei = es->s_free_inodes_count /
 			sb->u.ext2_sb.s_groups_count;
@@ -356,7 +356,7 @@ repeat:
 		i = dir->u.ext2_i.i_block_group;
 		for (j = 0; j < sb->u.ext2_sb.s_groups_count; j++) {
 			tmp = get_group_desc (sb, i, &bh2);
-			if ((tmp->bg_used_dirs_count << 8) < 
+			if ((tmp->bg_used_dirs_count << 8) <
 			    tmp->bg_free_inodes_count) {
 				gdp = tmp;
 				break;
@@ -370,7 +370,7 @@ repeat:
 				tmp = get_group_desc (sb, j, &bh2);
 				if (tmp->bg_free_inodes_count &&
 					tmp->bg_free_inodes_count >= avefreei) {
-					if (!gdp || 
+					if (!gdp ||
 					    (tmp->bg_free_blocks_count >
 					     gdp->bg_free_blocks_count)) {
 						i = j;
@@ -380,7 +380,7 @@ repeat:
 			}
 		}
 	}
-	else 
+	else
 	{
 		/*
 		 * Try to place the inode in it's parent directory

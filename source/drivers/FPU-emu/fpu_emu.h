@@ -57,8 +57,8 @@
 
 #ifndef __ASSEMBLER__
 
-#include <linux/math_emu.h>
-#include <linux/linkage.h>
+#include "../../include/linux/math_emu.h"
+#include "../../include/linux/linkage.h"
 
 #ifdef PARANOID
 extern char emulating;

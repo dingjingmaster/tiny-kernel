@@ -10,10 +10,10 @@
  *  in the early extended-partition checks and added DM partitions
  */
 
-#include <linux/config.h>
-#include <linux/fs.h>
-#include <linux/genhd.h>
-#include <linux/kernel.h>
+#include "../../include/linux/config.h"
+#include "../../include/linux/fs.h"
+#include "../../include/linux/genhd.h"
+#include "../../include/linux/kernel.h"
 
 struct gendisk *gendisk_head = NULL;
 
@@ -177,13 +177,13 @@ static void setup_dev(struct gendisk *dev)
 	int j = dev->max_nr * dev->max_p;
 	int major = dev->major << 8;
 	int drive;
-	
+
 
 	for (i = 0 ; i < j; i++)  {
 		dev->part[i].start_sect = 0;
 		dev->part[i].nr_sects = 0;
 	}
-	dev->init();	
+	dev->init();
 	for (drive=0 ; drive<dev->nr_real ; drive++) {
 		current_minor = 1+(drive<<dev->minor_shift);
 		check_partition(dev, major+(drive<<dev->minor_shift));
@@ -192,7 +192,7 @@ static void setup_dev(struct gendisk *dev)
 		dev->sizes[i] = dev->part[i].nr_sects >> (BLOCK_SIZE_BITS - 9);
 	blk_size[dev->major] = dev->sizes;
 }
-	
+
 /* This may be used only once, enforced by 'static int callable' */
 asmlinkage int sys_setup(void * BIOS)
 {
@@ -208,7 +208,7 @@ asmlinkage int sys_setup(void * BIOS)
 		setup_dev(p);
 		nr += p->nr_real;
 	}
-		
+
 	if (ramdisk_size)
 		rd_load();
 	mount_root();

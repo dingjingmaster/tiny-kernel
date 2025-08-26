@@ -6,12 +6,12 @@
  *  MS-DOS directory handling functions
  */
 
-#include <asm/segment.h>
+#include "../../include/asm/segment.h"
 
-#include <linux/fs.h>
-#include <linux/msdos_fs.h>
-#include <linux/errno.h>
-#include <linux/stat.h>
+#include "../../include/linux/fs.h"
+#include "../../include/linux/msdos_fs.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/stat.h"
 
 
 static int msdos_dir_read(struct inode * inode,struct file * filp, char * buf,int count)

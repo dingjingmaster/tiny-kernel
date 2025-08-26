@@ -6,12 +6,12 @@
  *  proc fd directory handling functions
  */
 
-#include <asm/segment.h>
+#include "../../include/asm/segment.h"
 
-#include <linux/errno.h>
-#include <linux/sched.h>
-#include <linux/proc_fs.h>
-#include <linux/stat.h>
+#include "../../include/linux/errno.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/proc_fs.h"
+#include "../../include/linux/stat.h"
 
 static int proc_readfd(struct inode *, struct file *, struct dirent *, int);
 static int proc_lookupfd(struct inode *,const char *,int,struct inode **);

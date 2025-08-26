@@ -14,7 +14,7 @@
 static char *version =
 	"at1700.c:v0.06 3/3/94  Donald Becker (becker@super.org)\n";
 
-#include <linux/config.h>
+#include "../../include/linux/config.h"
 
 /*
   Sources:
@@ -24,26 +24,26 @@ static char *version =
 	code header file.  Thanks to Gerry Sockins of ATI.
 */
 
-#include <linux/kernel.h>
-#include <linux/sched.h>
-#include <linux/types.h>
-#include <linux/fcntl.h>
-#include <linux/interrupt.h>
-#include <linux/ptrace.h>
-#include <linux/ioport.h>
-#include <linux/in.h>
-#include <linux/malloc.h>
-#include <linux/string.h>
-#include <asm/system.h>
-#include <asm/bitops.h>
-#include <asm/io.h>
-#include <asm/dma.h>
-#include <errno.h>
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/types.h"
+#include "../../include/linux/fcntl.h"
+#include "../../include/linux/interrupt.h"
+#include "../../include/linux/ptrace.h"
+#include "../../include/linux/ioport.h"
+#include "../../include/linux/in.h"
+#include "../../include/linux/malloc.h"
+#include "../../include/linux/string.h"
+#include "../../include/asm/system.h"
+#include "../../include/asm/bitops.h"
+#include "../../include/asm/io.h"
+#include "../../include/asm/dma.h"
+#include "../../include/linux/errno.h"
 
-#include "dev.h"
-#include "eth.h"
-#include "skbuff.h"
-#include "arp.h"
+#include "../../net/inet/dev.h"
+#include "../../net/inet/eth.h"
+#include "../../net/inet/skbuff.h"
+#include "../../net/inet/arp.h"
 
 #ifndef HAVE_AUTOIRQ
 /* From auto_irq.c, in ioport.h for later versions. */
@@ -300,9 +300,9 @@ static int read_eeprom(int ioaddr, int location)
 	short ee_daddr = ioaddr + EEPROM_Data;
 	int read_cmd = location | EE_READ_CMD;
 	short ctrl_val = EE_CS;
-	
+
 	outb(ctrl_val, ee_addr);
-	
+
 	/* Shift the read command bits out. */
 	for (i = 9; i >= 0; i--) {
 		short dataval = (read_cmd & (1 << i)) ? EE_DATA_WRITE : 0;
@@ -313,7 +313,7 @@ static int read_eeprom(int ioaddr, int location)
 		eeprom_delay();
 	}
 	outb(EE_CS, ee_addr);
-	
+
 	for (i = 16; i > 0; i--) {
 		outb(EE_CS | EE_SHIFT_CLK, ee_addr);
 		eeprom_delay();
@@ -429,7 +429,7 @@ net_send_packet(struct sk_buff *skb, struct device *dev)
 
 		/* Turn off the possible Tx interrupts. */
 		outb(0x00, ioaddr + TX_INTR);
-		
+
 		outw(length, ioaddr + DATAPORT);
 		outsw(ioaddr + DATAPORT, buf, (length + 1) >> 1);
 
@@ -595,7 +595,7 @@ net_rx(struct device *dev)
 		}
 
 		if (net_debug > 5)
-			printk("%s: Exint Rx packet with mode %02x after %d ticks.\n", 
+			printk("%s: Exint Rx packet with mode %02x after %d ticks.\n",
 				   dev->name, inb(ioaddr + RX_MODE), i);
 	}
 	return;

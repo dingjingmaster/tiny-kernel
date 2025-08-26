@@ -22,7 +22,7 @@
 #ifndef _UDP_H
 #define _UDP_H
 
-#include <linux/udp.h>
+#include "../../include/linux/udp.h"
 
 
 #define UDP_NO_CHECK	0

@@ -4,10 +4,10 @@
  *  Written 1992,1993 by Werner Almesberger
  */
 
-#include <linux/msdos_fs.h>
-#include <linux/kernel.h>
-#include <linux/errno.h>
-#include <linux/stat.h>
+#include "../../include/linux/msdos_fs.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/stat.h"
 
 
 static struct fat_cache *fat_cache,cache[FAT_CACHE];

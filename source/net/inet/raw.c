@@ -29,17 +29,17 @@
  *		as published by the Free Software Foundation; either version
  *		2 of the License, or (at your option) any later version.
  */
-#include <asm/system.h>
-#include <asm/segment.h>
-#include <linux/types.h>
-#include <linux/sched.h>
-#include <linux/errno.h>
-#include <linux/timer.h>
-#include <linux/mm.h>
-#include <linux/kernel.h>
-#include <linux/fcntl.h>
-#include <linux/socket.h>
-#include <linux/in.h>
+#include "../../include/asm/system.h"
+#include "../../include/asm/segment.h"
+#include "../../include/linux/types.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/timer.h"
+#include "../../include/linux/mm.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/fcntl.h"
+#include "../../include/linux/socket.h"
+#include "../../include/linux/in.h"
 #include "inet.h"
 #include "dev.h"
 #include "ip.h"
@@ -65,7 +65,7 @@ raw_err (int err, unsigned char *header, unsigned long daddr,
 	 unsigned long saddr, struct inet_protocol *protocol)
 {
   struct sock *sk;
-   
+
   DPRINTF((DBG_RAW, "raw_err(err=%d, hdr=%X, daddr=%X, saddr=%X, protocl=%X)\n",
 		err, header, daddr, saddr, protocol));
 
@@ -81,7 +81,7 @@ raw_err (int err, unsigned char *header, unsigned long daddr,
 
   sk->err = icmp_err_convert[err & 0xff].errno;
   sk->error_report(sk);
-  
+
   return;
 }
 
@@ -172,7 +172,7 @@ raw_sendto(struct sock *sk, unsigned char *from, int len,
 	sin.sin_addr.s_addr = sk->daddr;
   }
   if (sin.sin_port == 0) sin.sin_port = sk->protocol;
-  
+
   if (sk->broadcast == 0 && chk_addr(sin.sin_addr.s_addr)==IS_BROADCAST)
   	return -EACCES;
 
@@ -186,7 +186,7 @@ raw_sendto(struct sock *sk, unsigned char *from, int len,
   		release_sock(sk);
   		return(err);
   	}
-  	
+
 	skb = sk->prot->wmalloc(sk,
 			len+sizeof(*skb) + sk->prot->max_header,
 			0, GFP_KERNEL);
@@ -194,7 +194,7 @@ raw_sendto(struct sock *sk, unsigned char *from, int len,
 		int tmp;
 
 		DPRINTF((DBG_RAW, "raw_sendto: write buffer full?\n"));
-		if (noblock) 
+		if (noblock)
 			return(-EAGAIN);
 		tmp = sk->wmem_alloc;
 		release_sock(sk);
@@ -217,7 +217,7 @@ raw_sendto(struct sock *sk, unsigned char *from, int len,
   skb->free = 1; /* these two should be unecessary. */
   skb->arp = 0;
 
-  tmp = sk->prot->build_header(skb, sk->saddr, 
+  tmp = sk->prot->build_header(skb, sk->saddr,
 			       sin.sin_addr.s_addr, &dev,
 			       sk->protocol, sk->opt, skb->mem_len, sk->ip_tos,sk->ip_ttl);
   if (tmp < 0) {
@@ -244,14 +244,14 @@ raw_sendto(struct sock *sk, unsigned char *from, int len,
   }
 
   skb->len = tmp + len;
-  
+
   if(dev!=NULL && skb->len > 4095)
   {
   	kfree_skb(skb, FREE_WRITE);
   	release_sock(sk);
   	return(-EMSGSIZE);
   }
-  
+
   sk->prot->queue_xmit(sk, dev, skb, 1);
   release_sock(sk);
   return(len);
@@ -298,7 +298,7 @@ raw_init(struct sock *sk)
   p->name="USER";
   p->frag_handler = NULL;	/* For now */
   inet_add_protocol(p);
-   
+
   /* We need to remember this somewhere. */
   sk->pair = (struct sock *)p;
 
@@ -341,7 +341,7 @@ raw_recvfrom(struct sock *sk, unsigned char *to, int len,
 	if(err)
 		return err;
   }
-  
+
   err=verify_area(VERIFY_WRITE,to,len);
   if(err)
   	return err;
@@ -351,7 +351,7 @@ raw_recvfrom(struct sock *sk, unsigned char *to, int len,
   	return err;
 
   copied = min(len, skb->len);
-  
+
   skb_copy_datagram(skb, 0, to, copied);
 
   /* Copy the address. */

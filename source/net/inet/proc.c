@@ -28,14 +28,14 @@
  *		as published by the Free Software Foundation; either version
  *		2 of the License, or (at your option) any later version.
  */
-#include <asm/system.h>
-#include <linux/autoconf.h>
-#include <linux/sched.h>
-#include <linux/socket.h>
-#include <linux/net.h>
-#include <linux/un.h>
-#include <linux/in.h>
-#include <linux/param.h>
+#include "../../include/asm/system.h"
+#include "../../include/linux/autoconf.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/socket.h"
+#include "../../include/linux/net.h"
+#include "../../include/linux/un.h"
+#include "../../include/linux/in.h"
+#include "../../include/linux/param.h"
 #include "inet.h"
 #include "dev.h"
 #include "ip.h"
@@ -87,8 +87,8 @@ get__netinfo(struct proto *pro, char *buffer, int format)
 		if (!timer_active)
 			sp->timer.expires = 0;
 		pos+=sprintf(pos, "%2d: %08lX:%04X %08lX:%04X %02X %08lX:%08lX %02X:%08lX %08X %d\n",
-			i, src, srcp, dest, destp, sp->state, 
-			format==0?sp->write_seq-sp->rcv_ack_seq:sp->rmem_alloc, 
+			i, src, srcp, dest, destp, sp->state,
+			format==0?sp->write_seq-sp->rcv_ack_seq:sp->rmem_alloc,
 			format==0?sp->acked_seq-sp->copied_seq:sp->wmem_alloc,
 			timer_active, sp->timer.expires, (unsigned) sp->retransmits,
 			SOCK_INODE(sp->socket)->i_uid);
@@ -112,7 +112,7 @@ get__netinfo(struct proto *pro, char *buffer, int format)
 		   before this will clear before we jump back and cli, so its not as bad as it looks */
   }
   return(strlen(buffer));
-} 
+}
 
 
 int tcp_get_info(char *buffer)

@@ -6,7 +6,8 @@
 #ifndef _LINUX_MTIO_H
 #define _LINUX_MTIO_H
 
-#include <linux/ioctl.h>
+#include "../../include/linux/types.h"
+#include "../../include/linux/ioctl.h"
 
 /*
  * Structures and definitions for mag tape io control commands
@@ -21,7 +22,7 @@ struct	mtop {
 /* Magnetic Tape operations [Not all operations supported by all drivers]: */
 #define MTRESET 0	/* +reset drive in case of problems */
 #define MTFSF	1	/* forward space over FileMark,
-			 * position at first record of next file 
+			 * position at first record of next file
 			 */
 #define MTBSF	2	/* backward space FileMark (position before FM) */
 #define MTFSR	3	/* forward space record */
@@ -153,4 +154,3 @@ struct	mtpos {
  */
 
 #endif /* _LINUX_MTIO_H */
-

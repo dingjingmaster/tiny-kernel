@@ -6,14 +6,14 @@
  *  nfs symlink handling code
  */
 
-#include <asm/segment.h>
+#include "../../include/asm/segment.h"
 
-#include <linux/sched.h>
-#include <linux/errno.h>
-#include <linux/nfs_fs.h>
-#include <linux/stat.h>
-#include <linux/mm.h>
-#include <linux/malloc.h>
+#include "../../include/linux/sched.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/nfs_fs.h"
+#include "../../include/linux/stat.h"
+#include "../../include/linux/mm.h"
+#include "../../include/linux/malloc.h"
 
 static int nfs_readlink(struct inode *, char *, int);
 static int nfs_follow_link(struct inode *, struct inode *, int, int,

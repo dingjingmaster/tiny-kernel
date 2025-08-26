@@ -7,8 +7,8 @@
 #ifndef _8390_h
 #define _8390_h
 
-#include <linux/if_ether.h>
-#include <linux/ioport.h>
+#include "../../include/linux/if_ether.h"
+#include "../../include/linux/ioport.h"
 
 #define TX_2X_PAGES 12
 #define TX_1X_PAGES 6

@@ -25,7 +25,8 @@
  */
 #ifndef _SKBUFF_H
 #define _SKBUFF_H
-#include <linux/malloc.h>
+#include "../../include/linux/malloc.h"
+#include "../../include/linux/wait.h"
 
 #ifdef CONFIG_IPX
 #include "ipx.h"
@@ -56,9 +57,9 @@ struct sk_buff {
 	struct arphdr	*arp;
 	unsigned char	*raw;
 	unsigned long	seq;
-#ifdef CONFIG_IPX	
+#ifdef CONFIG_IPX
 	ipx_packet	*ipx;
-#endif	
+#endif
   } h;
   struct iphdr		*ip_hdr;		/* For IPPROTO_RAW */
   unsigned long			mem_len;

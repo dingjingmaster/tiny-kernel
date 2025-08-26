@@ -8,21 +8,21 @@
  * discipline handling modules (like SLIP).
  */
 
-#include <linux/types.h>
-#include <linux/termios.h>
-#include <linux/errno.h>
-#include <linux/sched.h>
-#include <linux/config.h>
-#include <linux/kernel.h>
-#include <linux/major.h>
-#include <linux/tty.h>
-#include <linux/fcntl.h>
-#include <linux/string.h>
+#include "../../include/linux/types.h"
+#include "../../include/linux/termios.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/config.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/major.h"
+#include "../../include/linux/tty.h"
+#include "../../include/linux/fcntl.h"
+#include "../../include/linux/string.h"
 
-#include <asm/io.h>
-#include <asm/bitops.h>
-#include <asm/segment.h>
-#include <asm/system.h>
+#include "../../include/asm/io.h"
+#include "../../include/asm/bitops.h"
+#include "../../include/asm/segment.h"
+#include "../../include/asm/system.h"
 
 #undef	DEBUG
 #ifdef DEBUG
@@ -119,7 +119,7 @@ static int do_get_ps_info(int arg)
 	struct task_struct **p;
 	char *c, *d;
 	int i, n = 0;
-	
+
 	i = verify_area(VERIFY_WRITE, (void *)arg, sizeof(struct tstruct));
 	if (i)
 		return i;
@@ -132,9 +132,9 @@ static int do_get_ps_info(int arg)
 				put_fs_byte(*c++, d++);
 			put_fs_long(1, (unsigned long *)(ts->present+n));
 		}
-		else	
+		else
 			put_fs_long(0, (unsigned long *)(ts->present+n));
-	return(0);			
+	return(0);
 }
 
 static void unset_locked_termios(struct termios *termios,
@@ -142,7 +142,7 @@ static void unset_locked_termios(struct termios *termios,
 				 struct termios *locked)
 {
 	int	i;
-	
+
 #define NOSET_MASK(x,y,z) (x = ((x) & ~(z)) | ((y) & (z)))
 
 	if (!locked) {
@@ -550,9 +550,9 @@ int tty_ioctl(struct inode * inode, struct file * file,
 		case TIOCLINUX:
 			switch (get_fs_byte((char *)arg))
 			{
-				case 0: 
+				case 0:
 					return do_screendump(arg);
-				case 1: 
+				case 1:
 					return do_get_ps_info(arg);
 #ifdef CONFIG_SELECTION
 				case 2:
@@ -563,7 +563,7 @@ int tty_ioctl(struct inode * inode, struct file * file,
 					unblank_screen();
 					return 0;
 #endif /* CONFIG_SELECTION */
-				default: 
+				default:
 					return -EINVAL;
 			}
 		case TIOCCONS:

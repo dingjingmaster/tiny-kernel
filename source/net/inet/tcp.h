@@ -18,7 +18,7 @@
 #ifndef _TCP_H
 #define _TCP_H
 
-#include <linux/tcp.h>
+#include "../../include/linux/tcp.h"
 
 #define MAX_SYN_SIZE	44 + sizeof (struct sk_buff) + MAX_HEADER
 #define MAX_FIN_SIZE	40 + sizeof (struct sk_buff) + MAX_HEADER
@@ -47,7 +47,7 @@
 				 */
 
 #define TCP_TIMEOUT_LEN	(15*60*HZ) /* should be about 15 mins		*/
-#define TCP_TIMEWAIT_LEN (60*HZ) /* how long to wait to sucessfully 
+#define TCP_TIMEWAIT_LEN (60*HZ) /* how long to wait to sucessfully
 				  * close the socket, about 60 seconds	*/
 #define TCP_ACK_TIME	3000	/* time to delay before sending an ACK	*/
 #define TCP_DONE_TIME	250	/* maximum time to wait before actually
@@ -69,7 +69,7 @@
 /*
  *	TCP option
  */
- 
+
 #define TCPOPT_NOP		1
 #define TCPOPT_EOL		0
 #define TCPOPT_MSS		2

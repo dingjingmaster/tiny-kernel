@@ -1,7 +1,7 @@
 #ifndef _KBD_KERN_H
 #define _KBD_KERN_H
 
-#include <linux/interrupt.h>
+#include "../../include/linux/interrupt.h"
 #define set_leds() mark_bh(KEYBOARD_BH)
 
 #include <linux/keyboard.h>

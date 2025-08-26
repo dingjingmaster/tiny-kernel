@@ -6,12 +6,12 @@
  *  minix directory handling functions
  */
 
-#include <asm/segment.h>
+#include "../../include/asm/segment.h"
 
-#include <linux/errno.h>
-#include <linux/fs.h>
-#include <linux/minix_fs.h>
-#include <linux/stat.h>
+#include "../../include/linux/errno.h"
+#include "../../include/linux/fs.h"
+#include "../../include/linux/minix_fs.h"
+#include "../../include/linux/stat.h"
 
 static int minix_dir_read(struct inode * inode, struct file * filp, char * buf, int count)
 {

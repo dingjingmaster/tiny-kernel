@@ -11,7 +11,7 @@
  *		Fred N. van Kempen, <waltje@uWalt.NL.Mugnet.ORG>
  *		Mark Evans, <evansmp@uhura.aston.ac.uk>
  *
- * Fixes:	
+ * Fixes:
  *		Alan Cox	:	Generic queue usage.
  *		Gerhard Koerting:	ICMP addressing corrected
  *		Alan Cox	:	Use tos/ttl settings
@@ -22,12 +22,12 @@
  *		as published by the Free Software Foundation; either version
  *		2 of the License, or (at your option) any later version.
  */
-#include <linux/types.h>
-#include <linux/sched.h>
-#include <linux/kernel.h>
-#include <linux/fcntl.h>
-#include <linux/socket.h>
-#include <linux/in.h>
+#include "../../include/linux/types.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/fcntl.h"
+#include "../../include/linux/socket.h"
+#include "../../include/linux/in.h"
 #include "inet.h"
 #include "dev.h"
 #include "ip.h"
@@ -37,10 +37,10 @@
 #include "tcp.h"
 #include "skbuff.h"
 #include "sock.h"
-#include <linux/errno.h>
-#include <linux/timer.h>
-#include <asm/system.h>
-#include <asm/segment.h>
+#include "../../include/linux/errno.h"
+#include "../../include/linux/timer.h"
+#include "../../include/asm/system.h"
+#include "../../include/asm/segment.h"
 
 
 #define min(a,b)	((a)<(b)?(a):(b))
@@ -93,9 +93,9 @@ icmp_send(struct sk_buff *skb_in, int type, int code, struct device *dev)
   len = sizeof(struct sk_buff) + dev->hard_header_len +
 	sizeof(struct iphdr) + sizeof(struct icmphdr) +
 	sizeof(struct iphdr) + 8;	/* amount of header to return */
-	   
+
   skb = (struct sk_buff *) alloc_skb(len, GFP_ATOMIC);
-  if (skb == NULL) 
+  if (skb == NULL)
   	return;
 
   skb->sk = NULL;
@@ -393,7 +393,7 @@ icmp_rcv(struct sk_buff *skb1, struct device *dev, struct options *opt,
 	case ICMP_REDIRECT:
 		icmp_redirect(icmph, skb1, dev);
 		return(0);
-	case ICMP_ECHO: 
+	case ICMP_ECHO:
 		icmp_echo(icmph, skb1, dev, saddr, daddr, len, opt);
 		return 0;
 	case ICMP_ECHOREPLY:

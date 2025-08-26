@@ -2,18 +2,18 @@
  *  linux/fs/devices.c
  *
  * (C) 1993 Matthias Urlichs -- collected common code and tables.
- * 
+ *
  *  Copyright (C) 1991, 1992  Linus Torvalds
  */
 
-#include <linux/fs.h>
-#include <linux/major.h>
-#include <linux/string.h>
-#include <linux/sched.h>
-#include <linux/ext_fs.h>
-#include <linux/stat.h>
-#include <linux/fcntl.h>
-#include <linux/errno.h>
+#include "../include/linux/fs.h"
+#include "../include/linux/major.h"
+#include "../include/linux/string.h"
+#include "../include/linux/sched.h"
+#include "../include/linux/ext_fs.h"
+#include "../include/linux/stat.h"
+#include "../include/linux/fcntl.h"
+#include "../include/linux/errno.h"
 
 struct device_struct {
 	const char * name;
@@ -104,7 +104,7 @@ int blkdev_open(struct inode * inode, struct file * filp)
 	if (filp->f_op->open)
 		return filp->f_op->open(inode,filp);
 	return 0;
-}	
+}
 
 /*
  * Dummy default file-operations: the only thing this does

@@ -1,23 +1,23 @@
 /*
    History:
-    Started: Aug 9 by Lawrence Foard (entropy@world.std.com), to allow user 
+    Started: Aug 9 by Lawrence Foard (entropy@world.std.com), to allow user
      process control of SCSI devices.
     Development Sponsored by Killy Corp. NY NY
-    
+
     Borrows code from st driver.
 */
 
-#include <linux/fs.h>
-#include <linux/kernel.h>
-#include <linux/sched.h>
-#include <linux/string.h>
-#include <linux/errno.h>
-#include <linux/mtio.h>
-#include <linux/ioctl.h>
-#include <linux/fcntl.h>
-#include <asm/io.h>
-#include <asm/segment.h>
-#include <asm/system.h>
+#include "../../include/linux/fs.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/mtio.h"
+#include "../../include/linux/ioctl.h"
+#include "../../include/linux/fcntl.h"
+#include "../../include/asm/io.h"
+#include "../../include/asm/segment.h"
+#include "../../include/asm/system.h"
 
 #include "../block/blk.h"
 #include "scsi.h"
@@ -133,11 +133,11 @@ static char *sg_malloc(int size)
     big_inuse=1;
     return big_buff;
    }
-#endif   
+#endif
   return NULL;
  }
 
-static void sg_free(char *buff,int size) 
+static void sg_free(char *buff,int size)
  {
 #ifdef SG_BIG_BUFF
   if (buff==big_buff)
@@ -222,7 +222,7 @@ static int sg_write(struct inode *inode,struct file *filp,char *buf,int count)
      return -EWOULDBLOCK;
 #ifdef DEBUG
     printk("sg_write: sleeping on pending request\n");
-#endif     
+#endif
     interruptible_sleep_on(&device->write_wait);
     if (current->signal & ~current->blocked)
      return -ERESTARTSYS;
@@ -254,10 +254,10 @@ static int sg_write(struct inode *inode,struct file *filp,char *buf,int count)
     wake_up(&device->write_wait);
     sg_free(device->buff,device->buff_len);
     return -EWOULDBLOCK;
-   } 
+   }
 #ifdef DEBUG
   printk("device allocated\n");
-#endif    
+#endif
   /* now issue command */
   SCpnt->request.dev=dev;
   SCpnt->sense_buffer[0]=0;
@@ -273,7 +273,7 @@ static int sg_write(struct inode *inode,struct file *filp,char *buf,int count)
                (void *) device->buff,amt,sg_command_done,device->timeout,SG_DEFAULT_RETRIES);
 #ifdef DEBUG
   printk("done cmd\n");
-#endif               
+#endif
   return count;
  }
 
@@ -294,7 +294,7 @@ static struct file_operations sg_fops = {
 /* Driver initialization */
 unsigned long sg_init(unsigned long mem_start, unsigned long mem_end)
  {
-  if (register_chrdev(SCSI_GENERIC_MAJOR,"sg",&sg_fops)) 
+  if (register_chrdev(SCSI_GENERIC_MAJOR,"sg",&sg_fops))
    {
     printk("Unable to get major %d for generic SCSI device\n",
 	   SCSI_GENERIC_MAJOR);
@@ -322,7 +322,7 @@ unsigned long sg_init1(unsigned long mem_start, unsigned long mem_end)
 
 void sg_attach(Scsi_Device * SDp)
  {
-  if(NR_SG >= MAX_SG) 
+  if(NR_SG >= MAX_SG)
    panic ("scsi_devices corrupt (sg)");
   scsi_generics[NR_SG].device=SDp;
   scsi_generics[NR_SG].users=0;

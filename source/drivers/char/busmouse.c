@@ -23,16 +23,17 @@
  *   renamed this file mouse.c => busmouse.c
  */
 
-#include <linux/kernel.h>
-#include <linux/sched.h>
-#include <linux/busmouse.h>
-#include <linux/signal.h>
-#include <linux/errno.h>
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/busmouse.h"
+#include "../../include/linux/signal.h"
+#include "../../include/linux/errno.h"
 
-#include <asm/io.h>
-#include <asm/segment.h>
-#include <asm/system.h>
-#include <asm/irq.h>
+#include "../../include/asm/io.h"
+#include "../../include/asm/segment.h"
+#include "../../include/asm/system.h"
+#include "../../include/asm/irq.h"
+
 
 static struct mouse_status mouse;
 static int mouse_irq = MOUSE_IRQ;
@@ -137,7 +138,7 @@ static int read_mouse(struct inode * inode, struct file * file, char * buffer, i
 	int r;
 	int dx;
 	int dy;
-	unsigned char buttons; 
+	unsigned char buttons;
 
 	if (count < 3)
 		return -EINVAL;
@@ -148,7 +149,7 @@ static int read_mouse(struct inode * inode, struct file * file, char * buffer, i
 
 	/*
 	 * Obtain the current mouse parameters and limit as appropriate for
-	 * the return data format.  Interrupts are only disabled while 
+	 * the return data format.  Interrupts are only disabled while
 	 * obtaining the parameters, NOT during the puts_fs_byte() calls,
 	 * so paging in put_fs_byte() does not effect mouse tracking.
 	 */

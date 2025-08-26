@@ -9,19 +9,19 @@
  *	Copyright (C) 1993
  *
  */
-#include <linux/stat.h>
-#include <linux/sched.h>
-#include <linux/kernel.h>
-#include <linux/mm.h>
-#include <linux/shm.h>
-#include <linux/errno.h>
-#include <linux/mman.h>
-#include <linux/string.h>
-#include <linux/malloc.h>
-#include <linux/nfs_fs.h>
+#include "../../include/linux/stat.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/mm.h"
+#include "../../include/linux/shm.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/mman.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/malloc.h"
+#include "../../include/linux/nfs_fs.h"
 
-#include <asm/segment.h>
-#include <asm/system.h>
+#include "../../include/asm/segment.h"
+#include "../../include/asm/system.h"
 
 extern int share_page(struct vm_area_struct * area, struct task_struct * tsk,
 	struct inode * inode, unsigned long address, unsigned long error_code,

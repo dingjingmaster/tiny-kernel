@@ -1,8 +1,8 @@
-#include <linux/kernel.h>
-#include <linux/sched.h>
-#include <linux/fs.h>
-#include <asm/segment.h>
-#include <linux/errno.h>
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/fs.h"
+#include "../../include/asm/segment.h"
+#include "../../include/linux/errno.h"
 
 #include "../block/blk.h"
 #include "scsi.h"
@@ -10,7 +10,7 @@
 #include "sr.h"
 #include "scsi_ioctl.h"
 
-#include <linux/cdrom.h>
+#include "../../include/linux/cdrom.h"
 
 #define IOCTL_RETRIES 3
 /* The CDROM is fairly slow, so we need a little extra time */
@@ -22,10 +22,10 @@ static void sr_ioctl_done(Scsi_Cmnd * SCpnt)
 {
   struct request * req;
   struct task_struct * p;
-  
+
   req = &SCpnt->request;
   req->dev = 0xfffe; /* Busy, but indicate request done */
-  
+
   if ((p = req->waiting) != NULL) {
     req->waiting = NULL;
     p->state = TASK_RUNNING;
@@ -45,7 +45,7 @@ static int do_ioctl(int target, unsigned char * sr_cmd, void * buffer, unsigned 
 
 	SCpnt = allocate_device(NULL, scsi_CDs[target].device->index, 1);
 	scsi_do_cmd(SCpnt,
-		    (void *) sr_cmd, buffer, buflength, sr_ioctl_done, 
+		    (void *) sr_cmd, buffer, buflength, sr_ioctl_done,
 		    IOCTL_TIMEOUT, IOCTL_RETRIES);
 
 
@@ -71,16 +71,16 @@ static int do_ioctl(int target, unsigned char * sr_cmd, void * buffer, unsigned 
 	    printk("CDROM (ioctl) reports ILLEGAL REQUEST.\n");
 	    break;
 	  default:
-	    printk("SCSI CD error: host %d id %d lun %d return code = %03x\n", 
-		   scsi_CDs[target].device->host->host_no, 
+	    printk("SCSI CD error: host %d id %d lun %d return code = %03x\n",
+		   scsi_CDs[target].device->host->host_no,
 		   scsi_CDs[target].device->id,
 		   scsi_CDs[target].device->lun,
 		   result);
 	    printk("\tSense class %x, sense error %x, extended sense %x\n",
-		   sense_class(SCpnt->sense_buffer[0]), 
+		   sense_class(SCpnt->sense_buffer[0]),
 		   sense_error(SCpnt->sense_buffer[0]),
 		   SCpnt->sense_buffer[2] & 0xf);
-	    
+
 	};
 
 	result = SCpnt->result;
@@ -100,7 +100,7 @@ int sr_ioctl(struct inode * inode, struct file * file, unsigned int cmd, unsigne
 	target = MINOR(dev);
 	if (target >= NR_SR) return -ENODEV;
 
-	switch (cmd) 
+	switch (cmd)
 		{
 		/* Sun-compatible */
 		case CDROMPAUSE:
@@ -194,7 +194,7 @@ int sr_ioctl(struct inode * inode, struct file * file, unsigned int cmd, unsigne
 
 			verify_area (VERIFY_WRITE, (void *) arg, sizeof (struct cdrom_tochdr));
 			memcpy_tofs ((void *) arg, &tochdr, sizeof (struct cdrom_tochdr));
-			
+
 			return result;
 		        }
 
@@ -244,7 +244,7 @@ int sr_ioctl(struct inode * inode, struct file * file, unsigned int cmd, unsigne
 
 			result = do_ioctl(target, sr_cmd, NULL, 255);
 			return result;
-			
+
 		case CDROMSTART:
 		        sr_cmd[0] = START_STOP;
 			sr_cmd[1] = ((scsi_CDs[target].device->lun) << 5) | 1;
@@ -338,7 +338,7 @@ int sr_ioctl(struct inode * inode, struct file * file, unsigned int cmd, unsigne
 			{
 			  struct cdrom_subchnl subchnl;
 			  char * buffer;
-			  
+
 			  sr_cmd[0] = SCMD_READ_SUBCHANNEL;
 			  sr_cmd[1] = ((scsi_CDs[target].device->lun) << 5) | 0x02;    /* MSF format */
 			  sr_cmd[2] = 0x40;    /* I do want the subchannel info */

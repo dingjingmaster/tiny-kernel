@@ -1,6 +1,6 @@
 #ifndef _LINUX_SEM_H
 #define _LINUX_SEM_H
-#include <linux/ipc.h>
+#include "../../include/linux/ipc.h"
 
 /* semop flags */
 #define SEM_UNDO        010000  /* undo the operation on exit */
@@ -51,16 +51,16 @@ union semun {
 
 
 struct  seminfo {
-    int semmap; 
-    int semmni; 
-    int semmns; 
-    int semmnu; 
-    int semmsl; 
-    int semopm; 
-    int semume; 
-    int semusz; 
-    int semvmx; 
-    int semaem; 
+    int semmap;
+    int semmni;
+    int semmns;
+    int semmnu;
+    int semmsl;
+    int semopm;
+    int semume;
+    int semusz;
+    int semvmx;
+    int semaem;
 };
 
 #define SEMMNI  128             /* ?  max # of semaphore identifiers */
@@ -74,11 +74,11 @@ struct  seminfo {
 #define SEMMNU  SEMMNS          /* num of undo structures system wide */
 #define SEMAEM  (SEMVMX >> 1)   /* adjust on exit max value */
 #define SEMMAP  SEMMNS          /* # of entries in semaphore map */
-#define SEMUSZ  20		/* sizeof struct sem_undo */ 
+#define SEMUSZ  20		/* sizeof struct sem_undo */
 
 #ifdef __KERNEL__
 /* ipcs ctl cmds */
-#define SEM_STAT 18	
+#define SEM_STAT 18
 #define SEM_INFO 19
 
 /* per process undo requests */
@@ -89,7 +89,7 @@ struct sem_undo {
     int    semid;
     short  semadj; 		/* semval adjusted by exit */
     ushort sem_num; 		/* semaphore index in array semid */
-};      
+};
 
 #endif /* __KERNEL__ */
 

@@ -1,7 +1,7 @@
 #ifndef _LINUX_USER_H
 #define _LINUX_USER_H
 
-#include <linux/ptrace.h>
+#include "../../include/linux/ptrace.h"
 /* Core file format: The core file is written in such a way that gdb
    can understand it and provide useful information to the user (under
    linux we use the 'trad-core' bfd).  There are quite a number of

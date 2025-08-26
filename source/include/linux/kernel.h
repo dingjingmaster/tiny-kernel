@@ -5,7 +5,7 @@
  * 'kernel.h' contains some often-used function prototypes etc
  */
 
-#ifdef __KERNEL__
+#if 1 //def __KERNEL__
 
 #include "linkage.h"
 

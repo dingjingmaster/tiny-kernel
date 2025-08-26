@@ -11,13 +11,13 @@
  *  Copyright (C) 1993  Bruno Haible
  */
 
-#include <linux/sched.h>
-#include <linux/kernel.h>
-#include <linux/fs.h>
-#include <linux/sysv_fs.h>
-#include <linux/string.h>
-#include <linux/stat.h>
-#include <linux/errno.h>
+#include "../../include/linux/sched.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/fs.h"
+#include "../../include/linux/sysv_fs.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/stat.h"
+#include "../../include/linux/errno.h"
 
 /* compare strings: name[0..len-1] (not zero-terminated) and
  * buffer[0..] (filled with zeroes up to buffer[0..maxlen-1])
@@ -706,7 +706,7 @@ start_up:
 	if (!old_inode)
 		goto end_rename;
 	retval = -EPERM;
-	if ((old_dir->i_mode & S_ISVTX) && 
+	if ((old_dir->i_mode & S_ISVTX) &&
 	    current->euid != old_inode->i_uid &&
 	    current->euid != old_dir->i_uid && !suser())
 		goto end_rename;
@@ -737,7 +737,7 @@ start_up:
 			goto end_rename;
 	}
 	retval = -EPERM;
-	if (new_inode && (new_dir->i_mode & S_ISVTX) && 
+	if (new_inode && (new_dir->i_mode & S_ISVTX) &&
 	    current->euid != new_inode->i_uid &&
 	    current->euid != new_dir->i_uid && !suser())
 		goto end_rename;

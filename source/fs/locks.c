@@ -12,13 +12,13 @@
  *  Edited by Kai Petzke, wpp@marie.physik.tu-berlin.de
  */
 
-#include <asm/segment.h>
+#include "../include/asm/segment.h"
 
-#include <linux/sched.h>
-#include <linux/kernel.h>
-#include <linux/errno.h>
-#include <linux/stat.h>
-#include <linux/fcntl.h>
+#include "../include/linux/sched.h"
+#include "../include/linux/kernel.h"
+#include "../include/linux/errno.h"
+#include "../include/linux/stat.h"
+#include "../include/linux/fcntl.h"
 
 #define OFFSET_MAX	((off_t)0x7fffffff)	/* FIXME: move elsewhere? */
 
@@ -136,7 +136,7 @@ int fcntl_setlk(unsigned int fd, unsigned int cmd, struct flock *l)
   	/*
   	 * Scan for a conflicting lock ...
   	 */
-  
+
 	if (file_lock.fl_type != F_UNLCK) {
 repeat:
 		for (fl = filp->f_inode->i_flock; fl != NULL; fl = fl->fl_next) {
@@ -257,7 +257,7 @@ static int overlap(struct file_lock *fl1, struct file_lock *fl2)
  *
  * WARNING: We assume the lock doesn't conflict with any other lock.
  */
-  
+
 /*
  * Rewritten by Kai Petzke:
  * We sort the lock list first by owner, then by the starting address.

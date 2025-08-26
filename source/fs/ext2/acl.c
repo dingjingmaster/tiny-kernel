@@ -11,11 +11,11 @@
  * second extended file system.
  */
 
-#include <linux/errno.h>
-#include <linux/fs.h>
-#include <linux/ext2_fs.h>
-#include <linux/sched.h>
-#include <linux/stat.h>
+#include "../../include/linux/errno.h"
+#include "../../include/linux/fs.h"
+#include "../../include/linux/ext2_fs.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/stat.h"
 
 /*
  * ext2_permission ()

@@ -4,13 +4,13 @@
  *  Copyright (C) 1991, 1992  Linus Torvalds
  */
 
-#include <linux/types.h>
-#include <linux/errno.h>
-#include <linux/stat.h>
-#include <linux/kernel.h>
-#include <linux/sched.h>
+#include "../include/linux/types.h"
+#include "../include/linux/errno.h"
+#include "../include/linux/stat.h"
+#include "../include/linux/kernel.h"
+#include "../include/linux/sched.h"
 
-#include <asm/segment.h>
+#include "../include/asm/segment.h"
 
 /*
  * Count is not yet used: but we'll probably support reading several entries
@@ -92,7 +92,7 @@ asmlinkage int sys_write(unsigned int fd,char * buf,unsigned int count)
 	int error;
 	struct file * file;
 	struct inode * inode;
-	
+
 	if (fd>=NR_OPEN || !(file=current->filp[fd]) || !(inode=file->f_inode))
 		return -EBADF;
 	if (!(file->f_mode & 2))

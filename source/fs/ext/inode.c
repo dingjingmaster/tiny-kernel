@@ -10,16 +10,16 @@
  *  Copyright (C) 1991, 1992  Linus Torvalds
  */
 
-#include <linux/sched.h>
-#include <linux/ext_fs.h>
-#include <linux/kernel.h>
-#include <linux/mm.h>
-#include <linux/string.h>
-#include <linux/stat.h>
-#include <linux/locks.h>
+#include "../../include/linux/sched.h"
+#include "../../include/linux/ext_fs.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/mm.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/stat.h"
+#include "../../include/linux/locks.h"
 
-#include <asm/system.h>
-#include <asm/segment.h>
+#include "../../include/asm/system.h"
+#include "../../include/asm/segment.h"
 
 void ext_put_inode(struct inode *inode)
 {
@@ -43,7 +43,7 @@ void ext_put_super(struct super_block *sb)
 	return;
 }
 
-static struct super_operations ext_sops = { 
+static struct super_operations ext_sops = {
 	ext_read_inode,
 	NULL,
 	ext_write_inode,
@@ -54,7 +54,7 @@ static struct super_operations ext_sops = {
 	NULL
 };
 
-struct super_block *ext_read_super(struct super_block *s,void *data, 
+struct super_block *ext_read_super(struct super_block *s,void *data,
 				   int silent)
 {
 	struct buffer_head *bh;
@@ -338,7 +338,7 @@ struct buffer_head * ext_bread(struct inode * inode, int block, int create)
 	struct buffer_head * bh;
 
 	bh = ext_getblk(inode,block,create);
-	if (!bh || bh->b_uptodate) 
+	if (!bh || bh->b_uptodate)
 		return bh;
 	ll_rw_block(READ, 1, &bh);
 	wait_on_buffer(bh);
@@ -441,4 +441,3 @@ int ext_sync_inode (struct inode *inode)
 	brelse (bh);
 	return err;
 }
-

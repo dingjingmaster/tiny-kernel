@@ -2,27 +2,27 @@
  *  linux/fs/xiafs/inode.c
  *
  *  Copyright (C) Q. Frank Xia, 1993.
- *  
+ *
  *  Based on Linus' minix/inode.c
  *  Copyright (C) Linus Torvalds, 1991, 1992.
  *
  *  This software may be redistributed per Linux Copyright.
  */
 
-#include <linux/sched.h>
-#include <linux/xia_fs.h>
-#include <linux/kernel.h>
-#include <linux/mm.h>
-#include <linux/string.h>
-#include <linux/stat.h>
-#include <linux/locks.h>
-#include <asm/system.h>
-#include <asm/segment.h>
+#include "../../include/linux/sched.h"
+#include "../../include/linux/xia_fs.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/mm.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/stat.h"
+#include "../../include/linux/locks.h"
+#include "../../include/asm/system.h"
+#include "../../include/asm/segment.h"
 
 #include "xiafs_mac.h"
 
 static u_long random_nr;
-  
+
 void xiafs_put_inode(struct inode *inode)
 {
     if (inode->i_nlink)
@@ -45,7 +45,7 @@ void xiafs_put_super(struct super_block *sb)
     unlock_super(sb);
 }
 
-static struct super_operations xiafs_sops = { 
+static struct super_operations xiafs_sops = {
     xiafs_read_inode,
     NULL,
     xiafs_write_inode,
@@ -87,8 +87,8 @@ struct super_block *xiafs_read_super(struct super_block *s, void *data,
     }
     s->s_blocksize = sp->s_zone_size;
     s->s_blocksize_bits = 10 + sp->s_zone_shift;
-    if (s->s_blocksize != BLOCK_SIZE && 
-	(s->s_blocksize == 1024 || s->s_blocksize == 2048 ||  
+    if (s->s_blocksize != BLOCK_SIZE &&
+	(s->s_blocksize == 1024 || s->s_blocksize == 2048 ||
 	 s->s_blocksize == 4096)) {
       brelse(bh);
       set_blocksize(dev, s->s_blocksize);
@@ -138,7 +138,7 @@ struct super_block *xiafs_read_super(struct super_block *s, void *data,
     s->s_dev = dev;
     s->s_op = &xiafs_sops;
     s->s_mounted = iget(s, _XIAFS_ROOT_INO);
-    if (!s->s_mounted) 
+    if (!s->s_mounted)
         goto xiafs_read_super_fail;
     unlock_super(s);
     random_nr=CURRENT_TIME;
@@ -210,7 +210,7 @@ int xiafs_bmap(struct inode * inode,int zone)
     zone -= XIAFS_ADDRS_PER_Z(inode->i_sb);
     i = inode->u.xiafs_i.i_dind_zone;
     if (i)
-      i = zone_bmap(bread(inode->i_dev, i, XIAFS_ZSIZE(inode->i_sb)), 
+      i = zone_bmap(bread(inode->i_dev, i, XIAFS_ZSIZE(inode->i_sb)),
 		    zone >> XIAFS_ADDRS_PER_Z_BITS(inode->i_sb));
     if (i)
       i= zone_bmap(bread(inode->i_dev,i, XIAFS_ZSIZE(inode->i_sb)),
@@ -230,7 +230,7 @@ static u_long get_prev_addr(struct inode * inode, int zone)
     return random_nr + inode->i_sb->u.xiafs_sb.s_firstdatazone;
 }
 
-static struct buffer_head * 
+static struct buffer_head *
 dt_getblk(struct inode * inode, u_long *lp, int create, u_long prev_addr)
 {
     int tmp;
@@ -260,8 +260,8 @@ repeat:
     return result;
 }
 
-static struct buffer_head * 
-indt_getblk(struct inode * inode, struct buffer_head * bh, 
+static struct buffer_head *
+indt_getblk(struct inode * inode, struct buffer_head * bh,
 	    int nr, int create, u_long prev_addr)
 {
     int tmp;
@@ -337,9 +337,9 @@ struct buffer_head * xiafs_getblk(struct inode * inode, int zone, int create)
     }
     zone -= XIAFS_ADDRS_PER_Z(inode->i_sb);
     bh = dt_getblk(inode, &(inode->u.xiafs_i.i_dind_zone), create, prev_addr);
-    bh = indt_getblk(inode, bh, zone>>XIAFS_ADDRS_PER_Z_BITS(inode->i_sb), 
+    bh = indt_getblk(inode, bh, zone>>XIAFS_ADDRS_PER_Z_BITS(inode->i_sb),
 		     create, prev_addr);
-    bh = indt_getblk(inode, bh, zone&(XIAFS_ADDRS_PER_Z(inode->i_sb)-1), 
+    bh = indt_getblk(inode, bh, zone&(XIAFS_ADDRS_PER_Z(inode->i_sb)-1),
 		     create, prev_addr);
     return bh;
 }
@@ -380,7 +380,7 @@ void xiafs_read_inode(struct inode * inode)
     	printk("XIA-FS: read i-node zone failed (%s %d)\n", WHERE_ERR);
     	return;
     }
-    raw_inode = ((struct xiafs_inode *) bh->b_data) + 
+    raw_inode = ((struct xiafs_inode *) bh->b_data) +
                  ((ino-1) & (XIAFS_INODES_PER_Z(inode->i_sb) - 1));
     inode->i_mode = raw_inode->i_mode;
     inode->i_uid = raw_inode->i_uid;
@@ -435,7 +435,7 @@ static struct buffer_head *  xiafs_update_inode(struct inode * inode)
     	inode->i_dirt=0;
     	return 0;
     }
-    zone = 1 + inode->i_sb->u.xiafs_sb.s_imap_zones + 
+    zone = 1 + inode->i_sb->u.xiafs_sb.s_imap_zones +
                 inode->i_sb->u.xiafs_sb.s_zmap_zones +
 		(ino-1) / XIAFS_INODES_PER_Z(inode->i_sb);
     if (!(bh=bread(inode->i_dev, zone, XIAFS_ZSIZE(inode->i_sb)))) {
@@ -458,7 +458,7 @@ static struct buffer_head *  xiafs_update_inode(struct inode * inode)
     else {
         XIAFS_PUT_BLOCKS(raw_inode, inode->i_blocks);
         for (zone = 0; zone < 8; zone++)
-	    raw_inode->i_zone[zone] = (raw_inode->i_zone[zone] & 0xff000000) 
+	    raw_inode->i_zone[zone] = (raw_inode->i_zone[zone] & 0xff000000)
 	                             | (inode->u.xiafs_i.i_zone[zone] & 0xffffff);
 	raw_inode->i_ind_zone = (raw_inode->i_ind_zone & 0xff000000)
 	                             | (inode->u.xiafs_i.i_ind_zone   & 0xffffff);

@@ -4,12 +4,12 @@
  *  Copyright (C) 1991, 1992  Linus Torvalds
  */
 
-#include <linux/errno.h>
-#include <linux/stat.h>
-#include <linux/fs.h>
-#include <linux/sched.h>
-#include <linux/kernel.h>
-#include <asm/segment.h>
+#include "../include/linux/errno.h"
+#include "../include/linux/stat.h"
+#include "../include/linux/fs.h"
+#include "../include/linux/sched.h"
+#include "../include/linux/kernel.h"
+#include "../include/asm/segment.h"
 
 static void cp_old_stat(struct inode * inode, struct old_stat * statbuf)
 {

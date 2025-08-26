@@ -4,9 +4,9 @@
  *  Copyright (C) 1991, 1992  Linus Torvalds
  */
 
-#include <linux/fs.h>
-#include <linux/string.h>
-#include <linux/mm.h>
+#include "../include/linux/fs.h"
+#include "../include/linux/string.h"
+#include "../include/linux/mm.h"
 
 struct file * first_file;
 int nr_files = 0;

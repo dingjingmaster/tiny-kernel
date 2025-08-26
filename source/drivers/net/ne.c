@@ -19,14 +19,14 @@
 static char *version =
     "ne.c:v0.99-15k 3/3/94 Donald Becker (becker@super.org)\n";
 
-#include <linux/config.h>
-#include <linux/kernel.h>
-#include <linux/sched.h>
-#include <linux/errno.h>
-#include <asm/system.h>
-#include <asm/io.h>
+#include "../../include/linux/config.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/errno.h"
+#include "../../include/asm/system.h"
+#include "../../include/asm/io.h"
 
-#include "dev.h"
+#include "../../net/inet/dev.h"
 #include "8390.h"
 
 #define NE_BASE	 (dev->base_addr)
@@ -214,7 +214,7 @@ static int neprobe1(int ioaddr, struct device *dev, int verbose)
 	/* Fixup for users that don't know that IRQ 2 is really IRQ 9,
 	   or don't know which one to set. */
 	dev->irq = 9;
-    
+
     /* Snarf the interrupt now.  There's no point in waiting since we cannot
        share and the board will usually be enabled. */
     {

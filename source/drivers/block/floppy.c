@@ -16,7 +16,7 @@
  * but I don't like programming floppies, and I have only one anyway.
  * Urgel. I should check for more errors, and do more graceful error
  * recovery. Seems there are problems with several drives. I've tried to
- * correct them. No promises. 
+ * correct them. No promises.
  */
 
 /*
@@ -39,7 +39,7 @@
  */
 
 /*
- * 1992/7/22 -- Hennus Bergman: Added better error reporting, fixed 
+ * 1992/7/22 -- Hennus Bergman: Added better error reporting, fixed
  * FDC data overrun bug, added some preliminary stuff for vertical
  * recording support.
  *
@@ -50,7 +50,7 @@
 
 /* 1992/9/20
  * Modifications for ``Sector Shifting'' by Rob Hooft (hooft@chem.ruu.nl)
- * modelled after the freeware MS/DOS program fdformat/88 V1.8 by 
+ * modelled after the freeware MS/DOS program fdformat/88 V1.8 by
  * Christoph H. Hochst\"atter.
  * I have fixed the shift values to the ones I always use. Maybe a new
  * ioctl() should be created to be able to modify them.
@@ -68,18 +68,18 @@
 #define FLOPPY_IRQ 6
 #define FLOPPY_DMA 2
 
-#include <linux/sched.h>
-#include <linux/fs.h>
-#include <linux/kernel.h>
-#include <linux/timer.h>
-#include <linux/fdreg.h>
-#include <linux/fd.h>
-#include <linux/errno.h>
+#include "../../include/linux/sched.h"
+#include "../../include/linux/fs.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/timer.h"
+#include "../../include/linux/fdreg.h"
+#include "../../include/linux/fd.h"
+#include "../../include/linux/errno.h"
 
-#include <asm/dma.h>
-#include <asm/system.h>
-#include <asm/io.h>
-#include <asm/segment.h>
+#include "../../include/asm/dma.h"
+#include "../../include/asm/system.h"
+#include "../../include/asm/io.h"
+#include "../../include/asm/segment.h"
 
 #define MAJOR_NR FLOPPY_MAJOR
 #include "blk.h"
@@ -533,7 +533,7 @@ static void bad_flp_intr(void)
 		reset = 1;
 	else
 		recalibrate = 1;
-}	
+}
 
 
 /* Set perpendicular mode as required, based on data rate, if supported.
@@ -974,9 +974,9 @@ static void setup_format_params(void)
     /* allow for about 30ms for data transport per track */
     head_shift  = floppy->sect / 6;
     /* a ``cylinder'' is two tracks plus a little stepping time */
-    track_shift = 2 * head_shift + 1; 
+    track_shift = 2 * head_shift + 1;
     /* count backwards */
-    total_shift = floppy->sect - 
+    total_shift = floppy->sect -
 	((track_shift * track + head_shift * head) % floppy->sect);
 
     /* XXX: should do a check to see this fits in tmp_floppy_area!! */
@@ -1369,7 +1369,7 @@ void floppy_init(void)
 		fdc_version = FDC_TYPE_STD;
 	} else
 		fdc_version = reply_buffer[0];
-	if (fdc_version != FDC_TYPE_STD) 
+	if (fdc_version != FDC_TYPE_STD)
 		printk(DEVICE_NAME ": FDC version 0x%x\n", fdc_version);
 #ifndef FDC_FIFO_UNTESTED
 	fdc_version = FDC_TYPE_STD;	/* force std fdc type; can't test other. */

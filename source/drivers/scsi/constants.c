@@ -1,11 +1,11 @@
-/* 
+/*
  * ASCII values for a number of symbolic constants, printing functions,
  * etc.
  */
 
-#include <linux/config.h>
+#include "../../include/linux/config.h"
 #include "../block/blk.h"
-#include <linux/kernel.h>
+#include "../../include/linux/kernel.h"
 #include "scsi.h"
 
 #define CONST_COMMAND 	0x01
@@ -26,28 +26,28 @@ static const char * group_0_commands[] = {
 /* 00-03 */ "Test Unit Ready", "Rezero Unit", unknown, "Request Sense",
 /* 04-07 */ "Format Unit", "Read Block Limits", unknown, "Reasssign Blocks",
 /* 08-0d */ "Read (6)", unknown, "Write (6)", "Seek (6)", unknown, unknown,
-/* 0e-12 */ unknown, "Read Reverse", "Write Filemarks", "Space", "Inquiry",  
+/* 0e-12 */ unknown, "Read Reverse", "Write Filemarks", "Space", "Inquiry",
 /* 13-16 */ unknown, "Recover Buffered Data", "Mode Select", "Reserve",
 /* 17-1b */ "Release", "Copy", "Erase", "Mode Sense", "Start/Stop Unit",
-/* 1c-1d */ "Receive Diagnostic", "Send Diagnostic", 
+/* 1c-1d */ "Receive Diagnostic", "Send Diagnostic",
 /* 1e-1f */ "Prevent/Allow Medium Removal", unknown,
 };
 
 
 static const char *group_1_commands[] = {
 /* 20-22 */  unknown, unknown, unknown,
-/* 23-28 */ unknown, unknown, "Read Capacity", unknown, unknown, "Read (10)", 
-/* 29-2d */ unknown, "Write (10)", "Seek (10)", unknown, unknown, 
-/* 2e-31 */ "Write Verify","Verify", "Search High", "Search Equal", 
-/* 32-34 */ "Search Low", "Set Limits", "Prefetch or Read Position", 
-/* 35-37 */ "Synchronize Cache","Lock/Unlock Cache", "Read Deffect Data", 
-/* 38-3c */ unknown, "Compare","Copy Verify", "Write Buffer", "Read Buffer", 
+/* 23-28 */ unknown, unknown, "Read Capacity", unknown, unknown, "Read (10)",
+/* 29-2d */ unknown, "Write (10)", "Seek (10)", unknown, unknown,
+/* 2e-31 */ "Write Verify","Verify", "Search High", "Search Equal",
+/* 32-34 */ "Search Low", "Set Limits", "Prefetch or Read Position",
+/* 35-37 */ "Synchronize Cache","Lock/Unlock Cache", "Read Deffect Data",
+/* 38-3c */ unknown, "Compare","Copy Verify", "Write Buffer", "Read Buffer",
 /* 3d-39 */ unknown, "Read Long",  unknown,
 };
 
 
 static const char *group_2_commands[] = {
-/* 40-41 */ "Change Definition", unknown, 
+/* 40-41 */ "Change Definition", unknown,
 /* 42-48 */ unknown, unknown, unknown, unknown, unknown, unknown, unknown,
 /* 49-4f */ unknown, unknown, unknown, "Log Select", "Log Sense", unknown,
 /* 50-55 */ unknown, unknown, unknown, unknown, unknown, "Mode Select (10)",
@@ -64,9 +64,9 @@ static const char *group_2_commands[] = {
 #define NOTEXT_GROUP	2
 
 static const char **commands[] = {
-group_0_commands, group_1_commands, group_2_commands, 
-(const char **) RESERVED_GROUP, (const char **) RESERVED_GROUP, 
-(const char **) NOTEXT_GROUP, (const char **) VENDOR_GROUP, 
+group_0_commands, group_1_commands, group_2_commands,
+(const char **) RESERVED_GROUP, (const char **) RESERVED_GROUP,
+(const char **) NOTEXT_GROUP, (const char **) VENDOR_GROUP,
 (const char **) VENDOR_GROUP};
 
 static const char reserved[] = "RESERVED";
@@ -76,13 +76,13 @@ static void print_opcode(int opcode) {
   char **table = commands[ group(opcode) ];
   switch ((int) table) {
   case RESERVED_GROUP:
-  	printk("%s(0x%02x) ", reserved, opcode); 
+  	printk("%s(0x%02x) ", reserved, opcode);
   	break;
   case NOTEXT_GROUP:
-  	printk("%s(0x%02x) ", unknown, opcode); 
+  	printk("%s(0x%02x) ", unknown, opcode);
   	break;
   case VENDOR_GROUP:
-  	printk("%s(0x%02x) ", vendor, opcode); 
+  	printk("%s(0x%02x) ", vendor, opcode);
   	break;
   default:
   	printk("%s ",table[opcode & 0x31]);
@@ -92,20 +92,20 @@ static void print_opcode(int opcode) {
 static void print_opcode(int opcode) {
   printk("0x%02x ", opcode);
 }
-#endif  
+#endif
 
 void print_command (unsigned char *command) {
   int i,s;
   print_opcode(command[0]);
-  for ( i = 1, s = COMMAND_SIZE(command[0]); i < s; ++i) 
+  for ( i = 1, s = COMMAND_SIZE(command[0]); i < s; ++i)
   	printk("%02x ", command[i]);
   printk("\n");
 }
 
 #if (CONSTANTS & CONST_STATUS)
 static const char * statuses[] = {
-/* 0-4 */ "Good", "Check Condition", "Condition Good", unknown, "Busy", 
-/* 5-9 */ unknown, unknown, unknown, "Intermediate Good", unknown, 
+/* 0-4 */ "Good", "Check Condition", "Condition Good", unknown, "Busy",
+/* 5-9 */ unknown, unknown, unknown, "Intermediate Good", unknown,
 /* a-d */ "Interemediate Good", unknown, "Reservation Conflict", unknown,
 /* e-f */ unknown, unknown,
 };
@@ -116,8 +116,8 @@ void print_status (int status) {
 #if (CONSTANTS & CONST_STATUS)
   printk("%s ",statuses[status]);
 #else
-  printk("0x%0x ", status); 
-#endif 
+  printk("0x%0x ", status);
+#endif
 }
 
 #if (CONSTANTS & CONST_XSENSE)
@@ -369,13 +369,13 @@ void print_sense(char * devclass, Scsi_Cmnd * SCpnt)
 	code = sense_buffer[0] & 0xf;
 	valid = sense_buffer[0] & 0x80;
 
-	if (sense_class == 7) { 
+	if (sense_class == 7) {
 	  s = sense_buffer[7] + 8;
 	  if(s > sizeof(SCpnt->sense_buffer)) s = sizeof(SCpnt->sense_buffer);
 
 	  if (!valid)
 	    printk("extra data not valid ");
-	  
+
 	  if (sense_buffer[2] & 0x80) printk( "FMK ");
 	  if (sense_buffer[2] & 0x40) printk( "EOM ");
 	  if (sense_buffer[2] & 0x20) printk( "ILI ");
@@ -390,9 +390,9 @@ void print_sense(char * devclass, Scsi_Cmnd * SCpnt)
 	  default:
 	    error = "Invalid";
 	  }
-	  
+
 	  printk("%s error ", error);
-	  
+
 #if (CONSTANTS & CONST_SENSE)
 	  if (sense_buffer[2] & 0x80) printk( "FMK ");
 	  if (sense_buffer[2] & 0x40) printk( "EOM ");
@@ -401,17 +401,17 @@ void print_sense(char * devclass, Scsi_Cmnd * SCpnt)
 #else
 	  printk("%s%x: sns = %2x %2x\n", devclass, dev, sense_buffer[0], sense_buffer[2]);
 #endif
-	
+
 	/* Check to see if additional sense information is available */
 	if(sense_buffer[7] + 7 < 13 ||
 	   (sense_buffer[12] == 0  && sense_buffer[13] ==  0)) goto done;
-	
+
 #if (CONSTANTS & CONST_XSENSE)
 	for(i=0; additional[i].text; i++)
 		if(additional[i].code1 == sense_buffer[12] &&
 		   additional[i].code2 == sense_buffer[13])
 			printk("Additional sense indicates %s\n", additional[i].text);
-	
+
 	for(i=0; additional2[i].text; i++)
 		if(additional2[i].code1 == sense_buffer[12] &&
 		   additional2[i].code2_min >= sense_buffer[13]  &&
@@ -423,7 +423,7 @@ void print_sense(char * devclass, Scsi_Cmnd * SCpnt)
 #else
 	printk("ASC=%2x ASCQ=%2x\n", sense_buffer[12], sense_buffer[13]);
 #endif
-	} else { 
+	} else {
 
 #if (CONSTANTS & CONST_SENSE)
 	  if (sense_buffer[0] < 15)
@@ -435,21 +435,21 @@ void print_sense(char * devclass, Scsi_Cmnd * SCpnt)
 	  printk("Non-extended sense class %d code 0x%0x ", sense_class, code);
 	  s = 4;
 	}
-	
+
       done:
-	for (i = 0; i < s; ++i) 
+	for (i = 0; i < s; ++i)
 	  printk("0x%02x ", sense_buffer[i]);
 
 	return;
 }
 
-#if (CONSTANTS & CONST_MSG) 
+#if (CONSTANTS & CONST_MSG)
 static const char *one_byte_msgs[] = {
 /* 0x00 */ "Command Complete", NULL, "Save Pointers",
-/* 0x03 */ "Restore Pointers", "Disconnect", "Initiator Error", 
+/* 0x03 */ "Restore Pointers", "Disconnect", "Initiator Error",
 /* 0x06 */ "Abort", "Message Reject", "Nop", "Message Parity Error",
 /* 0x0a */ "Linked Command Complete", "Linked Command Complete w/flag",
-/* 0x0c */ "Bus device reset", "Abort Tag", "Clear Queue", 
+/* 0x0c */ "Bus device reset", "Abort Tag", "Clear Queue",
 /* 0x0f */ "Initiate Recovery", "Release Recovery"
 }
 
@@ -475,11 +475,11 @@ int print_msg (const unsigned char *msg) {
     if (msg[0] == EXTENDED_MESSAGE) {
 	len = 3 + msg[1];
 #if (CONSTANTS & CONST_MSG)
-	printk("Extended Message code %s arguments ", 
+	printk("Extended Message code %s arguments ",
 	    (msg[2] < NO_EXTENDED_MESSAGES) ?
 	    printk("%s " extended_msgs[msg[2]]),
 	    reserved);
-	for (i = 3; i < msg[1]; ++i) 
+	for (i = 3; i < msg[1]; ++i)
 #else
 	for (i = 0; i < msg[1]; ++i)
 #endif
@@ -509,17 +509,17 @@ int print_msg (const unsigned char *msg) {
     /* Two byte */
     } else if (msg[0] <= 0x2f) {
 #if (CONSTANTS & CONST_MSG)
-	if ((msg[0] - 0x20) < NO_TWO_BYTE_MESSAGES) 
-	    printk("%s %02x ", two_byte_msgs[msg[0] - 0x20], 
+	if ((msg[0] - 0x20) < NO_TWO_BYTE_MESSAGES)
+	    printk("%s %02x ", two_byte_msgs[msg[0] - 0x20],
 		msg[1]);
-	else 
-	    printk("reserved two byte (%02x %02x) ", 
+	else
+	    printk("reserved two byte (%02x %02x) ",
 		msg[0], msg[1]);
 #else
 	printk("%02x %02x", msg[0], msg[1]);
 #endif
 	len = 2;
-    } else 
+    } else
 #if (CONSTANTS & CONST_MSG)
 	printk(reserved);
 #else

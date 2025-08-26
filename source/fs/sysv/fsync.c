@@ -14,11 +14,11 @@
  *  SystemV/Coherent fsync primitive
  */
 
-#include <linux/errno.h>
-#include <linux/stat.h>
+#include "../../include/linux/errno.h"
+#include "../../include/linux/stat.h"
 
-#include <linux/fs.h>
-#include <linux/sysv_fs.h>
+#include "../../include/linux/fs.h"
+#include "../../include/linux/sysv_fs.h"
 
 
 /* return values: 0 means OK/done, 1 means redo, -1 means I/O error. */

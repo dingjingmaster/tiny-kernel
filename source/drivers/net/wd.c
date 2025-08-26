@@ -5,7 +5,7 @@
 	Director, National Security Agency.	 This software may be used and
 	distributed according to the terms of the GNU Public License,
 	incorporated herein by reference.
-	
+
 	This is a driver for WD8003 and WD8013 "compatible" ethercards.
 
 	The Author may be reached as becker@super.org or
@@ -17,15 +17,15 @@
 static char *version =
 	"wd.c:v0.99-14 11/21/93 Donald Becker (becker@super.org)\n";
 
-#include <linux/config.h>
-#include <linux/kernel.h>
-#include <linux/sched.h>
-#include <linux/errno.h>
-#include <linux/string.h>
-#include <asm/io.h>
-#include <asm/system.h>
+#include "../../include/linux/config.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/string.h"
+#include "../../include/asm/io.h"
+#include "../../include/asm/system.h"
 
-#include "dev.h"
+#include "../../net/inet/dev.h"
 #include "8390.h"
 
 /* Compatibility definitions for earlier kernel versions. */
@@ -96,16 +96,16 @@ int wdprobe1(int ioaddr, struct device *dev)
 	int ancient = 0;			/* An old card without config registers. */
 	int word16 = 0;				/* 0 = 8 bit, 1 = 16 bit */
 	char *model_name;
-	
+
 	for (i = 0; i < 8; i++)
 		checksum += inb(ioaddr + 8 + i);
 	if ((checksum & 0xff) != 0xFF)
 		return 0;
-	
+
 	printk("%s: WD80x3 at %#3x, ", dev->name, ioaddr);
 	for (i = 0; i < 6; i++)
 		printk(" %2.2X", station_addr[i] = inb(ioaddr + 8 + i));
-	
+
 	/* The following PureData probe code was contributed by
 	   Mike Jagdis <jaggy@purplet.demon.co.uk>. Puredata does software
 	   configuration differently from others so we have to check for them.
@@ -113,7 +113,7 @@ int wdprobe1(int ioaddr, struct device *dev)
 	   */
 	if (inb(ioaddr+0) == 'P' && inb(ioaddr+1) == 'D') {
 		unsigned char reg5 = inb(ioaddr+5);
-		
+
 		switch (inb(ioaddr+2)) {
 		case 0x03: word16 = 0; model_name = "PDI8023-8";	break;
 		case 0x05: word16 = 0; model_name = "PDUC8023";	break;
@@ -160,7 +160,7 @@ int wdprobe1(int ioaddr, struct device *dev)
 				   word16 ? 16 : 8, (inb(ioaddr+1) & 0x01) ? 16 : 8);
 #endif
 	}
-	
+
 #if defined(WD_SHMEM) && WD_SHMEM > 0x80000
 	/* Allow a compile-time override.	 */
 	dev->mem_start = WD_SHMEM;
@@ -181,17 +181,17 @@ int wdprobe1(int ioaddr, struct device *dev)
 		}
 	}
 #endif
-	
+
 	/* The 8390 isn't at the base address -- the ASIC regs are there! */
 	dev->base_addr = ioaddr+WD_NIC_OFFSET;
-	
+
 	if (dev->irq < 2) {
 		int irqmap[] = {9,3,5,7,10,11,15,4};
 		int reg1 = inb(ioaddr+1);
 		int reg4 = inb(ioaddr+4);
 		if (ancient || reg1 == 0xff) {	/* Ack!! No way to read the IRQ! */
 			short nic_addr = ioaddr+WD_NIC_OFFSET;
-			
+
 			/* We have an old-style ethercard that doesn't report its IRQ
 			   line.  Do autoirq to find the IRQ line. Note that this IS NOT
 			   a reliable way to trigger an interrupt. */
@@ -204,7 +204,7 @@ int wdprobe1(int ioaddr, struct device *dev)
 			outb(E8390_RREAD+E8390_START, nic_addr); /* Trigger it... */
 			dev->irq = autoirq_report(2);
 			outb_p(0x00, nic_addr+EN0_IMR);	/* Mask all intrs. again. */
-			
+
 			if (ei_debug > 2)
 				printk(" autoirq is %d", dev->irq);
 			if (dev->irq < 2)
@@ -213,41 +213,41 @@ int wdprobe1(int ioaddr, struct device *dev)
 			dev->irq = irqmap[((reg4 >> 5) & 0x03) + (reg1 & 0x04)];
 	} else if (dev->irq == 2)		/* Fixup bogosity: IRQ2 is really IRQ9 */
 		dev->irq = 9;
-	
+
 	/* Snarf the interrupt now.  There's no point in waiting since we cannot
 	   share and the board will usually be enabled. */
 	if (irqaction (dev->irq, &ei_sigaction)) {
 		printk (" unable to get IRQ %d.\n", dev->irq);
 		return 0;
 	}
-	
+
 	/* OK, were are certain this is going to work.  Setup the device. */
 	snarf_region(ioaddr, 32);
 	ethdev_init(dev);
-	
+
 	ei_status.name = model_name;
 	ei_status.word16 = word16;
 	ei_status.tx_start_page = WD_START_PG;
 	ei_status.rx_start_page = WD_START_PG + TX_PAGES;
 	ei_status.stop_page = word16 ? WD13_STOP_PG : WD03_STOP_PG;
-	
+
 	/* Don't map in the shared memory until the board is actually opened. */
 	dev->rmem_start = dev->mem_start + TX_PAGES*256;
 	dev->mem_end = dev->rmem_end
 		= dev->mem_start + (ei_status.stop_page - WD_START_PG)*256;
-	
+
 	printk(" %s, IRQ %d, shared memory at %#lx-%#lx.\n",
 		   model_name, dev->irq, dev->mem_start, dev->mem_end-1);
 	if (ei_debug > 0)
 		printk(version);
-	
+
 	ei_status.reset_8390 = &wd_reset_8390;
 	ei_status.block_input = &wd_block_input;
 	ei_status.block_output = &wd_block_output;
 	dev->open = &wd_open;
 	dev->stop = &wd_close_card;
 	NS8390_init(dev, 0);
-	
+
 	return dev->base_addr;
 }
 

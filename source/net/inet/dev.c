@@ -10,15 +10,15 @@
  * Authors:	Ross Biro, <bir7@leland.Stanford.Edu>
  *		Fred N. van Kempen, <waltje@uWalt.NL.Mugnet.ORG>
  *		Mark Evans, <evansmp@uhura.aston.ac.uk>
- * 
- * Fixes:	
+ *
+ * Fixes:
  *		Alan Cox:	check_addr returns a value for a wrong subnet
  *				ie not us but don't forward this!
  *		Alan Cox:	block timer if the inet_bh handler is running
  *		Alan Cox:	generic queue code added. A lot neater now
  *		C.E.Hawkins:	SIOCGIFCONF only reports 'upped' interfaces
  *		C.E.Hawkins:	IFF_PROMISC support
- *		Alan Cox:	Supports Donald Beckers new hardware 
+ *		Alan Cox:	Supports Donald Beckers new hardware
  *				multicast layer, but not yet multicast lists.
  *		Alan Cox:	ip_addr_match problems with class A/B nets.
  *		C.E.Hawkins	IP 0.0.0.0 and also same net route fix. [FIXME: Ought to cause ICMP_REDIRECT]
@@ -36,21 +36,21 @@
  *		as published by the Free Software Foundation; either version
  *		2 of the License, or (at your option) any later version.
  */
-#include <asm/segment.h>
-#include <asm/system.h>
-#include <asm/bitops.h>
-#include <linux/config.h>
-#include <linux/types.h>
-#include <linux/kernel.h>
-#include <linux/sched.h>
-#include <linux/string.h>
-#include <linux/mm.h>
-#include <linux/socket.h>
-#include <linux/sockios.h>
-#include <linux/in.h>
-#include <linux/errno.h>
-#include <linux/interrupt.h>
-#include <linux/if_ether.h>
+#include "../../include/asm/segment.h"
+#include "../../include/asm/system.h"
+#include "../../include/asm/bitops.h"
+#include "../../include/linux/config.h"
+#include "../../include/linux/types.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/mm.h"
+#include "../../include/linux/socket.h"
+#include "../../include/linux/sockios.h"
+#include "../../include/linux/in.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/interrupt.h"
+#include "../../include/linux/if_ether.h"
 #include "inet.h"
 #include "dev.h"
 #include "eth.h"
@@ -130,7 +130,7 @@ static struct packet_type ip_packet_type = {
   NULL,
   &arp_packet_type
 };
-   
+
 
 struct packet_type *ptype_base = &ip_packet_type;
 static struct sk_buff *volatile backlog = NULL;
@@ -152,17 +152,17 @@ get_mask(unsigned long addr)
 {
   unsigned long dst;
 
-  if (addr == 0L) 
+  if (addr == 0L)
   	return(0L);	/* special case */
 
   dst = ntohl(addr);
-  if (IN_CLASSA(dst)) 
+  if (IN_CLASSA(dst))
   	return(htonl(IN_CLASSA_NET));
-  if (IN_CLASSB(dst)) 
+  if (IN_CLASSB(dst))
   	return(htonl(IN_CLASSB_NET));
-  if (IN_CLASSC(dst)) 
+  if (IN_CLASSC(dst))
   	return(htonl(IN_CLASSC_NET));
-  
+
   /* Something else, probably a subnet. */
   return(0);
 }
@@ -176,7 +176,7 @@ ip_addr_match(unsigned long me, unsigned long him)
   DPRINTF((DBG_DEV, "ip_addr_match(%s, ", in_ntoa(me)));
   DPRINTF((DBG_DEV, "%s)\n", in_ntoa(him)));
 
-  if (me == him) 
+  if (me == him)
   	return(1);
   for (i = 0; i < 4; i++, me >>= 8, him >>= 8, mask >>= 8) {
 	if ((me & 0xFF) != (him & 0xFF)) {
@@ -284,11 +284,11 @@ dev_add_pack(struct packet_type *pt)
 		}
 	  }
   }
-  
+
   /*
    *	NIT taps must go at the end or inet_bh will leak!
    */
-   
+
   if(pt->type==NET16(ETH_P_ALL))
   {
   	pt->next=NULL;
@@ -322,7 +322,7 @@ dev_remove_pack(struct packet_type *pt)
   for (pt1 = ptype_base; pt1->next != NULL; pt1 = pt1->next) {
 	if (pt1->next == pt ) {
 		cli();
-		if (!pt->copy && lpt) 
+		if (!pt->copy && lpt)
 			lpt->copy = 0;
 		pt1->next = pt->next;
 		sti();
@@ -343,7 +343,7 @@ dev_get(char *name)
   struct device *dev;
 
   for (dev = dev_base; dev != NULL; dev = dev->next) {
-	if (strcmp(dev->name, name) == 0) 
+	if (strcmp(dev->name, name) == 0)
 		return(dev);
   }
   return(NULL);
@@ -383,9 +383,9 @@ dev_open(struct device *dev)
 {
   int ret = 0;
 
-  if (dev->open) 
+  if (dev->open)
   	ret = dev->open(dev);
-  if (ret == 0) 
+  if (ret == 0)
   	dev->flags |= (IFF_UP | IFF_RUNNING);
 
   return(ret);
@@ -399,7 +399,7 @@ dev_close(struct device *dev)
   if (dev->flags != 0) {
   	int ct=0;
 	dev->flags = 0;
-	if (dev->stop) 
+	if (dev->stop)
 		dev->stop(dev);
 	rt_flush(dev);
 	dev->pa_addr = 0;
@@ -436,9 +436,9 @@ dev_queue_xmit(struct sk_buff *skb, struct device *dev, int pri)
 	printk("dev.c: dev_queue_xmit: dev = NULL\n");
 	return;
   }
- 
+
   IS_SKB(skb);
-    
+
   skb->dev = dev;
   if (skb->next != NULL) {
 	/* Make sure we haven't missed an interrupt. */
@@ -485,11 +485,11 @@ netif_rx(struct sk_buff *skb)
   /* Set any necessary flags. */
   skb->sk = NULL;
   skb->free = 1;
-  
+
   /* and add it to the "backlog" queue. */
   IS_SKB(skb);
   skb_queue_tail(&backlog,skb);
-   
+
   /* If any packet arrived, mark it for processing. */
   if (backlog != NULL) mark_bh(INET_BH);
 
@@ -505,7 +505,7 @@ netif_rx(struct sk_buff *skb)
  * on their protocol ID.
  *
  * Return values:	1 <- exit I can't do any more
- *			0 <- feed me more (i.e. "done", "OK"). 
+ *			0 <- feed me more (i.e. "done", "OK").
  */
 int
 dev_rint(unsigned char *buff, long len, int flags, struct device *dev)
@@ -603,7 +603,7 @@ inet_bh(void *tmp)
 
   /* Can we send anything now? */
   dev_transmit();
-  
+
   /* Any data left to process? */
   while((skb=skb_dequeue(&backlog))!=NULL)
   {
@@ -644,7 +644,7 @@ inet_bh(void *tmp)
 				nitcount--;
 			if (ptype->copy || nitcount) {	/* copy if we need to	*/
 				skb2 = alloc_skb(skb->mem_len, GFP_ATOMIC);
-				if (skb2 == NULL) 
+				if (skb2 == NULL)
 					continue;
 				memcpy(skb2, (const void *) skb, skb->mem_len);
 				skb2->mem_addr = skb2;
@@ -694,12 +694,12 @@ inet_bh(void *tmp)
  * This routine is called when an device driver (i.e. an
  * interface) is * ready to transmit a packet.
  */
- 
+
 void dev_tint(struct device *dev)
 {
 	int i;
 	struct sk_buff *skb;
-	
+
 	for(i = 0;i < DEV_NUMBUFFS; i++) {
 		while((skb=skb_dequeue(&dev->buffs[i]))!=NULL)
 		{
@@ -838,7 +838,7 @@ dev_ifsioc(void *arg, unsigned int getset)
 			IFF_UP | IFF_BROADCAST | IFF_DEBUG | IFF_LOOPBACK |
 			IFF_POINTOPOINT | IFF_NOTRAILERS | IFF_RUNNING |
 			IFF_NOARP | IFF_PROMISC | IFF_ALLMULTI);
-			
+
 		  if ( (old_flags & IFF_PROMISC) && ((dev->flags & IFF_PROMISC) == 0))
 		  	dev->set_multicast_list(dev,0,NULL);
 		  if ( (dev->flags & IFF_PROMISC) && ((old_flags & IFF_PROMISC) == 0))

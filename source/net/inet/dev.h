@@ -20,8 +20,8 @@
 #ifndef _DEV_H
 #define _DEV_H
 
-#include <linux/if.h>
-#include <linux/if_ether.h>
+#include "../../include/linux/if.h"
+#include "../../include/linux/if_ether.h"
 
 
 /* for future expansion when we will have different priorities. */
@@ -132,10 +132,10 @@ struct device {
   int			  (*rebuild_header)(void *eth, struct device *dev);
   unsigned short	  (*type_trans) (struct sk_buff *skb,
 					 struct device *dev);
-#define HAVE_MULTICAST			 
+#define HAVE_MULTICAST
   void			  (*set_multicast_list)(struct device *dev,
   					 int num_addrs, void *addrs);
-#define HAVE_SET_MAC_ADDR  		 
+#define HAVE_SET_MAC_ADDR
   int			  (*set_mac_address)(struct device *dev, void *addr);
 };
 

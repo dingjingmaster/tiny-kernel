@@ -4,12 +4,12 @@
  *  Copyright (C) 1991, 1992  Linus Torvalds
  */
 
-#include <linux/errno.h>
-#include <linux/sched.h>
-#include <linux/kernel.h>
-#include <linux/locks.h>
-#include <asm/segment.h>
-#include <asm/system.h>
+#include "../include/linux/errno.h"
+#include "../include/linux/sched.h"
+#include "../include/linux/kernel.h"
+#include "../include/linux/locks.h"
+#include "../include/asm/segment.h"
+#include "../include/asm/system.h"
 
 extern int *blk_size[];
 extern int *blksize_size[];
@@ -175,7 +175,7 @@ int block_read(struct inode * inode, struct file * filp, char * buf, int count)
 					left = 0;
 					break;
 				}
-			}			
+			}
 			if (left < blocksize - offset)
 				chars = left;
 			else

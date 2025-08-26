@@ -2,21 +2,21 @@
  *  Linux/fs/xiafs/namei.c
  *
  *  Copyright (C) Q. Frank Xia, 1993.
- *  
+ *
  *  Based on Linus' minix/namei.c
  *  Copyright (C) Linus Torvalds, 1991, 1992.
- * 
+ *
  *  This software may be redistributed per Linux Copyright.
  */
 
-#include <linux/sched.h>
-#include <linux/xia_fs.h>
-#include <linux/kernel.h>
-#include <linux/string.h>
-#include <linux/stat.h>
-#include <linux/fcntl.h>
-#include <linux/errno.h>
-#include <asm/segment.h>
+#include "../../include/linux/sched.h"
+#include "../../include/linux/xia_fs.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/stat.h"
+#include "../../include/linux/fcntl.h"
+#include "../../include/linux/errno.h"
+#include "../../include/asm/segment.h"
 
 #include "xiafs_mac.h"
 
@@ -53,8 +53,8 @@ static int xiafs_match(int len, const char * name, struct xiafs_direct * dep)
  * itself (as a parameter - res_dir). It does NOT read the inode of the
  * entry - you'll have to do that yourself if you want to.
  */
-static struct buffer_head * 
-xiafs_find_entry(struct inode * inode, const char * name, int namelen, 
+static struct buffer_head *
+xiafs_find_entry(struct inode * inode, const char * name, int namelen,
 	       struct xiafs_direct ** res_dir, struct xiafs_direct ** res_pre)
 {
     int i, zones, pos;
@@ -77,7 +77,7 @@ xiafs_find_entry(struct inode * inode, const char * name, int namelen,
 	if (!bh)
 	    continue;
 	dep_pre=dep=(struct xiafs_direct *)bh->b_data;
-	if (!i && (dep->d_rec_len != 12 || !dep->d_ino || 
+	if (!i && (dep->d_rec_len != 12 || !dep->d_ino ||
 		   dep->d_name_len != 1 || strcmp(dep->d_name, "."))) {
 	    printk("XIA-FS: bad directory (%s %d)\n", WHERE_ERR);
 	    brelse(bh);
@@ -86,7 +86,7 @@ xiafs_find_entry(struct inode * inode, const char * name, int namelen,
 	pos = 0;
 	while ( pos < XIAFS_ZSIZE(inode->i_sb) ) {
 	    if (dep->d_ino > inode->i_sb->u.xiafs_sb.s_ninodes ||
-		dep->d_rec_len < 12 || 
+		dep->d_rec_len < 12 ||
 		dep->d_rec_len+(char *)dep > bh->b_data+XIAFS_ZSIZE(inode->i_sb) ||
 		dep->d_name_len + 8 > dep->d_rec_len || dep->d_name_len <= 0 ||
 		dep->d_name[dep->d_name_len] ) {
@@ -95,7 +95,7 @@ xiafs_find_entry(struct inode * inode, const char * name, int namelen,
 	    }
 	    if (xiafs_match(namelen, name, dep)) {
 	        *res_dir=dep;
-		if (res_pre) 
+		if (res_pre)
 		    *res_pre=dep_pre;
 		return bh;
 	    }
@@ -151,7 +151,7 @@ int xiafs_lookup(struct inode * dir, const char * name, int len,
  * the entry, as someone else might have used it while you slept.
  */
 static struct buffer_head * xiafs_add_entry(struct inode * dir,
-	const char * name, int namelen, struct xiafs_direct ** res_dir, 
+	const char * name, int namelen, struct xiafs_direct ** res_dir,
 	struct xiafs_direct ** res_pre)
 {
     int i, pos, offset;
@@ -193,7 +193,7 @@ static struct buffer_head * xiafs_add_entry(struct inode * dir,
 		dir->i_dirt = 1;
 	    } else {
 	        if (de->d_ino > dir->i_sb->u.xiafs_sb.s_ninodes ||
-		    de->d_rec_len < 12 || 
+		    de->d_rec_len < 12 ||
 		    (char *)de+de->d_rec_len > bh->b_data+XIAFS_ZSIZE(dir->i_sb) ||
 		    de->d_name_len + 8 > de->d_rec_len ||
 		    de->d_name[de->d_name_len]) {
@@ -337,7 +337,7 @@ int xiafs_mkdir(struct inode * dir, const char * name, int len, int mode)
     struct inode * inode;
     struct buffer_head * bh, *dir_block;
     struct xiafs_direct * de;
-	
+
     bh = xiafs_find_entry(dir,name,len,&de, NULL);
     if (bh) {
         brelse(bh);
@@ -425,7 +425,7 @@ static int empty_dir(struct inode * inode)
 		    de->d_rec_len != 12 ) {
 	        printk("XIA-FS: bad directory (%s %d)\n", WHERE_ERR);
 		brelse(bh);
-		return 1;	 
+		return 1;
 	    }
 	    de=(struct xiafs_direct *)(12 + bh->b_data);
 	    if (!de->d_ino || strcmp("..", de->d_name)) {
@@ -442,7 +442,7 @@ static int empty_dir(struct inode * inode)
 	while (offset < XIAFS_ZSIZE(inode->i_sb)) {
 	    de=(struct xiafs_direct *)(bh->b_data+offset);
 	    if (de->d_ino > inode->i_sb->u.xiafs_sb.s_ninodes ||
-		de->d_rec_len < 12 || 
+		de->d_rec_len < 12 ||
 		(char *)de+de->d_rec_len > bh->b_data+XIAFS_ZSIZE(inode->i_sb) ||
 		de->d_name_len + 8 > de->d_rec_len ||
 		de->d_name[de->d_name_len]) {
@@ -579,7 +579,7 @@ end_unlink:
     return retval;
 }
 
-int xiafs_symlink(struct inode * dir, const char * name, 
+int xiafs_symlink(struct inode * dir, const char * name,
 		int len, const char * symname)
 {
     struct xiafs_direct * de;
@@ -631,7 +631,7 @@ int xiafs_symlink(struct inode * dir, const char * name,
     return 0;
 }
 
-int xiafs_link(struct inode * oldinode, struct inode * dir, 
+int xiafs_link(struct inode * oldinode, struct inode * dir,
 	     const char * name, int len)
 {
     struct xiafs_direct * de;
@@ -708,8 +708,8 @@ static int subdir(struct inode * new_inode, struct inode * old_inode)
  * Anybody can rename anything with this: the permission checks are left to the
  * higher-level routines.
  */
-static int do_xiafs_rename(struct inode * old_dir, const char * old_name, 
-			 int old_len, struct inode * new_dir, 
+static int do_xiafs_rename(struct inode * old_dir, const char * old_name,
+			 int old_len, struct inode * new_dir,
 			 const char * new_name, int new_len)
 {
     struct inode * old_inode, * new_inode;
@@ -728,7 +728,7 @@ try_again:
     if (!old_inode)
         goto end_rename;
     retval = -EPERM;
-    if ((old_dir->i_mode & S_ISVTX) && 
+    if ((old_dir->i_mode & S_ISVTX) &&
 	    current->euid != old_inode->i_uid &&
 	    current->euid != old_dir->i_uid && !suser())
         goto end_rename;
@@ -749,7 +749,7 @@ try_again:
 	goto end_rename;
     }
     retval = -EPERM;
-    if (new_inode && (new_dir->i_mode & S_ISVTX) && 
+    if (new_inode && (new_dir->i_mode & S_ISVTX) &&
 	    current->euid != new_inode->i_uid &&
  	    current->euid != new_dir->i_uid && !suser())
         goto end_rename;
@@ -776,7 +776,7 @@ try_again:
     if (!new_bh)
         new_bh = xiafs_add_entry(new_dir, new_name, new_len, &new_de, &new_de_pre);
     retval = -ENOSPC;
-    if (!new_bh) 
+    if (!new_bh)
         goto end_rename;
     /* sanity checking */
     if ( (new_inode && (new_de->d_ino != new_inode->i_ino))

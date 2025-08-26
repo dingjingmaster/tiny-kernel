@@ -19,7 +19,7 @@
 #define _ETH_H
 
 
-#include <linux/if_ether.h>
+#include "../../include/linux/if_ether.h"
 
 
 extern char		*eth_print(unsigned char *ptr);

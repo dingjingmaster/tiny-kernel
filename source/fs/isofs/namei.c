@@ -6,16 +6,16 @@
  *  (C) 1991  Linus Torvalds - minix filesystem
  */
 
-#include <linux/sched.h>
-#include <linux/iso_fs.h>
-#include <linux/kernel.h>
-#include <linux/string.h>
-#include <linux/stat.h>
-#include <linux/fcntl.h>
-#include <asm/segment.h>
-#include <linux/malloc.h>
+#include "../../include/linux/sched.h"
+#include "../../include/linux/iso_fs.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/stat.h"
+#include "../../include/linux/fcntl.h"
+#include "../../include/asm/segment.h"
+#include "../../include/linux/malloc.h"
 
-#include <linux/errno.h>
+#include "../../include/linux/errno.h"
 
 /*
  * ok, we cannot use strncmp, as the name is not in our data space.
@@ -27,12 +27,12 @@
 static int isofs_match(int len,const char * name, char * compare, int dlen)
 {
 	register int same __asm__("ax");
-	
+
 	if (!compare) return 0;
 	/* "" means "." ---> so paths like "/usr/lib//libc.a" work */
 	if (!len && (compare[0]==0) && (dlen==1))
 		return 1;
-	
+
 	if (compare[0]==0 && dlen==1 && len == 1)
 		compare = ".";
  	if (compare[0]==1 && dlen==1 && len == 2) {
@@ -42,7 +42,7 @@ static int isofs_match(int len,const char * name, char * compare, int dlen)
 #if 0
 	if (len <= 2) printk("Match: %d %d %s %d %d \n",len,dlen,compare,de->name[0], dlen);
 #endif
-	
+
 	if (dlen != len)
 		return 0;
 	__asm__("cld\n\t"
@@ -79,16 +79,16 @@ static struct buffer_head * isofs_find_entry(struct inode * dir,
 
 	*ino = 0;
 	if (!dir) return NULL;
-	
+
 	if (!(block = dir->u.isofs_i.i_first_extent)) return NULL;
-  
+
 	f_pos = 0;
 
 	offset = f_pos & (bufsize - 1);
 	block = isofs_bmap(dir,f_pos >> bufbits);
 
 	if (!block || !(bh = bread(dir->i_dev,block,bufsize))) return NULL;
-  
+
 	while (f_pos < dir->i_size) {
 		de = (struct iso_directory_record *) (bh->b_data + offset);
 		backlink = dir->i_ino;
@@ -96,7 +96,7 @@ static struct buffer_head * isofs_find_entry(struct inode * dir,
 
 		/* If byte is zero, this is the end of file, or time to move to
 		   the next sector. Usually 2048 byte boundaries. */
-		
+
 		if (*((unsigned char *) de) == 0) {
 			brelse(bh);
 			offset = 0;
@@ -128,14 +128,14 @@ static struct buffer_head * isofs_find_entry(struct inode * dir,
 			};
 			memcpy((char *)cpnt+bufsize,bh->b_data,bufsize);
 		}
-		
+
 		/* Handle the '.' case */
-		
+
 		if (de->name[0]==0 && de->name_len[0]==1) {
 			inode_number = dir->i_ino;
 			backlink = 0;
 		}
-		
+
 		/* Handle the '..' case */
 
 		if (de->name[0]==1 && de->name_len[0]==1) {
@@ -151,7 +151,7 @@ static struct buffer_head * isofs_find_entry(struct inode * dir,
 				inode_number = dir->i_ino;
 			backlink = 0;
 		}
-    
+
 		dlen = de->name_len[0];
 		dpnt = de->name;
 		/* Now convert the filename in the buffer to lower case */
@@ -186,7 +186,7 @@ static struct buffer_head * isofs_find_entry(struct inode * dir,
 		if (match) {
 			if(inode_number == -1) {
 				/* Should only happen for the '..' entry */
-				inode_number = 
+				inode_number =
 					isofs_lookup_grandparent(dir,
 					   find_rock_ridge_relocation(de,dir));
 				if(inode_number == -1){
@@ -226,9 +226,9 @@ int isofs_lookup(struct inode * dir,const char * name, int len,
 	}
 
 	ino = 0;
-	if (dir->i_dev == cache.dev && 
+	if (dir->i_dev == cache.dev &&
 	    dir->i_ino == cache.dir &&
-	    len == cache.dlen && 
+	    len == cache.dlen &&
 	    isofs_match(len, name, cache.filename, cache.dlen))
 	  {
 	    ino = cache.ino;
@@ -236,7 +236,7 @@ int isofs_lookup(struct inode * dir,const char * name, int len,
 	    /* These two cases are special, but since they are at the start
 	       of the directory, we can just as easily search there */
 	    if (cache.dlen == 1 && cache.filename[0] == '.') ino = 0;
-	    if (cache.dlen == 2 && cache.filename[0] == '.' && 
+	    if (cache.dlen == 2 && cache.filename[0] == '.' &&
 		cache.filename[1] == '.') ino = 0;
 	  };
 
@@ -258,11 +258,11 @@ int isofs_lookup(struct inode * dir,const char * name, int len,
 	   may not even be on an iso9660 filesystem, and writing to
 	   u.isofs_i would only cause memory corruption).
 	*/
-	
+
 	if (ino_back && !(*result)->i_pipe && (*result)->i_sb == dir->i_sb) {
-	  (*result)->u.isofs_i.i_backlink = ino_back; 
+	  (*result)->u.isofs_i.i_backlink = ino_back;
 	}
-	
+
 	iput(dir);
 	return 0;
 }

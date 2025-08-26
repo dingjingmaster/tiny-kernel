@@ -18,9 +18,9 @@
  +---------------------------------------------------------------------------*/
 
 
-#include <linux/stddef.h>
+#include "../../include/linux/stddef.h"
 
-#include <asm/segment.h>
+#include "../../include/asm/segment.h"
 
 #include "fpu_system.h"
 #include "exception.h"
@@ -108,7 +108,7 @@ static void *sib(int mod, unsigned long *fpu_eip)
 
 
 static unsigned long vm86_segment(unsigned char segment)
-{ 
+{
   segment--;
 #ifdef PARANOID
   if ( segment > PREFIX_SS_ )
@@ -313,4 +313,3 @@ void get_address_16(unsigned char FPU_modrm, unsigned long *fpu_eip,
 
   FPU_data_address = (void *)offset ;
 }
-

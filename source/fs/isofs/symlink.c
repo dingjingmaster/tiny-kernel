@@ -9,14 +9,14 @@
  *  extensions to iso9660
  */
 
-#include <asm/segment.h>
+#include "../../include/asm/segment.h"
 
-#include <linux/errno.h>
-#include <linux/sched.h>
-#include <linux/fs.h>
-#include <linux/iso_fs.h>
-#include <linux/stat.h>
-#include <linux/malloc.h>
+#include "../../include/linux/errno.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/fs.h"
+#include "../../include/linux/iso_fs.h"
+#include "../../include/linux/stat.h"
+#include "../../include/linux/malloc.h"
 
 static int isofs_readlink(struct inode *, char *, int);
 static int isofs_follow_link(struct inode *, struct inode *, int, int, struct inode **);

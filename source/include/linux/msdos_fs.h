@@ -5,9 +5,9 @@
  * The MS-DOS filesystem constants/structures
  */
 
-#include <linux/fs.h>
-#include <linux/stat.h>
-#include <linux/fd.h>
+#include "../../include/linux/fs.h"
+#include "../../include/linux/stat.h"
+#include "../../include/linux/fd.h"
 
 #define MSDOS_ROOT_INO  1 /* == MINIX_ROOT_INO */
 #define SECTOR_SIZE     512 /* sector size (bytes) */

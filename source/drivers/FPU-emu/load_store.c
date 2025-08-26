@@ -18,7 +18,7 @@
  |    other processes using the emulator while swapping is in progress.      |
  +---------------------------------------------------------------------------*/
 
-#include <asm/segment.h>
+#include "../../include/asm/segment.h"
 
 #include "fpu_system.h"
 #include "exception.h"

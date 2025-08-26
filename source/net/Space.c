@@ -8,10 +8,10 @@
  *
  * Author:	Fred N. van Kempen, <waltje@uwalt.nl.mugnet.org>
  */
-#include <linux/config.h>
-#include <linux/types.h>
-#include <linux/kernel.h>
-#include <linux/ddi.h>
+#include "../include/linux/config.h"
+#include "../include/linux/types.h"
+#include "../include/linux/kernel.h"
+#include "../include/linux/ddi.h"
 
 
 #define CONFIG_UNIX		YES		/* always present...	*/
@@ -43,9 +43,9 @@ struct ddi_proto protocols[] = {
 #ifdef  CONFIG_IPX
   { "IPX",	ipx_proto_init },
 #endif
-#ifdef CONFIG_AX25  
+#ifdef CONFIG_AX25
   { "AX.25",	ax25_proto_init },
-#endif  
+#endif
 #ifdef	CONFIG_INET
   { "INET",	inet_proto_init	},
 #endif

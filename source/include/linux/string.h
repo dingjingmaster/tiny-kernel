@@ -1,7 +1,7 @@
 #ifndef _LINUX_STRING_H_
 #define _LINUX_STRING_H_
 
-#include "./types.h"	/* for size_t */
+#include "types.h"	/* for size_t */
 
 #ifndef NULL
 #define NULL ((void *) 0)

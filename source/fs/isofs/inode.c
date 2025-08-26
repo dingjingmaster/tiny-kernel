@@ -1,25 +1,25 @@
 /*
  *  linux/fs/isofs/inode.c
- * 
+ *
  *  (C) 1992  Eric Youngdale Modified for ISO9660 filesystem.
  *
  *  (C) 1991  Linus Torvalds - minix filesystem
  */
 
-#include <linux/config.h>
-#include <linux/stat.h>
-#include <linux/sched.h>
-#include <linux/iso_fs.h>
-#include <linux/kernel.h>
-#include <linux/major.h>
-#include <linux/mm.h>
-#include <linux/string.h>
-#include <linux/locks.h>
-#include <linux/malloc.h>
-#include <linux/errno.h>
+#include "../../include/linux/config.h"
+#include "../../include/linux/stat.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/iso_fs.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/major.h"
+#include "../../include/linux/mm.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/locks.h"
+#include "../../include/linux/malloc.h"
+#include "../../include/linux/errno.h"
 
-#include <asm/system.h>
-#include <asm/segment.h>
+#include "../../include/asm/system.h"
+#include "../../include/asm/segment.h"
 
 #if defined(CONFIG_BLK_DEV_SR)
 extern int check_cdrom_media_change(int, int);
@@ -44,7 +44,7 @@ void isofs_put_super(struct super_block *sb)
 	lock_super(sb);
 
 #ifdef LEAK_CHECK
-	printk("Outstanding mallocs:%d, outstanding buffers: %d\n", 
+	printk("Outstanding mallocs:%d, outstanding buffers: %d\n",
 	       check_malloc, check_bread);
 #endif
 	sb->s_dev = 0;
@@ -52,7 +52,7 @@ void isofs_put_super(struct super_block *sb)
 	return;
 }
 
-static struct super_operations isofs_sops = { 
+static struct super_operations isofs_sops = {
 	isofs_read_inode,
 	NULL,			/* notify_change */
 	NULL,			/* write_inode */
@@ -169,26 +169,26 @@ struct super_block *isofs_read_super(struct super_block *s,void *data,
 		vdp = (struct iso_volume_descriptor *)bh->b_data;
 		hdp = (struct hs_volume_descriptor *)bh->b_data;
 
-		
+
 		if (strncmp (hdp->id, HS_STANDARD_ID, sizeof hdp->id) == 0) {
 		  if (isonum_711 (hdp->type) != ISO_VD_PRIMARY)
 			goto out;
 		  if (isonum_711 (hdp->type) == ISO_VD_END)
 		        goto out;
-		
+
 		        s->u.isofs_sb.s_high_sierra = 1;
 			high_sierra = 1;
 		        rock = 'n';
 		        h_pri = (struct hs_primary_descriptor *)vdp;
 			break;
 		};
-		
+
 		if (strncmp (vdp->id, ISO_STANDARD_ID, sizeof vdp->id) == 0) {
 		  if (isonum_711 (vdp->type) != ISO_VD_PRIMARY)
 			goto out;
 		  if (isonum_711 (vdp->type) == ISO_VD_END)
 			goto out;
-		
+
 		        pri = (struct iso_primary_descriptor *)vdp;
 			break;
 	        };
@@ -202,8 +202,8 @@ struct super_block *isofs_read_super(struct super_block *s,void *data,
 		unlock_super(s);
 		return NULL;
 	};
-	
-	
+
+
 	if(high_sierra){
 	  rootp = (struct iso_directory_record *) h_pri->root_directory_record;
 	  if (isonum_723 (h_pri->volume_set_size) != 1) {
@@ -223,29 +223,29 @@ struct super_block *isofs_read_super(struct super_block *s,void *data,
 	  s->u.isofs_sb.s_log_zone_size = isonum_723 (pri->logical_block_size);
 	  s->u.isofs_sb.s_max_size = isonum_733(pri->volume_space_size);
 	}
-	
+
 	s->u.isofs_sb.s_ninodes = 0; /* No way to figure this out easily */
-	
-	s->u.isofs_sb.s_firstdatazone = isonum_733( rootp->extent) << 
+
+	s->u.isofs_sb.s_firstdatazone = isonum_733( rootp->extent) <<
 		(ISOFS_BLOCK_BITS - blocksize_bits);
 	s->s_magic = ISOFS_SUPER_MAGIC;
-	
+
 	/* The CDROM is read-only, has no nodes (devices) on it, and since
 	   all of the files appear to be owned by root, we really do not want
 	   to allow suid.  (suid or devices will not show up unless we have
 	   Rock Ridge extensions) */
-	
+
 	s->s_flags = MS_RDONLY /* | MS_NODEV | MS_NOSUID */;
-	
+
 	if(s->u.isofs_sb.s_log_zone_size != (1 << ISOFS_BLOCK_BITS)) {
 		printk("1 <<Block bits != Block size\n");
 		goto out;
 	};
-	
+
 	brelse(bh);
-	
+
 	printk("Max size:%ld   Log zone size:%ld\n",
-	       s->u.isofs_sb.s_max_size, 
+	       s->u.isofs_sb.s_max_size,
 	       s->u.isofs_sb.s_log_zone_size);
 	printk("First datazone:%ld   Root inode number %d\n",
 	       s->u.isofs_sb.s_firstdatazone,
@@ -253,7 +253,7 @@ struct super_block *isofs_read_super(struct super_block *s,void *data,
 	if(high_sierra) printk("Disc in High Sierra format.\n");
 	unlock_super(s);
 	/* set up enough so that it can read an inode */
-	
+
 	s->s_dev = dev;
 	s->s_op = &isofs_sops;
 	s->u.isofs_sb.s_mapping = map;
@@ -345,7 +345,7 @@ void isofs_read_inode(struct inode * inode)
 	  printk("unable to read i-node block");
 	  goto fail;
 	}
-	
+
 	pnt = ((unsigned char *) bh->b_data
 	       + (inode->i_ino & (bufsize - 1)));
 	raw_inode = ((struct iso_directory_record *) pnt);
@@ -373,7 +373,7 @@ void isofs_read_inode(struct inode * inode)
 
 	inode->i_mode = S_IRUGO; /* Everybody gets to read the file. */
 	inode->i_nlink = 1;
-	
+
 	if (raw_inode->flags[-high_sierra] & 2) {
 		inode->i_mode = S_IRUGO | S_IXUGO | S_IFDIR;
 		inode->i_nlink = 2; /* There are always at least 2.  It is
@@ -386,7 +386,7 @@ void isofs_read_inode(struct inode * inode)
 		for(i=0; i< raw_inode->name_len[0]; i++)
 			if(raw_inode->name[i]=='.' || raw_inode->name[i]==';')
 				break;
-		if(i == raw_inode->name_len[0] || raw_inode->name[i] == ';') 
+		if(i == raw_inode->name_len[0] || raw_inode->name[i] == ';')
 			inode->i_mode |= S_IXUGO; /* execute permission */
 	}
 	inode->i_uid = 0;
@@ -405,12 +405,12 @@ void isofs_read_inode(struct inode * inode)
    byte of the file length.  Catch this and holler.  WARNING: this will make
    it impossible for a file to be > 16Mb on the CDROM!!!*/
 
-	if(inode->i_sb->u.isofs_sb.s_cruft == 'y' && 
+	if(inode->i_sb->u.isofs_sb.s_cruft == 'y' &&
 	   inode->i_size & 0xff000000){
 /*	  printk("Illegal format on cdrom.  Pester manufacturer.\n"); */
 	  inode->i_size &= 0x00ffffff;
 	}
-	
+
 	if (raw_inode->interleave[0]) {
 		printk("Interleaved files not (yet) supported.\n");
 		inode->i_size = 0;
@@ -424,7 +424,7 @@ void isofs_read_inode(struct inode * inode)
 		       inode->i_ino);
 	}
 #endif
-	
+
 	/* I have no idea what file_unit_size is used for, so
 	   we will flag it for now */
 	if(raw_inode->file_unit_size[0] != 0){
@@ -439,16 +439,16 @@ void isofs_read_inode(struct inode * inode)
 	}
 
 #ifdef DEBUG
-	printk("Get inode %d: %d %d: %d\n",inode->i_ino, block, 
+	printk("Get inode %d: %d %d: %d\n",inode->i_ino, block,
 	       ((int)pnt) & 0x3ff, inode->i_size);
 #endif
-	
-	inode->i_mtime = inode->i_atime = inode->i_ctime = 
+
+	inode->i_mtime = inode->i_atime = inode->i_ctime =
 	  iso_date(raw_inode->date, high_sierra);
 
-	inode->u.isofs_i.i_first_extent = isonum_733 (raw_inode->extent) << 
+	inode->u.isofs_i.i_first_extent = isonum_733 (raw_inode->extent) <<
 		(ISOFS_BLOCK_BITS - ISOFS_BUFFER_BITS(inode));
-	
+
 	inode->u.isofs_i.i_backlink = 0xffffffff; /* Will be used for previous directory */
 	switch (inode->i_sb->u.isofs_sb.s_conversion){
 	case 'a':
@@ -470,14 +470,14 @@ void isofs_read_inode(struct inode * inode)
 
 	if (!high_sierra)
 	  parse_rock_ridge_inode(raw_inode, inode);
-	
+
 #ifdef DEBUG
 	printk("Inode: %x extent: %x\n",inode->i_ino, inode->u.isofs_i.i_first_extent);
 #endif
 	brelse(bh);
-	
+
 	inode->i_op = NULL;
-	if (inode->i_sb->u.isofs_sb.s_cruft != 'y' && 
+	if (inode->i_sb->u.isofs_sb.s_cruft != 'y' &&
 	    isonum_723 (raw_inode->volume_sequence_number) != 1) {
 		printk("Multi volume CD somehow got mounted.\n");
 	} else {
@@ -542,30 +542,30 @@ int isofs_lookup_grandparent(struct inode * parent, int extent)
 	int result;
 	struct buffer_head * bh;
 	struct iso_directory_record * de;
-	
+
 	offset = 0;
 	block = extent << (ISOFS_BLOCK_BITS - bufbits);
 	if (!(bh = bread(parent->i_dev, block, bufsize)))  return -1;
-	
+
 	while (1 == 1) {
 		de = (struct iso_directory_record *) (bh->b_data + offset);
-		if (*((unsigned char *) de) == 0) 
+		if (*((unsigned char *) de) == 0)
 		{
 			brelse(bh);
 			return -1;
 		}
-		
+
 		offset += *((unsigned char *) de);
 
-		if (offset >= bufsize) 
+		if (offset >= bufsize)
 		{
 			printk(".. Directory not in first block"
 			       " of directory.\n");
 			brelse(bh);
 			return -1;
 		}
-		
-		if (de->name_len[0] == 1 && de->name[0] == 1) 
+
+		if (de->name_len[0] == 1 && de->name[0] == 1)
 		{
 			parent_dir = find_rock_ridge_relocation(de, parent);
 			brelse(bh);
@@ -578,24 +578,24 @@ int isofs_lookup_grandparent(struct inode * parent, int extent)
 	/* Now we know the extent where the parent dir starts on.  We have no
 	   idea how long it is, so we just start reading until we either find
 	   it or we find some kind of unreasonable circumstance. */
-	
+
 	result = -1;
 
 	offset = 0;
 	block = parent_dir << (ISOFS_BLOCK_BITS - bufbits);
 	if (!block || !(bh = bread(parent->i_dev,block, bufsize)))
 		return -1;
-	
+
 	for(;;)
 	{
 		de = (struct iso_directory_record *) (bh->b_data + offset);
 		inode_number = (block << bufbits)+(offset & (bufsize - 1));
-		
+
 		/* If the length byte is zero, we should move on to the next
 		   CDROM sector.  If we are at the end of the directory, we
 		   kick out of the while loop. */
-		
-		if (*((unsigned char *) de) == 0) 
+
+		if (*((unsigned char *) de) == 0)
 		{
 			brelse(bh);
 			offset = 0;
@@ -606,7 +606,7 @@ int isofs_lookup_grandparent(struct inode * parent, int extent)
 				return -1;
 			continue;
 		}
-		
+
 		/* Make sure that the entire directory record is in the current
 		   bh block.  If not, we malloc a buffer, and put the two
 		   halves together, so that we can cleanly read the block.  */
@@ -630,12 +630,12 @@ int isofs_lookup_grandparent(struct inode * parent, int extent)
 			};
 			memcpy((char *)cpnt+bufsize, bh->b_data, bufsize);
 		}
-		
+
 		if (find_rock_ridge_relocation(de, parent) == extent){
 			result = inode_number;
 			goto out;
 		}
-		
+
 		if (cpnt) {
 			kfree_s(cpnt, 1 << ISOFS_BLOCK_BITS);
 			cpnt = NULL;
@@ -656,7 +656,7 @@ int isofs_lookup_grandparent(struct inode * parent, int extent)
 #endif
 	return result;
 }
-    
+
 #ifdef LEAK_CHECK
 #undef malloc
 #undef free_s

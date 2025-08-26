@@ -17,15 +17,15 @@
  */
 
 #include "../../include/linux/config.h"
-#include <linux/types.h>
-#include <linux/kernel.h>
-#include <asm/segment.h>
-#include <asm/system.h>
-#include <linux/mm.h>
-#include <linux/interrupt.h>
-#include <linux/in.h>
-#include <linux/errno.h>
-#include <linux/sched.h>
+#include "../../include/linux/types.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/asm/segment.h"
+#include "../../include/asm/system.h"
+#include "../../include/linux/mm.h"
+#include "../../include/linux/interrupt.h"
+#include "../../include/linux/in.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/sched.h"
 #include "inet.h"
 #include "dev.h"
 #include "ip.h"

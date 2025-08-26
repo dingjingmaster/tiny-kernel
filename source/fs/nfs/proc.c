@@ -16,15 +16,15 @@
 #define NFS_PROC_DEBUG
 #endif
 
-#include <linux/config.h>
-#include <linux/param.h>
-#include <linux/sched.h>
-#include <linux/mm.h>
-#include <linux/nfs_fs.h>
-#include <linux/utsname.h>
-#include <linux/errno.h>
-#include <linux/string.h>
-#include <linux/in.h>
+#include "../../include/linux/config.h"
+#include "../../include/linux/param.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/mm.h"
+#include "../../include/linux/nfs_fs.h"
+#include "../../include/linux/utsname.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/in.h"
 
 #ifdef NFS_PROC_DEBUG
 
@@ -81,7 +81,7 @@ static inline int *xdr_decode_fhandle(int *p, struct nfs_fh *fhandle)
 static inline int *xdr_encode_string(int *p, const char *string)
 {
 	int len, quadlen;
-	
+
 	len = strlen(string);
 	quadlen = (len + 3) >> 2;
 	*p++ = htonl(len);
@@ -107,7 +107,7 @@ static inline int *xdr_decode_string(int *p, char *string, int maxlen)
 static inline int *xdr_encode_data(int *p, char *data, int len)
 {
 	int quadlen;
-	
+
 	quadlen = (len + 3) >> 2;
 	*p++ = htonl(len);
 	memcpy((char *) p, data, len);
@@ -360,7 +360,7 @@ retry:
 	else if ((status = ntohl(*p++)) == NFS_OK) {
 		p = xdr_decode_fattr(p, fattr);
 		if (!(p = xdr_decode_data(p, data, &len, count))) {
-			printk("nfs_proc_read: giant data size\n"); 
+			printk("nfs_proc_read: giant data size\n");
 			status = NFSERR_IO;
 		}
 		else
@@ -821,7 +821,7 @@ static int *nfs_rpc_verify(int *p)
 	}
 	return p;
 }
-	
+
 /*
  * We need to translate between nfs status return values and
  * the local errno values which may not be the same.
@@ -870,4 +870,3 @@ static int nfs_stat_to_errno(int stat)
 	printk("nfs_stat_to_errno: bad nfs status return value: %d\n", stat);
 	return nfs_errtbl[i].errno;
 }
-

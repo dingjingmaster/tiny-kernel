@@ -12,6 +12,7 @@ dma.o: dma.c /usr/include/stdc-predef.h /usr/include/linux/kernel.h \
 exit.o: exit.c /usr/include/stdc-predef.h ../include/linux/wait.h \
  ../include/linux/errno.h ../include/linux/signal.h \
  ../include/linux/sched.h ../include/linux/tasks.h \
+ ../include/linux/../../include/linux/types.h \
  ../include/linux/../../include/asm/system.h \
  ../include/linux/../../include/asm/../linux/segment.h \
  ../include/linux/head.h ../include/linux/fs.h ../include/linux/linkage.h \
@@ -30,19 +31,20 @@ exit.o: exit.c /usr/include/stdc-predef.h ../include/linux/wait.h \
  ../include/linux/ext2_fs_sb.h ../include/linux/hpfs_fs_sb.h \
  ../include/linux/msdos_fs_sb.h ../include/linux/iso_fs_sb.h \
  ../include/linux/nfs_fs_sb.h ../include/linux/xia_fs_sb.h \
- ../include/linux/sysv_fs_sb.h ../include/linux/mm.h \
+ ../include/linux/sysv_fs_sb.h ../include/linux/signal.h \
+ ../include/linux/time.h ../include/linux/param.h \
+ ../include/linux/resource.h ../include/linux/vm86.h \
+ ../include/linux/math_emu.h ../include/linux/kernel.h \
+ ../include/linux/resource.h ../include/linux/mm.h \
  ../include/linux/page.h ../include/linux/sched.h \
  ../include/linux/errno.h ../include/linux/kernel.h \
- ../include/linux/signal.h ../include/linux/time.h \
- ../include/linux/param.h ../include/linux/resource.h \
- ../include/linux/vm86.h ../include/linux/math_emu.h \
- ../include/linux/kernel.h ../include/linux/resource.h \
- ../include/linux/mm.h ../include/linux/tty.h ../include/linux/termios.h \
+ ../include/linux/tty.h ../include/linux/termios.h \
  ../include/linux/../asm/system.h ../include/linux/malloc.h \
  ../include/linux/config.h ../include/linux/autoconf.h \
  ../include/asm/segment.h
 fork.o: fork.c /usr/include/stdc-predef.h ../include/linux/errno.h \
  ../include/linux/sched.h ../include/linux/tasks.h \
+ ../include/linux/../../include/linux/types.h \
  ../include/linux/../../include/asm/system.h \
  ../include/linux/../../include/asm/../linux/segment.h \
  ../include/linux/head.h ../include/linux/fs.h ../include/linux/linkage.h \
@@ -61,13 +63,12 @@ fork.o: fork.c /usr/include/stdc-predef.h ../include/linux/errno.h \
  ../include/linux/ext2_fs_sb.h ../include/linux/hpfs_fs_sb.h \
  ../include/linux/msdos_fs_sb.h ../include/linux/iso_fs_sb.h \
  ../include/linux/nfs_fs_sb.h ../include/linux/xia_fs_sb.h \
- ../include/linux/sysv_fs_sb.h ../include/linux/mm.h \
- ../include/linux/page.h ../include/linux/sched.h \
+ ../include/linux/sysv_fs_sb.h ../include/linux/signal.h \
+ ../include/linux/time.h ../include/linux/param.h \
+ ../include/linux/resource.h ../include/linux/vm86.h \
+ ../include/linux/math_emu.h ../include/linux/kernel.h \
+ ../include/linux/mm.h ../include/linux/page.h ../include/linux/sched.h \
  ../include/linux/errno.h ../include/linux/kernel.h \
- ../include/linux/signal.h ../include/linux/time.h \
- ../include/linux/param.h ../include/linux/resource.h \
- ../include/linux/vm86.h ../include/linux/math_emu.h \
- ../include/linux/kernel.h ../include/linux/mm.h \
  ../include/linux/stddef.h ../include/linux/unistd.h \
  ../include/linux/segment.h ../include/linux/ptrace.h \
  ../include/linux/malloc.h ../include/linux/config.h \
@@ -75,6 +76,7 @@ fork.o: fork.c /usr/include/stdc-predef.h ../include/linux/errno.h \
  ../include/asm/segment.h ../include/asm/system.h
 info.o: info.c /usr/include/stdc-predef.h ../include/asm/segment.h \
  ../include/linux/sched.h ../include/linux/tasks.h \
+ ../include/linux/../../include/linux/types.h \
  ../include/linux/../../include/asm/system.h \
  ../include/linux/../../include/asm/../linux/segment.h \
  ../include/linux/head.h ../include/linux/fs.h ../include/linux/linkage.h \
@@ -93,16 +95,16 @@ info.o: info.c /usr/include/stdc-predef.h ../include/asm/segment.h \
  ../include/linux/ext2_fs_sb.h ../include/linux/hpfs_fs_sb.h \
  ../include/linux/msdos_fs_sb.h ../include/linux/iso_fs_sb.h \
  ../include/linux/nfs_fs_sb.h ../include/linux/xia_fs_sb.h \
- ../include/linux/sysv_fs_sb.h ../include/linux/mm.h \
+ ../include/linux/sysv_fs_sb.h ../include/linux/signal.h \
+ ../include/linux/time.h ../include/linux/param.h \
+ ../include/linux/resource.h ../include/linux/vm86.h \
+ ../include/linux/math_emu.h ../include/linux/string.h \
+ ../include/linux/unistd.h ../include/linux/types.h ../include/linux/mm.h \
  ../include/linux/page.h ../include/linux/sched.h \
- ../include/linux/errno.h ../include/linux/kernel.h \
- ../include/linux/signal.h ../include/linux/time.h \
- ../include/linux/param.h ../include/linux/resource.h \
- ../include/linux/vm86.h ../include/linux/math_emu.h \
- ../include/linux/string.h ../include/linux/./types.h \
- ../include/linux/unistd.h ../include/linux/types.h ../include/linux/mm.h
+ ../include/linux/errno.h ../include/linux/kernel.h
 ioport.o: ioport.c /usr/include/stdc-predef.h ../include/linux/sched.h \
- ../include/linux/tasks.h ../include/linux/../../include/asm/system.h \
+ ../include/linux/tasks.h ../include/linux/../../include/linux/types.h \
+ ../include/linux/../../include/asm/system.h \
  ../include/linux/../../include/asm/../linux/segment.h \
  ../include/linux/head.h ../include/linux/fs.h ../include/linux/linkage.h \
  ../include/linux/limits.h ../include/linux/wait.h \
@@ -120,46 +122,16 @@ ioport.o: ioport.c /usr/include/stdc-predef.h ../include/linux/sched.h \
  ../include/linux/ext2_fs_sb.h ../include/linux/hpfs_fs_sb.h \
  ../include/linux/msdos_fs_sb.h ../include/linux/iso_fs_sb.h \
  ../include/linux/nfs_fs_sb.h ../include/linux/xia_fs_sb.h \
- ../include/linux/sysv_fs_sb.h ../include/linux/mm.h \
- ../include/linux/page.h ../include/linux/sched.h \
- ../include/linux/errno.h ../include/linux/kernel.h \
- ../include/linux/signal.h ../include/linux/time.h \
- ../include/linux/param.h ../include/linux/resource.h \
- ../include/linux/vm86.h ../include/linux/math_emu.h \
- ../include/linux/kernel.h ../include/linux/errno.h \
- ../include/linux/types.h ../include/linux/ioport.h
+ ../include/linux/sysv_fs_sb.h ../include/linux/signal.h \
+ ../include/linux/time.h ../include/linux/param.h \
+ ../include/linux/resource.h ../include/linux/vm86.h \
+ ../include/linux/math_emu.h ../include/linux/kernel.h \
+ ../include/linux/errno.h ../include/linux/types.h \
+ ../include/linux/ioport.h
 irq.o: irq.c /usr/include/stdc-predef.h ../include/linux/ptrace.h \
  ../include/linux/errno.h ../include/linux/kernel_stat.h \
  ../include/linux/signal.h ../include/linux/sched.h \
- ../include/linux/tasks.h ../include/linux/../../include/asm/system.h \
- ../include/linux/../../include/asm/../linux/segment.h \
- ../include/linux/head.h ../include/linux/fs.h ../include/linux/linkage.h \
- ../include/linux/limits.h ../include/linux/wait.h \
- ../include/linux/types.h ../include/linux/dirent.h \
- ../include/linux/vfs.h ../include/linux/net.h ../include/linux/socket.h \
- /usr/include/linux/sockios.h /usr/include/asm/bitsperlong.h \
- /usr/include/asm-generic/bitsperlong.h /usr/include/asm/sockios.h \
- /usr/include/asm-generic/sockios.h ../include/linux/pipe_fs_i.h \
- ../include/linux/minix_fs_i.h ../include/linux/ext_fs_i.h \
- ../include/linux/ext2_fs_i.h ../include/linux/hpfs_fs_i.h \
- ../include/linux/msdos_fs_i.h ../include/linux/iso_fs_i.h \
- ../include/linux/nfs_fs_i.h ../include/linux/nfs.h \
- ../include/linux/xia_fs_i.h ../include/linux/sysv_fs_i.h \
- ../include/linux/minix_fs_sb.h ../include/linux/ext_fs_sb.h \
- ../include/linux/ext2_fs_sb.h ../include/linux/hpfs_fs_sb.h \
- ../include/linux/msdos_fs_sb.h ../include/linux/iso_fs_sb.h \
- ../include/linux/nfs_fs_sb.h ../include/linux/xia_fs_sb.h \
- ../include/linux/sysv_fs_sb.h ../include/linux/mm.h \
- ../include/linux/page.h ../include/linux/sched.h \
- ../include/linux/errno.h ../include/linux/kernel.h \
- ../include/linux/signal.h ../include/linux/time.h \
- ../include/linux/param.h ../include/linux/resource.h \
- ../include/linux/vm86.h ../include/linux/math_emu.h \
- ../include/linux/interrupt.h ../include/asm/system.h ../include/asm/io.h \
- ../include/asm/irq.h ../include/asm/../linux/segment.h \
- ../include/asm/../linux/linkage.h
-itimer.o: itimer.c /usr/include/stdc-predef.h ../include/linux/signal.h \
- ../include/linux/sched.h ../include/linux/tasks.h \
+ ../include/linux/tasks.h ../include/linux/../../include/linux/types.h \
  ../include/linux/../../include/asm/system.h \
  ../include/linux/../../include/asm/../linux/segment.h \
  ../include/linux/head.h ../include/linux/fs.h ../include/linux/linkage.h \
@@ -178,18 +150,43 @@ itimer.o: itimer.c /usr/include/stdc-predef.h ../include/linux/signal.h \
  ../include/linux/ext2_fs_sb.h ../include/linux/hpfs_fs_sb.h \
  ../include/linux/msdos_fs_sb.h ../include/linux/iso_fs_sb.h \
  ../include/linux/nfs_fs_sb.h ../include/linux/xia_fs_sb.h \
- ../include/linux/sysv_fs_sb.h ../include/linux/mm.h \
- ../include/linux/page.h ../include/linux/sched.h \
- ../include/linux/errno.h ../include/linux/kernel.h \
- ../include/linux/signal.h ../include/linux/time.h \
- ../include/linux/param.h ../include/linux/resource.h \
- ../include/linux/vm86.h ../include/linux/math_emu.h \
- ../include/linux/string.h ../include/linux/./types.h \
+ ../include/linux/sysv_fs_sb.h ../include/linux/signal.h \
+ ../include/linux/time.h ../include/linux/param.h \
+ ../include/linux/resource.h ../include/linux/vm86.h \
+ ../include/linux/math_emu.h ../include/linux/interrupt.h \
+ ../include/asm/system.h ../include/asm/io.h ../include/asm/irq.h \
+ ../include/asm/../linux/segment.h ../include/asm/../linux/linkage.h
+itimer.o: itimer.c /usr/include/stdc-predef.h ../include/linux/signal.h \
+ ../include/linux/sched.h ../include/linux/tasks.h \
+ ../include/linux/../../include/linux/types.h \
+ ../include/linux/../../include/asm/system.h \
+ ../include/linux/../../include/asm/../linux/segment.h \
+ ../include/linux/head.h ../include/linux/fs.h ../include/linux/linkage.h \
+ ../include/linux/limits.h ../include/linux/wait.h \
+ ../include/linux/types.h ../include/linux/dirent.h \
+ ../include/linux/vfs.h ../include/linux/net.h ../include/linux/socket.h \
+ /usr/include/linux/sockios.h /usr/include/asm/bitsperlong.h \
+ /usr/include/asm-generic/bitsperlong.h /usr/include/asm/sockios.h \
+ /usr/include/asm-generic/sockios.h ../include/linux/pipe_fs_i.h \
+ ../include/linux/minix_fs_i.h ../include/linux/ext_fs_i.h \
+ ../include/linux/ext2_fs_i.h ../include/linux/hpfs_fs_i.h \
+ ../include/linux/msdos_fs_i.h ../include/linux/iso_fs_i.h \
+ ../include/linux/nfs_fs_i.h ../include/linux/nfs.h \
+ ../include/linux/xia_fs_i.h ../include/linux/sysv_fs_i.h \
+ ../include/linux/minix_fs_sb.h ../include/linux/ext_fs_sb.h \
+ ../include/linux/ext2_fs_sb.h ../include/linux/hpfs_fs_sb.h \
+ ../include/linux/msdos_fs_sb.h ../include/linux/iso_fs_sb.h \
+ ../include/linux/nfs_fs_sb.h ../include/linux/xia_fs_sb.h \
+ ../include/linux/sysv_fs_sb.h ../include/linux/signal.h \
+ ../include/linux/time.h ../include/linux/param.h \
+ ../include/linux/resource.h ../include/linux/vm86.h \
+ ../include/linux/math_emu.h ../include/linux/string.h \
  ../include/linux/errno.h ../include/linux/time.h \
  ../include/asm/segment.h
 ldt.o: ldt.c /usr/include/stdc-predef.h ../include/linux/config.h \
  ../include/linux/autoconf.h ../include/linux/errno.h \
  ../include/linux/sched.h ../include/linux/tasks.h \
+ ../include/linux/../../include/linux/types.h \
  ../include/linux/../../include/asm/system.h \
  ../include/linux/../../include/asm/../linux/segment.h \
  ../include/linux/head.h ../include/linux/fs.h ../include/linux/linkage.h \
@@ -208,19 +205,17 @@ ldt.o: ldt.c /usr/include/stdc-predef.h ../include/linux/config.h \
  ../include/linux/ext2_fs_sb.h ../include/linux/hpfs_fs_sb.h \
  ../include/linux/msdos_fs_sb.h ../include/linux/iso_fs_sb.h \
  ../include/linux/nfs_fs_sb.h ../include/linux/xia_fs_sb.h \
- ../include/linux/sysv_fs_sb.h ../include/linux/mm.h \
- ../include/linux/page.h ../include/linux/sched.h \
- ../include/linux/errno.h ../include/linux/kernel.h \
- ../include/linux/signal.h ../include/linux/time.h \
- ../include/linux/param.h ../include/linux/resource.h \
- ../include/linux/vm86.h ../include/linux/math_emu.h \
- ../include/linux/string.h ../include/linux/./types.h \
+ ../include/linux/sysv_fs_sb.h ../include/linux/signal.h \
+ ../include/linux/time.h ../include/linux/param.h \
+ ../include/linux/resource.h ../include/linux/vm86.h \
+ ../include/linux/math_emu.h ../include/linux/string.h \
  ../include/asm/segment.h ../include/asm/system.h ../include/linux/ldt.h
 mktime.o: mktime.c /usr/include/stdc-predef.h ../include/linux/mktime.h
 module.o: module.c /usr/include/stdc-predef.h ../include/linux/errno.h \
  ../include/linux/kernel.h ../include/linux/linkage.h \
  ../include/asm/segment.h ../include/linux/mm.h ../include/linux/page.h \
  ../include/linux/sched.h ../include/linux/tasks.h \
+ ../include/linux/../../include/linux/types.h \
  ../include/linux/../../include/asm/system.h \
  ../include/linux/../../include/asm/../linux/segment.h \
  ../include/linux/head.h ../include/linux/fs.h ../include/linux/limits.h \
@@ -239,18 +234,18 @@ module.o: module.c /usr/include/stdc-predef.h ../include/linux/errno.h \
  ../include/linux/hpfs_fs_sb.h ../include/linux/msdos_fs_sb.h \
  ../include/linux/iso_fs_sb.h ../include/linux/nfs_fs_sb.h \
  ../include/linux/xia_fs_sb.h ../include/linux/sysv_fs_sb.h \
- ../include/linux/mm.h ../include/linux/signal.h ../include/linux/time.h \
+ ../include/linux/signal.h ../include/linux/time.h \
  ../include/linux/param.h ../include/linux/resource.h \
  ../include/linux/vm86.h ../include/linux/math_emu.h \
  ../include/linux/errno.h ../include/linux/kernel.h \
- ../include/linux/string.h ../include/linux/./types.h \
- ../include/linux/module.h ../include/linux/sched.h \
- ../include/linux/malloc.h ../include/linux/config.h \
- ../include/linux/autoconf.h
+ ../include/linux/string.h ../include/linux/module.h \
+ ../include/linux/sched.h ../include/linux/malloc.h \
+ ../include/linux/config.h ../include/linux/autoconf.h
 panic.o: panic.c /usr/include/stdc-predef.h \
  /usr/lib/gcc/x86_64-pc-linux-gnu/14/include/stdarg.h \
  ../include/linux/kernel.h ../include/linux/linkage.h \
  ../include/linux/sched.h ../include/linux/tasks.h \
+ ../include/linux/../../include/linux/types.h \
  ../include/linux/../../include/asm/system.h \
  ../include/linux/../../include/asm/../linux/segment.h \
  ../include/linux/head.h ../include/linux/fs.h ../include/linux/limits.h \
@@ -269,8 +264,6 @@ panic.o: panic.c /usr/include/stdc-predef.h \
  ../include/linux/hpfs_fs_sb.h ../include/linux/msdos_fs_sb.h \
  ../include/linux/iso_fs_sb.h ../include/linux/nfs_fs_sb.h \
  ../include/linux/xia_fs_sb.h ../include/linux/sysv_fs_sb.h \
- ../include/linux/mm.h ../include/linux/page.h ../include/linux/sched.h \
- ../include/linux/errno.h ../include/linux/kernel.h \
  ../include/linux/signal.h ../include/linux/time.h \
  ../include/linux/param.h ../include/linux/resource.h \
  ../include/linux/vm86.h ../include/linux/math_emu.h
@@ -279,6 +272,7 @@ printk.o: printk.c /usr/include/stdc-predef.h \
  ../include/asm/segment.h ../include/asm/system.h \
  ../include/asm/../linux/segment.h ../include/linux/errno.h \
  ../include/linux/sched.h ../include/linux/tasks.h \
+ ../include/linux/../../include/linux/types.h \
  ../include/linux/../../include/asm/system.h ../include/linux/head.h \
  ../include/linux/fs.h ../include/linux/linkage.h \
  ../include/linux/limits.h ../include/linux/wait.h \
@@ -296,16 +290,14 @@ printk.o: printk.c /usr/include/stdc-predef.h \
  ../include/linux/ext2_fs_sb.h ../include/linux/hpfs_fs_sb.h \
  ../include/linux/msdos_fs_sb.h ../include/linux/iso_fs_sb.h \
  ../include/linux/nfs_fs_sb.h ../include/linux/xia_fs_sb.h \
- ../include/linux/sysv_fs_sb.h ../include/linux/mm.h \
- ../include/linux/page.h ../include/linux/sched.h \
- ../include/linux/errno.h ../include/linux/kernel.h \
- ../include/linux/signal.h ../include/linux/time.h \
- ../include/linux/param.h ../include/linux/resource.h \
- ../include/linux/vm86.h ../include/linux/math_emu.h \
- ../include/linux/kernel.h
+ ../include/linux/sysv_fs_sb.h ../include/linux/signal.h \
+ ../include/linux/time.h ../include/linux/param.h \
+ ../include/linux/resource.h ../include/linux/vm86.h \
+ ../include/linux/math_emu.h ../include/linux/kernel.h
 ptrace.o: ptrace.c /usr/include/stdc-predef.h ../include/linux/head.h \
  ../include/linux/kernel.h ../include/linux/linkage.h \
  ../include/linux/sched.h ../include/linux/tasks.h \
+ ../include/linux/../../include/linux/types.h \
  ../include/linux/../../include/asm/system.h \
  ../include/linux/../../include/asm/../linux/segment.h \
  ../include/linux/head.h ../include/linux/fs.h ../include/linux/limits.h \
@@ -324,18 +316,19 @@ ptrace.o: ptrace.c /usr/include/stdc-predef.h ../include/linux/head.h \
  ../include/linux/hpfs_fs_sb.h ../include/linux/msdos_fs_sb.h \
  ../include/linux/iso_fs_sb.h ../include/linux/nfs_fs_sb.h \
  ../include/linux/xia_fs_sb.h ../include/linux/sysv_fs_sb.h \
- ../include/linux/mm.h ../include/linux/page.h ../include/linux/sched.h \
- ../include/linux/errno.h ../include/linux/kernel.h \
  ../include/linux/signal.h ../include/linux/time.h \
  ../include/linux/param.h ../include/linux/resource.h \
  ../include/linux/vm86.h ../include/linux/math_emu.h \
- ../include/linux/mm.h ../include/linux/errno.h ../include/linux/ptrace.h \
- ../include/linux/user.h /usr/include/linux/ptrace.h \
+ ../include/linux/mm.h ../include/linux/page.h ../include/linux/sched.h \
+ ../include/linux/errno.h ../include/linux/kernel.h \
+ ../include/linux/errno.h ../include/linux/ptrace.h \
+ ../include/linux/user.h ../include/linux/../../include/linux/ptrace.h \
  ../include/asm/segment.h ../include/asm/system.h \
  ../include/linux/debugreg.h
 sched.o: sched.c /usr/include/stdc-predef.h ../include/linux/config.h \
  ../include/linux/autoconf.h ../include/linux/signal.h \
  ../include/linux/sched.h ../include/linux/tasks.h \
+ ../include/linux/../../include/linux/types.h \
  ../include/linux/../../include/asm/system.h \
  ../include/linux/../../include/asm/../linux/segment.h \
  ../include/linux/head.h ../include/linux/fs.h ../include/linux/linkage.h \
@@ -354,21 +347,19 @@ sched.o: sched.c /usr/include/stdc-predef.h ../include/linux/config.h \
  ../include/linux/ext2_fs_sb.h ../include/linux/hpfs_fs_sb.h \
  ../include/linux/msdos_fs_sb.h ../include/linux/iso_fs_sb.h \
  ../include/linux/nfs_fs_sb.h ../include/linux/xia_fs_sb.h \
- ../include/linux/sysv_fs_sb.h ../include/linux/mm.h \
- ../include/linux/page.h ../include/linux/sched.h \
- ../include/linux/errno.h ../include/linux/kernel.h \
- ../include/linux/signal.h ../include/linux/time.h \
- ../include/linux/param.h ../include/linux/resource.h \
- ../include/linux/vm86.h ../include/linux/math_emu.h \
- ../include/linux/timer.h ../include/linux/kernel.h \
- ../include/linux/kernel_stat.h ../include/linux/sys.h \
- ../include/linux/fdreg.h ../include/linux/errno.h \
+ ../include/linux/sysv_fs_sb.h ../include/linux/signal.h \
+ ../include/linux/time.h ../include/linux/param.h \
+ ../include/linux/resource.h ../include/linux/vm86.h \
+ ../include/linux/math_emu.h ../include/linux/timer.h \
+ ../include/linux/kernel.h ../include/linux/kernel_stat.h \
+ ../include/linux/sys.h ../include/linux/fdreg.h ../include/linux/errno.h \
  ../include/linux/time.h ../include/linux/ptrace.h \
  ../include/linux/segment.h ../include/linux/delay.h \
  ../include/linux/interrupt.h ../include/asm/system.h ../include/asm/io.h \
  ../include/asm/segment.h ../include/linux/timex.h
 signal.o: signal.c /usr/include/stdc-predef.h ../include/linux/sched.h \
- ../include/linux/tasks.h ../include/linux/../../include/asm/system.h \
+ ../include/linux/tasks.h ../include/linux/../../include/linux/types.h \
+ ../include/linux/../../include/asm/system.h \
  ../include/linux/../../include/asm/../linux/segment.h \
  ../include/linux/head.h ../include/linux/fs.h ../include/linux/linkage.h \
  ../include/linux/limits.h ../include/linux/wait.h \
@@ -386,19 +377,17 @@ signal.o: signal.c /usr/include/stdc-predef.h ../include/linux/sched.h \
  ../include/linux/ext2_fs_sb.h ../include/linux/hpfs_fs_sb.h \
  ../include/linux/msdos_fs_sb.h ../include/linux/iso_fs_sb.h \
  ../include/linux/nfs_fs_sb.h ../include/linux/xia_fs_sb.h \
- ../include/linux/sysv_fs_sb.h ../include/linux/mm.h \
- ../include/linux/page.h ../include/linux/sched.h \
- ../include/linux/errno.h ../include/linux/kernel.h \
- ../include/linux/signal.h ../include/linux/time.h \
- ../include/linux/param.h ../include/linux/resource.h \
- ../include/linux/vm86.h ../include/linux/math_emu.h \
- ../include/linux/kernel.h ../include/linux/signal.h \
- ../include/linux/errno.h ../include/linux/wait.h \
- ../include/linux/ptrace.h ../include/linux/unistd.h \
- ../include/asm/segment.h
+ ../include/linux/sysv_fs_sb.h ../include/linux/signal.h \
+ ../include/linux/time.h ../include/linux/param.h \
+ ../include/linux/resource.h ../include/linux/vm86.h \
+ ../include/linux/math_emu.h ../include/linux/kernel.h \
+ ../include/linux/signal.h ../include/linux/errno.h \
+ ../include/linux/wait.h ../include/linux/ptrace.h \
+ ../include/linux/unistd.h ../include/asm/segment.h
 sys.o: sys.c /usr/include/stdc-predef.h ../include/linux/config.h \
  ../include/linux/autoconf.h ../include/linux/errno.h \
  ../include/linux/sched.h ../include/linux/tasks.h \
+ ../include/linux/../../include/linux/types.h \
  ../include/linux/../../include/asm/system.h \
  ../include/linux/../../include/asm/../linux/segment.h \
  ../include/linux/head.h ../include/linux/fs.h ../include/linux/linkage.h \
@@ -417,20 +406,19 @@ sys.o: sys.c /usr/include/stdc-predef.h ../include/linux/config.h \
  ../include/linux/ext2_fs_sb.h ../include/linux/hpfs_fs_sb.h \
  ../include/linux/msdos_fs_sb.h ../include/linux/iso_fs_sb.h \
  ../include/linux/nfs_fs_sb.h ../include/linux/xia_fs_sb.h \
- ../include/linux/sysv_fs_sb.h ../include/linux/mm.h \
- ../include/linux/page.h ../include/linux/sched.h \
- ../include/linux/errno.h ../include/linux/kernel.h \
- ../include/linux/signal.h ../include/linux/time.h \
+ ../include/linux/sysv_fs_sb.h ../include/linux/signal.h \
+ ../include/linux/time.h ../include/linux/param.h \
+ ../include/linux/resource.h ../include/linux/vm86.h \
+ ../include/linux/math_emu.h ../include/linux/kernel.h \
+ ../include/linux/times.h ../include/linux/utsname.h \
  ../include/linux/param.h ../include/linux/resource.h \
- ../include/linux/vm86.h ../include/linux/math_emu.h \
- ../include/linux/kernel.h ../include/linux/times.h \
- ../include/linux/utsname.h ../include/linux/param.h \
- ../include/linux/resource.h ../include/linux/signal.h \
- ../include/linux/string.h ../include/linux/./types.h \
+ ../include/linux/signal.h ../include/linux/string.h \
  ../include/linux/ptrace.h ../include/linux/stat.h \
  ../include/linux/mman.h ../include/asm/segment.h ../include/asm/io.h
-traps.o: traps.c /usr/include/stdc-predef.h ../include/linux/head.h \
+time.o: time.c /usr/include/stdc-predef.h ../include/linux/config.h \
+ ../include/linux/autoconf.h ../include/linux/errno.h \
  ../include/linux/sched.h ../include/linux/tasks.h \
+ ../include/linux/../../include/linux/types.h \
  ../include/linux/../../include/asm/system.h \
  ../include/linux/../../include/asm/../linux/segment.h \
  ../include/linux/head.h ../include/linux/fs.h ../include/linux/linkage.h \
@@ -449,17 +437,43 @@ traps.o: traps.c /usr/include/stdc-predef.h ../include/linux/head.h \
  ../include/linux/ext2_fs_sb.h ../include/linux/hpfs_fs_sb.h \
  ../include/linux/msdos_fs_sb.h ../include/linux/iso_fs_sb.h \
  ../include/linux/nfs_fs_sb.h ../include/linux/xia_fs_sb.h \
- ../include/linux/sysv_fs_sb.h ../include/linux/mm.h \
- ../include/linux/page.h ../include/linux/sched.h \
- ../include/linux/errno.h ../include/linux/kernel.h \
- ../include/linux/signal.h ../include/linux/time.h \
- ../include/linux/param.h ../include/linux/resource.h \
- ../include/linux/vm86.h ../include/linux/math_emu.h \
- ../include/linux/kernel.h ../include/linux/string.h \
- ../include/linux/./types.h ../include/linux/errno.h \
+ ../include/linux/sysv_fs_sb.h ../include/linux/signal.h \
+ ../include/linux/time.h ../include/linux/param.h \
+ ../include/linux/resource.h ../include/linux/vm86.h \
+ ../include/linux/math_emu.h ../include/linux/kernel.h \
+ ../include/linux/param.h ../include/linux/string.h \
+ ../include/asm/segment.h ../include/asm/io.h \
+ ../include/linux/mc146818rtc.h ../include/linux/../asm/io.h \
+ ../include/linux/timex.h ../include/linux/mktime.h
+traps.o: traps.c /usr/include/stdc-predef.h ../include/linux/head.h \
+ ../include/linux/sched.h ../include/linux/tasks.h \
+ ../include/linux/../../include/linux/types.h \
+ ../include/linux/../../include/asm/system.h \
+ ../include/linux/../../include/asm/../linux/segment.h \
+ ../include/linux/head.h ../include/linux/fs.h ../include/linux/linkage.h \
+ ../include/linux/limits.h ../include/linux/wait.h \
+ ../include/linux/types.h ../include/linux/dirent.h \
+ ../include/linux/vfs.h ../include/linux/net.h ../include/linux/socket.h \
+ /usr/include/linux/sockios.h /usr/include/asm/bitsperlong.h \
+ /usr/include/asm-generic/bitsperlong.h /usr/include/asm/sockios.h \
+ /usr/include/asm-generic/sockios.h ../include/linux/pipe_fs_i.h \
+ ../include/linux/minix_fs_i.h ../include/linux/ext_fs_i.h \
+ ../include/linux/ext2_fs_i.h ../include/linux/hpfs_fs_i.h \
+ ../include/linux/msdos_fs_i.h ../include/linux/iso_fs_i.h \
+ ../include/linux/nfs_fs_i.h ../include/linux/nfs.h \
+ ../include/linux/xia_fs_i.h ../include/linux/sysv_fs_i.h \
+ ../include/linux/minix_fs_sb.h ../include/linux/ext_fs_sb.h \
+ ../include/linux/ext2_fs_sb.h ../include/linux/hpfs_fs_sb.h \
+ ../include/linux/msdos_fs_sb.h ../include/linux/iso_fs_sb.h \
+ ../include/linux/nfs_fs_sb.h ../include/linux/xia_fs_sb.h \
+ ../include/linux/sysv_fs_sb.h ../include/linux/signal.h \
+ ../include/linux/time.h ../include/linux/param.h \
+ ../include/linux/resource.h ../include/linux/vm86.h \
+ ../include/linux/math_emu.h ../include/linux/kernel.h \
+ ../include/linux/string.h ../include/linux/errno.h \
  ../include/linux/segment.h ../include/linux/ptrace.h \
  ../include/asm/system.h ../include/asm/segment.h ../include/asm/io.h
 vsprintf.o: vsprintf.c /usr/include/stdc-predef.h \
  /usr/lib/gcc/x86_64-pc-linux-gnu/14/include/stdarg.h \
  ../include/linux/types.h ../include/linux/string.h \
- ../include/linux/./types.h ../include/linux/ctype.h
+ ../include/linux/types.h ../include/linux/ctype.h

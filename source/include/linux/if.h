@@ -19,8 +19,8 @@
 #ifndef _LINUX_IF_H
 #define _LINUX_IF_H
 
-#include <linux/types.h>		/* for "caddr_t" et al		*/
-#include <linux/socket.h>		/* for "struct sockaddr" et al	*/
+#include "types.h"		/* for "caddr_t" et al		*/
+#include "socket.h"		/* for "struct sockaddr" et al	*/
 
 
 /* Structure defining a queue for a network interface. */
@@ -108,7 +108,7 @@ struct ifreq {
 		char	ifrn_name[IFNAMSIZ];		/* if name, e.g. "en0" */
 		char	ifrn_hwaddr[IFHWADDRLEN];
 	} ifr_ifrn;
-	
+
 	union {
 		struct	sockaddr ifru_addr;
 		struct	sockaddr ifru_dstaddr;
@@ -150,7 +150,7 @@ struct ifconf {
 
 
 /* BSD UNIX expects to find these here, so here we go: */
-#include <linux/if_arp.h>
-#include <linux/route.h>
+#include "if_arp.h"
+#include "route.h"
 
 #endif /* _NET_IF_H */

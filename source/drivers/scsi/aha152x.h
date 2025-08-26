@@ -8,7 +8,7 @@
 #include "../block/blk.h"
 #include "scsi.h"
 #if defined(__KERNEL__)
-#include <asm/io.h>
+#include "../../include/asm/io.h"
 
 int        aha152x_detect(int);
 const char *aha152x_info(void);
@@ -20,7 +20,7 @@ int        aha152x_biosparam(int, int, int*);
 
 /* number of queueable commands
    (unless we support more than 1 cmd_per_lun this should do) */
-#define AHA152X_MAXQUEUE	7		
+#define AHA152X_MAXQUEUE	7
 
 /* Initial value of Scsi_Host entry */
 #define AHA152X       { /* name */		"Adaptec 152x SCSI driver", \

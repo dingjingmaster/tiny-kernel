@@ -8,16 +8,16 @@
  *
  * Author:	Fred N. van Kempen, <waltje@uwalt.nl.mugnet.org>
  */
-#include <asm/segment.h>
-#include <asm/system.h>
-#include <linux/types.h>
-#include <linux/config.h>
-#include <linux/kernel.h>
-#include <linux/sched.h>
-#include <linux/string.h>
-#include <linux/mm.h>
-#include <linux/socket.h>
-#include <linux/ddi.h>
+#include "../include/asm/segment.h"
+#include "../include/asm/system.h"
+#include "../include/linux/types.h"
+#include "../include/linux/config.h"
+#include "../include/linux/kernel.h"
+#include "../include/linux/sched.h"
+#include "../include/linux/string.h"
+#include "../include/linux/mm.h"
+#include "../include/linux/socket.h"
+#include "../include/linux/ddi.h"
 
 
 #undef	DDI_DEBUG
@@ -79,7 +79,7 @@ ddi_init(void)
 	(*pro->init)(pro);
 	pro++;
   }
-  
+
   /* Done.  Now kick all configured device drivers. */
   dev = devices;
   while (dev->title != NULL) {

@@ -134,8 +134,8 @@
  */
 
 /* After the legalese, now the important bits:
- * 
- * This is a driver for the Wangtek 5150 tape drive with 
+ *
+ * This is a driver for the Wangtek 5150 tape drive with
  * a QIC-02 controller for ISA-PC type computers.
  * Hopefully it will work with other QIC-02 tape drives as well.
  *
@@ -143,7 +143,7 @@
  * Also, be careful to avoid IO conflicts with other devices!
  */
 
-#include <linux/config.h>
+#include "../../include/linux/config.h"
 
 /* skip this driver if not required for this configuration */
 #if CONFIG_TAPE_QIC02
@@ -154,21 +154,21 @@
 
 #define REALLY_SLOW_IO		/* it sure is ... */
 
-#include <linux/sched.h>
-#include <linux/timer.h>
-#include <linux/fs.h>
-#include <linux/kernel.h>
-#include <linux/major.h>
-#include <linux/errno.h>
-#include <linux/mtio.h>
-#include <linux/fcntl.h>
-#include <linux/delay.h>
-#include <linux/tpqic02.h>
+#include "../../include/linux/sched.h"
+#include "../../include/linux/timer.h"
+#include "../../include/linux/fs.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/major.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/mtio.h"
+#include "../../include/linux/fcntl.h"
+#include "../../include/linux/delay.h"
+#include "../../include/linux/tpqic02.h"
 
-#include <asm/dma.h>
-#include <asm/system.h>
-#include <asm/io.h>
-#include <asm/segment.h>
+#include "../../include/asm/dma.h"
+#include "../../include/asm/system.h"
+#include "../../include/asm/io.h"
+#include "../../include/asm/segment.h"
 
 /* check existence of required configuration parameters */
 #if !defined(TAPE_QIC02_PORT) || \
@@ -249,7 +249,7 @@ static char seek_addr_buf[SEEK_BUF_SIZE];
 #endif
 
 
-/* In write mode, we have to write a File Mark after the last block written, 
+/* In write mode, we have to write a File Mark after the last block written,
  * when the tape device is closed. Tape repositioning and reading in write
  * mode is allowed as long as no actual writing has been done. After writing
  * the File Mark, repositioning and reading are allowed again.
@@ -446,7 +446,7 @@ static void report_error(int s)
 			n = 12;
 		if (s & TP_POR)		/* 13: Reset occurred. FATAL */
 			n = 13;
-	} 
+	}
 	else if (s & TP_ST0) {
 		if (s & TP_EOR) {	/* extra: 15: End of Recorded Media. CONTINUABLE */
 			n = 15;
@@ -512,7 +512,7 @@ static void handle_exception(int exnr, int exbits)
 		/* Cartridge was changed. Redo sense().
 		 * EXC_NCART should be handled in open().
 		 * It is not permitted to remove the tape while
-		 * the tape driver has open files. 
+		 * the tape driver has open files.
 		 */
 		need_rewind = YES;
 		status_eof_detected = NO;
@@ -712,14 +712,14 @@ static int send_qic02_data(char sb[], unsigned size, int ignore_ex)
 			return stat;
 	}
 	return TE_OK;
-	
+
 } /* send_qic02_data */
 
 
 /* Send a QIC-02 command (`cmd') to the tape drive, with
  * a time-out (`timeout').
  * This one is also used by tp_sense(), so we must have
- * a flag to disable exception checking (`ignore_ex'). 
+ * a flag to disable exception checking (`ignore_ex').
  *
  * On entry, the controller is supposed to be READY.
  */
@@ -789,7 +789,7 @@ static int rdstatus(char *stp, unsigned size, char qcmd)
 	}
 
 	(void) notify_cmd(qcmd, 1);			/* send read status command */
-	/* ignore return code -- should always be ok, STAT may contain 
+	/* ignore return code -- should always be ok, STAT may contain
 	 * exception flag from previous exception which we are trying to clear.
 	 */
 
@@ -914,7 +914,7 @@ static int tp_sense(int ignore)
 		printk(TPQIC_NAME ": tp_sense: no errors at all, soft error count: %d, underruns: %d\n",
 			tperror.dec, tperror.urc);
 
-	/* Set generic status. HP-UX defines these, but some extra would 
+	/* Set generic status. HP-UX defines these, but some extra would
 	 * be useful. Problem is to remain compatible. [Do we want to be
 	 * compatible??]
 	 */
@@ -1080,7 +1080,7 @@ static int ll_do_qic_cmd(int cmd, time_t timeout)
 } /* ll_do_qic_cmd */
 
 
-/* 
+/*
  * Problem: What to do when the user cancels a read/write operation
  * in-progress?
  *
@@ -1344,7 +1344,7 @@ static int do_ioctl_cmd(int cmd)
 			stat = do_qic_cmd(QCMD_REWIND, TIM_R);
 			if (stat)
 				return stat;
-			
+
 # endif
 			stat = do_qic_cmd(QCMD_SEEK_EOD, TIM_F);
 			/* After a successful seek, TP_EOR should be returned */
@@ -1372,7 +1372,7 @@ static int do_ioctl_cmd(int cmd)
 			}
 
 			/* Plain GNU mt(1) 2.2 erases a tape in O_RDONLY. :-( */
-			if (mode_access==READ) 
+			if (mode_access==READ)
 				return -EACCES;
 
 			/* don't bother writing filemark */
@@ -1440,7 +1440,7 @@ static int do_ioctl_cmd(int cmd)
  *	- adjust the timeout
  *	- tell the tape controller to start transferring
  * We assume the dma address and mode are, and remain, valid.
- */ 
+ */
 static inline void dma_transfer(void)
 {
 
@@ -1466,7 +1466,7 @@ static inline void dma_transfer(void)
 
 	/* start computer DMA controller */
 	enable_dma(TAPE_QIC02_DMA);
-	/* block transfer should start now, jumping to the 
+	/* block transfer should start now, jumping to the
 	 * interrupt routine when done or an exception was detected.
 	 */
 } /* dma_transfer */
@@ -1475,7 +1475,7 @@ static inline void dma_transfer(void)
 /* start_dma() sets a DMA transfer up between the tape controller and
  * the kernel tape_qic02_buf buffer.
  * Normally bytes_todo==dma_bytes_done at the end of a DMA transfer. If not,
- * a filemark was read, or an attempt to write beyond the End Of Tape 
+ * a filemark was read, or an attempt to write beyond the End Of Tape
  * was made. [Or some other bad thing happened.]
  * Must do a sense() before returning error.
  */
@@ -1483,7 +1483,7 @@ static int start_dma(short mode, unsigned long bytes_todo)
 /* assume 'bytes_todo'>0 */
 {
 	int stat;
-	
+
 	TPQPUTS("start_dma() enter");
 	TPQDEB({printk(TPQIC_NAME ": doing_read==%d, doing_write==%d\n", doing_read, doing_write);})
 
@@ -1491,7 +1491,7 @@ static int start_dma(short mode, unsigned long bytes_todo)
 	dma_bytes_todo = bytes_todo;
 	status_error = NO;
 	/* dma_mode!=0 indicates that the dma controller is in use */
-	dma_mode = (mode == WRITE)? DMA_MODE_WRITE : DMA_MODE_READ;	
+	dma_mode = (mode == WRITE)? DMA_MODE_WRITE : DMA_MODE_READ;
 
 	/* Only give READ/WRITE DATA command to tape drive if we haven't
 	 * done that already. Otherwise the drive will rewind to the beginning
@@ -1661,9 +1661,9 @@ static void tape_qic02_times_out(void)
 /*
  * Interrupt handling:
  *
- * 1) Interrupt is generated iff at the end of 
+ * 1) Interrupt is generated iff at the end of
  *    a 512-DMA-block transfer.
- * 2) EXCEPTION is not raised unless something 
+ * 2) EXCEPTION is not raised unless something
  *    is wrong or EOT/FM is detected.
  * 3) FM EXCEPTION is set *after* the last byte has
  *    been transferred by DMA. By the time the interrupt
@@ -1679,15 +1679,15 @@ static void tape_qic02_times_out(void)
  */
 
 
-/* tape_qic02_interrupt() is called when the tape controller completes 
+/* tape_qic02_interrupt() is called when the tape controller completes
  * a DMA transfer.
- * We are not allowed to sleep here! 
+ * We are not allowed to sleep here!
  *
  * Check if the transfer was successful, check if we need to transfer
  * more. If the buffer contains enough data/is empty enough, signal the
  * read/write() thread to copy to/from user space.
  * When we are finished, set flags to indicate end, disable timer.
- * NOTE: This *must* be fast! 
+ * NOTE: This *must* be fast!
  */
 static void tape_qic02_interrupt(int unused)
 {
@@ -1698,7 +1698,7 @@ static void tape_qic02_interrupt(int unused)
 	if (status_expect_int) {
 		if (TP_DIAGS(current_tape_dev))
 			printk("@");
-	
+
 		stat = inb(QIC_STAT_PORT);	/* Knock, knock */
 #if TAPE_QIC02_IFC == ARCHIVE			/* "Who's there?" */
 		if (((stat & (AR_STAT_DMADONE)) == 0) &&
@@ -1744,7 +1744,7 @@ static void tape_qic02_interrupt(int unused)
 			r = 1;	/* big trouble, but can't do much about it... */
 		}
 
-		if (r) 
+		if (r)
 			return;
 
 		/* finish DMA cycle */
@@ -1776,7 +1776,7 @@ static int tape_qic02_lseek(struct inode * inode, struct file * file, off_t offs
 
 
 /* read/write routines:
- * This code copies between a kernel buffer and a user buffer. The 
+ * This code copies between a kernel buffer and a user buffer. The
  * actual data transfer is done using DMA and interrupts. Time-outs
  * are also used.
  *
@@ -1858,7 +1858,7 @@ static int tape_qic02_read(struct inode * inode, struct file * filp, char * buf,
 				} else {
 					reported_read_eof = YES; /* move on next time */
 					return 0;		 /* return EOF */
-				}				
+				}
 			} else {
 				/* Application program has already received EOF
 				 * (above), now continue with next file on tape,
@@ -1969,7 +1969,7 @@ static int tape_qic02_read(struct inode * inode, struct file * filp, char * buf,
  * end of file. Subsequent writes will return -ENOSPC.
  * Unless the minor bits specify a rewind-on-close, the tape will not
  * be rewound when it is full. The user-program should do that, if desired.
- * If the driver were to do that automatically, a user-program could be 
+ * If the driver were to do that automatically, a user-program could be
  * confused about the EOT/BOT condition after re-opening the tape device.
  *
  * Multiple volume support: Tar closes the tape device before prompting for
@@ -2023,7 +2023,7 @@ static int tape_qic02_write(struct inode * inode, struct file * filp, char * buf
 		bytes_todo = TPQBUF_SIZE;
 		if (bytes_todo>count)
 			bytes_todo = count;
-	
+
 		if (return_write_eof == YES) {
 			/* return_write_eof should be reset on reverse tape movements. */
 
@@ -2036,7 +2036,7 @@ static int tape_qic02_write(struct inode * inode, struct file * filp, char * buf
 				return total_bytes_done;
 			} else {
 				return -ENOSPC;		 /* return error */
-			}	
+			}
 		}
 
 		/* Quit when done. */
@@ -2118,7 +2118,7 @@ static int tape_qic02_write(struct inode * inode, struct file * filp, char * buf
  * we want to be able to reset the tape device without rebooting.
  * Only one open tape file at a time, except when minor=255.
  * Minor 255 is only allowed for resetting and always returns <0.
- * 
+ *
  * The density command is only allowed when TP_BOM is set. Thus, remember
  * the most recently used minor bits. When they are different from the
  * remembered values, rewind the tape and set the required density.
@@ -2192,7 +2192,7 @@ static int tape_qic02_open(struct inode * inode, struct file * filp)
 		tpqputs("Density minor bits have changed. Forcing rewind.");
 		need_rewind = YES;
 	} else {
-		/* density bits still the same, but TP_DIAGS bit 
+		/* density bits still the same, but TP_DIAGS bit
 		 * may have changed.
 		 */
 		current_tape_dev = dev;
@@ -2210,7 +2210,7 @@ static int tape_qic02_open(struct inode * inode, struct file * filp)
 
 /* Note: After a reset command, the controller will rewind the tape
  *	 just before performing any tape movement operation!
- */ 
+ */
 	if (status_dead) {
 		tpqputs("open: tape dead, attempting reset");
 		if (tape_reset(1)!=TE_OK) {
@@ -2306,7 +2306,7 @@ static void tape_qic02_release(struct inode * inode, struct file * filp)
 		tpqputs("release: device not open");
 		return;
 	}
- 	/* Rewind only if minor number requires it AND 
+ 	/* Rewind only if minor number requires it AND
 	 * read/writes have been done.
 	 */
 	if ((TP_REWCLOSE(dev)) && (status_bytes_rd | status_bytes_wr)) {
@@ -2321,7 +2321,7 @@ static void tape_qic02_release(struct inode * inode, struct file * filp)
 
 
 /* ioctl allows user programs to rewind the tape and stuff like that */
-static int tape_qic02_ioctl(struct inode * inode, struct file * filp, 
+static int tape_qic02_ioctl(struct inode * inode, struct file * filp,
 		     unsigned int iocmd, unsigned long ioarg)
 {
 	int error;
@@ -2428,7 +2428,7 @@ static int tape_qic02_ioctl(struct inode * inode, struct file * filp,
 		/* copy results to user space */
 		stp = (char *) &ioctl_status;
 		argp = (char *) ioarg;
-		for (i=0; i<sizeof(ioctl_status); i++) 
+		for (i=0; i<sizeof(ioctl_status); i++)
 			put_fs_byte(*stp++, argp++);
 		return 0;
 
@@ -2461,7 +2461,7 @@ static int tape_qic02_ioctl(struct inode * inode, struct file * filp,
 		/* copy results to user space */
 		stp = (char *) &ioctl_tell;
 		argp = (char *) ioarg;
-		for (i=0; i<sizeof(ioctl_tell); i++) 
+		for (i=0; i<sizeof(ioctl_tell); i++)
 			put_fs_byte(*stp++, argp++);
 		return 0;
 #endif
@@ -2532,7 +2532,7 @@ long tape_qic02_init(long kmem_start)
 	/* Should do IRQ/DMA allocation in open(). Use free_irq() in release()
 	 * return -EBUSY, if allocation fails in open().
 	 * Make IRQ settable/readable through ioctls. DMA is trickier because
-	 * some bits change for different DMA numbers. Also, this would add 
+	 * some bits change for different DMA numbers. Also, this would add
 	 * runtime overhead for having the dma channel number be a variable
 	 * rather than a constant. Probably need to make the DMA stuff #ifdef'd
 	 * to choose between hardcoded and changeable DMA channel.

@@ -8,19 +8,19 @@
  *	pty.c
  *
  * This module exports the following pty function:
- * 
+ *
  * 	int  pty_open(struct tty_struct * tty, struct file * filp);
  */
 
-#include <linux/errno.h>
-#include <linux/sched.h>
-#include <linux/tty.h>
-#include <linux/fcntl.h>
-#include <linux/interrupt.h>
-#include <linux/string.h>
+#include "../../include/linux/errno.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/tty.h"
+#include "../../include/linux/fcntl.h"
+#include "../../include/linux/interrupt.h"
+#include "../../include/linux/string.h"
 
-#include <asm/system.h>
-#include <asm/bitops.h>
+#include "../../include/asm/system.h"
+#include "../../include/asm/bitops.h"
 
 #define MIN(a,b)	((a) < (b) ? (a) : (b))
 

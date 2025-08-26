@@ -6,17 +6,17 @@
  *  nfs regular file handling functions
  */
 
-#include <asm/segment.h>
-#include <asm/system.h>
+#include "../../include/asm/segment.h"
+#include "../../include/asm/system.h"
 
-#include <linux/sched.h>
-#include <linux/kernel.h>
-#include <linux/errno.h>
-#include <linux/fcntl.h>
-#include <linux/stat.h>
-#include <linux/mm.h>
-#include <linux/nfs_fs.h>
-#include <linux/malloc.h>
+#include "../../include/linux/sched.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/fcntl.h"
+#include "../../include/linux/stat.h"
+#include "../../include/linux/mm.h"
+#include "../../include/linux/nfs_fs.h"
+#include "../../include/linux/malloc.h"
 
 static int nfs_file_read(struct inode *, struct file *, char *, int);
 static int nfs_file_write(struct inode *, struct file *, char *, int);
@@ -90,7 +90,7 @@ static int nfs_file_read(struct inode *inode, struct file *file, char *buf,
 		hunk = count - i;
 		if (hunk > n)
 			hunk = n;
-		result = nfs_proc_read(NFS_SERVER(inode), NFS_FH(inode), 
+		result = nfs_proc_read(NFS_SERVER(inode), NFS_FH(inode),
 			pos, hunk, data, &fattr);
 		if (result < 0) {
 			kfree_s(data, n);
@@ -142,7 +142,7 @@ static int nfs_file_write(struct inode *inode, struct file *file, char *buf,
 		if (hunk >= n)
 			hunk = n;
 		memcpy_fromfs(data, buf, hunk);
-		result = nfs_proc_write(NFS_SERVER(inode), NFS_FH(inode), 
+		result = nfs_proc_write(NFS_SERVER(inode), NFS_FH(inode),
 			pos, hunk, data, &fattr);
 		if (result < 0) {
 			kfree_s(data, n);
@@ -160,4 +160,3 @@ static int nfs_file_write(struct inode *inode, struct file *file, char *buf,
 	nfs_refresh_inode(inode, &fattr);
 	return i;
 }
-

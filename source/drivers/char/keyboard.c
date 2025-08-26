@@ -13,16 +13,16 @@
 
 #define KEYBOARD_IRQ 1
 
-#include <linux/sched.h>
-#include <linux/tty.h>
-#include <linux/mm.h>
-#include <linux/ptrace.h>
-#include <linux/interrupt.h>
-#include <linux/config.h>
-#include <linux/signal.h>
-#include <linux/string.h>
+#include "../../include/linux/sched.h"
+#include "../../include/linux/tty.h"
+#include "../../include/linux/mm.h"
+#include "../../include/linux/ptrace.h"
+#include "../../include/linux/interrupt.h"
+#include "../../include/linux/config.h"
+#include "../../include/linux/signal.h"
+#include "../../include/linux/string.h"
 
-#include <asm/bitops.h>
+#include "../../include/asm/bitops.h"
 
 #include "kbd_kern.h"
 #include "diacr.h"
@@ -56,8 +56,8 @@
  */
 #define REALLY_SLOW_IO
 #define SLOW_IO_BY_JUMPING
-#include <asm/io.h>
-#include <asm/system.h>
+#include "../../include/asm/io.h"
+#include "../../include/asm/system.h"
 
 extern void do_keyboard_interrupt(void);
 extern void ctrl_alt_del(void);
@@ -242,7 +242,7 @@ static void keyboard_interrupt(int int_pt_regs)
  	 */
 	up_flag = (scancode & 0200);
  	scancode &= 0x7f;
-  
+
 	if (prev_scancode) {
 	  /*
 	   * usually it will be 0xe0, but a Pause key generates
@@ -294,7 +294,7 @@ static void keyboard_interrupt(int int_pt_regs)
 #endif
 	  goto end_kbd_intr;
  	}
-  
+
 	/*
 	 * At this point the variable `scancode' contains the keysym.
 	 * We keep track of the up/down status of the key, and
@@ -308,7 +308,7 @@ static void keyboard_interrupt(int int_pt_regs)
 		rep = 0;
 	} else
  		rep = set_bit(scancode, key_down);
-  
+
 	if (raw_mode)
 	        goto end_kbd_intr;
 
@@ -316,7 +316,7 @@ static void keyboard_interrupt(int int_pt_regs)
  		put_queue(scancode + up_flag);
 		goto end_kbd_intr;
  	}
-  
+
  	/*
 	 * Small change in philosophy: earlier we defined repetition by
 	 *	 rep = scancode == prev_keysym;
@@ -330,7 +330,7 @@ static void keyboard_interrupt(int int_pt_regs)
  	 *  characters get echoed locally. This makes key repeat usable
  	 *  with slow applications and under heavy loads.
 	 */
-	if (!rep || 
+	if (!rep ||
 	    (vc_kbd_mode(kbd,VC_REPEAT) && tty &&
 	     (L_ECHO(tty) || (EMPTY(&tty->secondary) && EMPTY(&tty->read_q)))))
 	{
@@ -525,7 +525,7 @@ static void do_lowercase(unsigned char value, char up_flag)
 {
         printk("keyboard.c: do_lowercase was called - impossible\n");
 }
-  
+
 static void do_self(unsigned char value, char up_flag)
 {
 	if (up_flag)

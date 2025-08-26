@@ -6,17 +6,17 @@
  *  nfs inode and superblock handling functions
  */
 
-#include <asm/system.h>
-#include <asm/segment.h>
+#include "../../include/asm/system.h"
+#include "../../include/asm/segment.h"
 
-#include <linux/sched.h>
-#include <linux/nfs_fs.h>
-#include <linux/kernel.h>
-#include <linux/mm.h>
-#include <linux/string.h>
-#include <linux/stat.h>
-#include <linux/errno.h>
-#include <linux/locks.h>
+#include "../../include/linux/sched.h"
+#include "../../include/linux/nfs_fs.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/mm.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/stat.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/locks.h"
 
 extern int close_fp(struct file *filp, unsigned int fd);
 
@@ -25,7 +25,7 @@ static void nfs_put_inode(struct inode *);
 static void nfs_put_super(struct super_block *);
 static void nfs_statfs(struct super_block *, struct statfs *);
 
-static struct super_operations nfs_sops = { 
+static struct super_operations nfs_sops = {
 	NULL,			/* read inode */
 	nfs_notify_change,	/* notify change */
 	NULL,			/* write inode */
@@ -230,4 +230,3 @@ int nfs_notify_change(int flags, struct inode *inode)
 	inode->i_dirt = 0;
 	return error;
 }
-

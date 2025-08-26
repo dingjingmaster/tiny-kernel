@@ -12,11 +12,11 @@
  * lookup() and readdir()
  */
 
-#include <asm/segment.h>
+#include "../../include/asm/segment.h"
 
-#include <linux/fs.h>
-#include <linux/ext2_fs.h>
-#include <linux/string.h>
+#include "../../include/linux/fs.h"
+#include "../../include/linux/ext2_fs.h"
+#include "../../include/linux/string.h"
 
 #ifndef DONT_USE_DCACHE
 

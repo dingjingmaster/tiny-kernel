@@ -7,19 +7,19 @@
 /*
  * super.c contains code to handle the super-block tables.
  */
-#include <linux/config.h>
-#include <linux/sched.h>
-#include <linux/kernel.h>
-#include <linux/major.h>
-#include <linux/stat.h>
-#include <linux/errno.h>
-#include <linux/string.h>
-#include <linux/locks.h>
+#include "../include/linux/config.h"
+#include "../include/linux/sched.h"
+#include "../include/linux/kernel.h"
+#include "../include/linux/major.h"
+#include "../include/linux/stat.h"
+#include "../include/linux/errno.h"
+#include "../include/linux/string.h"
+#include "../include/linux/locks.h"
 
-#include <asm/system.h>
-#include <asm/segment.h>
+#include "../include/asm/system.h"
+#include "../include/asm/segment.h"
 
- 
+
 /*
  * The definition of file_systems that used to be here is now in
  * filesystems.c.  Now super.c contains no fs specific code.  -- jrs
@@ -44,7 +44,7 @@ dev_t ROOT_DEV = 0;
 struct file_system_type *get_fs_type(char *name)
 {
 	int a;
-	
+
 	if (!name)
 		return &file_systems[0];
 	for(a = 0 ; file_systems[a].read_super ; a++)
@@ -203,7 +203,7 @@ static int do_umount(dev_t dev)
 {
 	struct super_block * sb;
 	int retval;
-	
+
 	if (dev==ROOT_DEV) {
 		/* Special case for "unmounting" root.  We just try to remount
 		   it readonly, and sync() the device. */
@@ -348,7 +348,7 @@ static int do_mount(dev_t dev, const char * dir, char * type, int flags, void * 
 static int do_remount_sb(struct super_block *sb, int flags, char *data)
 {
 	int retval;
-	
+
 	/* If we are remounting RDONLY, make sure there are no rw files open */
 	if ((flags & MS_RDONLY) && !(sb->s_flags & MS_RDONLY))
 		if (!fs_may_remount_ro(sb->s_dev))
@@ -454,7 +454,7 @@ asmlinkage int sys_mount(char * dev_name, char * dir_name, char * type,
 		return retval;
 	fstype = get_fs_type((char *) page);
 	free_page(page);
-	if (!fstype)		
+	if (!fstype)
 		return -ENODEV;
 	t = fstype->name;
 	if (fstype->requires_dev) {

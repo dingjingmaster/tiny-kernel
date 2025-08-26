@@ -10,7 +10,7 @@
  *
  */
 
-#include <linux/types.h>
+#include "../../include/linux/types.h"
 
 /* Eisa Enhanced mode operation - slot locating and addressing */
 #define MINEISA 1   /* I don't have an EISA Spec to know these ranges, so I */
@@ -137,7 +137,7 @@ struct ecb {			/* Enhanced Control Block 6.1 */
   ushort datacheck;		/* Data checksum */
   unchar cdb[MAX_CDB];		/* CDB area */
   /* Hardware defined portion ends here, rest is driver defined */
-  unchar sense[MAX_SENSE];	/* Sense area */ 
+  unchar sense[MAX_SENSE];	/* Sense area */
   unchar status[MAX_STATUS];	/* Status area */
   Scsi_Cmnd *SCpnt;		/* Link to the SCSI Command Block */
   void (*done)(Scsi_Cmnd *);	/* Completion Function */
@@ -177,4 +177,3 @@ int aha1740_biosparam(int, int, int*);
 		AHA1740_ECBS, 7, AHA1740_SCATTER, 1, 0, 0}
 
 #endif
-

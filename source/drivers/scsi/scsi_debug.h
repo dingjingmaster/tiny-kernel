@@ -1,6 +1,6 @@
 #ifndef _SCSI_DEBUG_H
 
-#include <linux/types.h>
+#include "../../include/linux/types.h"
 
 int scsi_debug_detect(int);
 int scsi_debug_command(Scsi_Cmnd *);

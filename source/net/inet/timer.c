@@ -31,15 +31,15 @@
  *		2 of the License, or (at your option) any later version.
  */
 
-#include <linux/types.h>
-#include <linux/errno.h>
-#include <linux/socket.h>
-#include <linux/in.h>
-#include <linux/kernel.h>
-#include <linux/sched.h>
-#include <linux/timer.h>
-#include <asm/system.h>
-#include <linux/interrupt.h>
+#include "../../include/linux/types.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/socket.h"
+#include "../../include/linux/in.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/timer.h"
+#include "../../include/asm/system.h"
+#include "../../include/linux/interrupt.h"
 #include "inet.h"
 #include "dev.h"
 #include "ip.h"
@@ -101,7 +101,7 @@ net_timer (unsigned long data)
   sk->inuse = 1;
 
   DPRINTF ((DBG_TMR, "net_timer: found sk=%X why = %d\n", sk, why));
-  if (sk->wfront && 
+  if (sk->wfront &&
       before(sk->window_seq, sk->wfront->h.seq) &&
       sk->send_head == NULL &&
       sk->ack_backlog == 0 &&
@@ -164,7 +164,7 @@ net_timer (unsigned long data)
 	 */
 	if (sk->send_head) {
 	  if (jiffies < (sk->send_head->when + sk->rto)) {
-	    reset_timer (sk, TIME_WRITE, 
+	    reset_timer (sk, TIME_WRITE,
 			 (sk->send_head->when + sk->rto - jiffies));
 	    release_sock (sk);
 	    break;
@@ -234,4 +234,3 @@ net_timer (unsigned long data)
 	break;
   }
 }
-

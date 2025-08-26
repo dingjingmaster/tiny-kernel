@@ -12,16 +12,16 @@
  *  Copyright (C) 1991, 1992  Linus Torvalds
  */
 
-#include <asm/segment.h>
+#include "../../include/asm/segment.h"
 
-#include <linux/errno.h>
-#include <linux/fs.h>
-#include <linux/ext2_fs.h>
-#include <linux/fcntl.h>
-#include <linux/sched.h>
-#include <linux/stat.h>
-#include <linux/string.h>
-#include <linux/locks.h>
+#include "../../include/linux/errno.h"
+#include "../../include/linux/fs.h"
+#include "../../include/linux/ext2_fs.h"
+#include "../../include/linux/fcntl.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/stat.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/locks.h"
 
 /*
  * comment out this line if you want names > EXT2_NAME_LEN chars to be
@@ -349,7 +349,7 @@ static int ext2_delete_entry (struct ext2_dir_entry * dir,
 	pde = NULL;
 	de = (struct ext2_dir_entry *) bh->b_data;
 	while (i < bh->b_size) {
-		if (!ext2_check_dir_entry ("ext2_delete_entry", NULL, 
+		if (!ext2_check_dir_entry ("ext2_delete_entry", NULL,
 					   de, bh, i))
 			return -EIO;
 		if (de == dir)  {
@@ -445,7 +445,7 @@ int ext2_mknod (struct inode * dir, const char * name, int len, int mode,
 		inode->i_op = &chrdev_inode_operations;
 	else if (S_ISBLK(inode->i_mode))
 		inode->i_op = &blkdev_inode_operations;
-	else if (S_ISFIFO(inode->i_mode)) 
+	else if (S_ISFIFO(inode->i_mode))
 		init_fifo(inode);
 	if (S_ISBLK(mode) || S_ISCHR(mode))
 		inode->i_rdev = rdev;
@@ -583,7 +583,7 @@ static int empty_dir (struct inode * inode)
 	}
 	de = (struct ext2_dir_entry *) bh->b_data;
 	de1 = (struct ext2_dir_entry *) ((char *) de + de->rec_len);
-	if (de->inode != inode->i_ino || !de1->inode || 
+	if (de->inode != inode->i_ino || !de1->inode ||
 	    strcmp (".", de->name) || strcmp ("..", de1->name)) {
 	    	ext2_warning (inode->i_sb, "empty_dir",
 			      "bad directory (dir %lu)", inode->i_ino);
@@ -969,7 +969,7 @@ start_up:
 	if (!old_inode)
 		goto end_rename;
 	retval = -EPERM;
-	if ((old_dir->i_mode & S_ISVTX) && 
+	if ((old_dir->i_mode & S_ISVTX) &&
 	    current->euid != old_inode->i_uid &&
 	    current->euid != old_dir->i_uid && !suser())
 		goto end_rename;

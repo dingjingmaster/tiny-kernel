@@ -6,37 +6,37 @@
  *  table of configured filesystems
  */
 
-#include <linux/config.h>
-#include <linux/fs.h>
+#include "../include/linux/config.h"
+#include "../include/linux/fs.h"
 #ifdef CONFIG_MINIX_FS
-#include <linux/minix_fs.h>
+#include "../include/linux/minix_fs.h"
 #endif
 #ifdef CONFIG_XIA_FS
-#include <linux/xia_fs.h>
+#include "../include/linux/xia_fs.h"
 #endif
 #ifdef CONFIG_PROC_FS
-#include <linux/proc_fs.h>
+#include "../include/linux/proc_fs.h"
 #endif
 #ifdef CONFIG_EXT2_FS
-#include <linux/ext2_fs.h>
+#include "../include/linux/ext2_fs.h"
 #endif
 #ifdef CONFIG_EXT_FS
-#include <linux/ext_fs.h>
+#include "../include/linux/ext_fs.h"
 #endif
 #ifdef CONFIG_MSDOS_FS
-#include <linux/msdos_fs.h>
+#include "../include/linux/msdos_fs.h"
 #endif
 #ifdef CONFIG_NFS_FS
-#include <linux/nfs_fs.h>
+#include "../include/linux/nfs_fs.h"
 #endif
 #ifdef CONFIG_ISO9660_FS
-#include <linux/iso_fs.h>
+#include "../include/linux/iso_fs.h"
 #endif
 #ifdef CONFIG_HPFS_FS
-#include <linux/hpfs_fs.h>
+#include "../include/linux/hpfs_fs.h"
 #endif
 #ifdef CONFIG_SYSV_FS
-#include <linux/sysv_fs.h>
+#include "../include/linux/sysv_fs.h"
 #endif
 
 struct file_system_type file_systems[] = {

@@ -4,20 +4,20 @@
  *  Copyright (C) 1991, 1992  Linus Torvalds
  */
 
-#include <linux/config.h>
-#include <linux/types.h>
-#include <linux/errno.h>
-#include <linux/sched.h>
-#include <linux/kernel.h>
-#include <linux/major.h>
-#include <linux/tty.h>
-#include <linux/mouse.h>
-#include <linux/tpqic02.h>
-#include <linux/malloc.h>
-#include <linux/mman.h>
+#include "../../include/linux/config.h"
+#include "../../include/linux/types.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/major.h"
+#include "../../include/linux/tty.h"
+#include "../../include/linux/mouse.h"
+#include "../../include/linux/tpqic02.h"
+#include "../../include/linux/malloc.h"
+#include "../../include/linux/mman.h"
 
-#include <asm/segment.h>
-#include <asm/io.h>
+#include "../../include/asm/segment.h"
+#include "../../include/asm/io.h"
 
 #ifdef CONFIG_SOUND
 extern long soundcard_init(long mem_start);
@@ -338,7 +338,7 @@ static struct file_operations full_fops = {
 	write_full,
 	NULL,		/* full_readdir */
 	NULL,		/* full_select */
-	NULL,		/* full_ioctl */	
+	NULL,		/* full_ioctl */
 	NULL,		/* full_mmap */
 	NULL,		/* no special open code */
 	NULL		/* no special release code */
@@ -421,6 +421,6 @@ long chr_dev_init(long mem_start, long mem_end)
         printk( "ftape: allocated %d buffers alligned at: %p\n",
                NR_FTAPE_BUFFERS, ftape_big_buffer);
         mem_start = (long) ftape_big_buffer + NR_FTAPE_BUFFERS * 0x8000;
-#endif 
+#endif
 	return mem_start;
 }

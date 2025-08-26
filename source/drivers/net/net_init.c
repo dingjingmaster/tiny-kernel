@@ -16,16 +16,16 @@
 	their I/O port region before the SCSI probes start.
 */
 
-#include <linux/config.h>
-#include <linux/kernel.h>
-#include <linux/sched.h>
-#include <linux/types.h>
-#include <linux/fs.h>
-#include <linux/malloc.h>
-#include <linux/if_ether.h>
+#include "../../include/linux/config.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/types.h"
+#include "../../include/linux/fs.h"
+#include "../../include/linux/malloc.h"
+#include "../../include/linux/if_ether.h"
 #include <memory.h>
-#include "dev.h"
-#include "eth.h"
+#include "../../net/inet/dev.h"
+#include "../../net/inet/eth.h"
 
 /* The network devices currently exist only in the socket namespace, so these
    entries are unused.  The only ones that make sense are
@@ -118,13 +118,13 @@ struct device *init_etherdev(struct device *dev, int sizeof_private,
 
 	for (i = 0; i < DEV_NUMBUFFS; i++)
 		dev->buffs[i] = NULL;
-	
+
 	dev->hard_header	= eth_header;
 	dev->add_arp		= eth_add_arp;
 	dev->queue_xmit		= dev_queue_xmit;
 	dev->rebuild_header	= eth_rebuild_header;
 	dev->type_trans		= eth_type_trans;
-	
+
 	dev->type			= ARPHRD_ETHER;
 	dev->hard_header_len = ETH_HLEN;
 	dev->mtu			= 1500; /* eth_mtu */
@@ -132,7 +132,7 @@ struct device *init_etherdev(struct device *dev, int sizeof_private,
 	for (i = 0; i < ETH_ALEN; i++) {
 		dev->broadcast[i]=0xff;
 	}
-	
+
 	/* New-style flags. */
 	dev->flags			= IFF_BROADCAST;
 	dev->family			= AF_INET;
@@ -140,7 +140,7 @@ struct device *init_etherdev(struct device *dev, int sizeof_private,
 	dev->pa_brdaddr		= 0;
 	dev->pa_mask		= 0;
 	dev->pa_alen		= sizeof(unsigned long);
-	
+
 	if (new_device) {
 		/* Append the device to the device queue. */
 		struct device **old_devp = &dev_base;

@@ -8,20 +8,20 @@
  *                      Universite Pierre et Marie Curie (Paris VI)
  *  from
  *  linux/fs/minix/truncate.c   Copyright (C) 1991, 1992  Linus Torvalds
- * 
+ *
  *  ext2fs fsync primitive
  */
 
-#include <asm/segment.h>
-#include <asm/system.h>
+#include "../../include/asm/segment.h"
+#include "../../include/asm/system.h"
 
-#include <linux/errno.h>
-#include <linux/fs.h>
-#include <linux/ext2_fs.h>
-#include <linux/fcntl.h>
-#include <linux/sched.h>
-#include <linux/stat.h>
-#include <linux/locks.h>
+#include "../../include/linux/errno.h"
+#include "../../include/linux/fs.h"
+#include "../../include/linux/ext2_fs.h"
+#include "../../include/linux/fcntl.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/stat.h"
+#include "../../include/linux/locks.h"
 
 
 #define blocksize (EXT2_BLOCK_SIZE(inode->i_sb))
@@ -31,7 +31,7 @@ static int sync_block (struct inode * inode, unsigned long * block, int wait)
 {
 	struct buffer_head * bh;
 	int tmp;
-	
+
 	if (!*block)
 		return 0;
 	tmp = *block;
@@ -55,11 +55,11 @@ static int sync_block (struct inode * inode, unsigned long * block, int wait)
 	return 0;
 }
 
-static int sync_iblock (struct inode * inode, unsigned long * iblock, 
-			struct buffer_head ** bh, int wait) 
+static int sync_iblock (struct inode * inode, unsigned long * iblock,
+			struct buffer_head ** bh, int wait)
 {
 	int rc, tmp;
-	
+
 	*bh = NULL;
 	tmp = *iblock;
 	if (!tmp)
@@ -104,9 +104,9 @@ static int sync_indirect (struct inode * inode, unsigned long * iblock,
 	rc = sync_iblock (inode, iblock, &ind_bh, wait);
 	if (rc || !ind_bh)
 		return rc;
-	
+
 	for (i = 0; i < addr_per_block; i++) {
-		rc = sync_block (inode, 
+		rc = sync_block (inode,
 				 ((unsigned long *) ind_bh->b_data) + i,
 				 wait);
 		if (rc > 0)
@@ -128,7 +128,7 @@ static int sync_dindirect (struct inode * inode, unsigned long * diblock,
 	rc = sync_iblock (inode, diblock, &dind_bh, wait);
 	if (rc || !dind_bh)
 		return rc;
-	
+
 	for (i = 0; i < addr_per_block; i++) {
 		rc = sync_indirect (inode,
 				    ((unsigned long *) dind_bh->b_data) + i,
@@ -142,7 +142,7 @@ static int sync_dindirect (struct inode * inode, unsigned long * diblock,
 	return err;
 }
 
-static int sync_tindirect (struct inode * inode, unsigned long * tiblock, 
+static int sync_tindirect (struct inode * inode, unsigned long * tiblock,
 			   int wait)
 {
 	int i;
@@ -152,7 +152,7 @@ static int sync_tindirect (struct inode * inode, unsigned long * tiblock,
 	rc = sync_iblock (inode, tiblock, &tind_bh, wait);
 	if (rc || !tind_bh)
 		return rc;
-	
+
 	for (i = 0; i < addr_per_block; i++) {
 		rc = sync_dindirect (inode,
 				     ((unsigned long *) tind_bh->b_data) + i,
@@ -186,10 +186,10 @@ int ext2_sync_file (struct inode * inode, struct file * file)
 				      inode->u.ext2_i.i_data+EXT2_IND_BLOCK,
 				      wait);
 		err |= sync_dindirect (inode,
-				       inode->u.ext2_i.i_data+EXT2_DIND_BLOCK, 
+				       inode->u.ext2_i.i_data+EXT2_DIND_BLOCK,
 				       wait);
-		err |= sync_tindirect (inode, 
-				       inode->u.ext2_i.i_data+EXT2_TIND_BLOCK, 
+		err |= sync_tindirect (inode,
+				       inode->u.ext2_i.i_data+EXT2_TIND_BLOCK,
 				       wait);
 	}
 skip:

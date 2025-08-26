@@ -23,7 +23,7 @@
 static char *version =
 	"3c507.c:v0.99-15f 2/17/94 Donald Becker (becker@super.org)\n";
 
-#include <linux/config.h>
+#include "../../include/linux/config.h"
 
 /*
   Sources:
@@ -36,31 +36,31 @@ static char *version =
 	info that the casual reader might think that it documents the i82586.
 */
 
-#include <linux/kernel.h>
-#include <linux/sched.h>
-#include <linux/types.h>
-#include <linux/fcntl.h>
-#include <linux/interrupt.h>
-#include <linux/ptrace.h>
-#include <linux/ioport.h>
-#include <linux/in.h>
-#include <asm/system.h>
-#include <asm/bitops.h>
-#include <asm/io.h>
-#include <asm/dma.h>
-#include <errno.h>
-#include <memory.h>
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/types.h"
+#include "../../include/linux/fcntl.h"
+#include "../../include/linux/interrupt.h"
+#include "../../include/linux/ptrace.h"
+#include "../../include/linux/ioport.h"
+#include "../../include/linux/in.h"
+#include "../../include/asm/system.h"
+#include "../../include/asm/bitops.h"
+#include "../../include/asm/io.h"
+#include "../../include/asm/dma.h"
+#include "../../include/errno.h"
+#include "../../include/memory.h"
 
-#include "dev.h"
-#include "eth.h"
-#include "skbuff.h"
-#include "arp.h"
+#include "../../net/inet/dev.h"
+#include "../../net/inet/eth.h"
+#include "../../net/inet/skbuff.h"
+#include "../../net/inet/arp.h"
 
 #ifndef HAVE_ALLOC_SKB
 #define alloc_skb(size, priority) (struct sk_buff *) kmalloc(size,priority)
 #define kfree_skbmem(addr, size) kfree_s(addr,size);
 #else
-#include <linux/malloc.h>
+#include "../../include/linux/malloc.h"
 #endif
 
 /* use 0 for production, 1 for verification, 2..7 for debug */
@@ -149,15 +149,15 @@ struct net_local {
 
 /*  Since the 3c507 maps the shared memory window so that the last byte is
 	at 82586 address FFFF, the first byte is at 82586 address 0, 16K, 32K, or
-	48K cooresponding to window sizes of 64K, 48K, 32K and 16K respectively. 
+	48K cooresponding to window sizes of 64K, 48K, 32K and 16K respectively.
 	We can account for this be setting the 'SBC Base' entry in the ISCP table
 	below for all the 16 bit offset addresses, and also adding the 'SCB Base'
 	value to all 24 bit physical addresses (in the SCP table and the TX and RX
 	Buffer Descriptors).
-					-Mark	
+					-Mark
 	*/
 #define SCB_BASE		((unsigned)64*1024 - (dev->mem_end - dev->mem_start))
- 
+
 /*
   What follows in 'init_words[]' is the "program" that is downloaded to the
   82586 memory.	 It's mostly tables and command blocks, and starts at the
@@ -197,7 +197,7 @@ struct net_local {
   That's it: only 86 bytes to set up the beast, including every extra
   command available.  The 170 byte buffer at DUMP_DATA is shared between the
   Dump command (called only by the diagnostic program) and the SetMulticastList
-  command. 
+  command.
 
   To complete the memory setup you only have to write the station address at
   SA_OFFSET and create the Tx & Rx buffer lists.
@@ -347,7 +347,7 @@ int el16_probe1(struct device *dev, short ioaddr)
 	printk("%s: 3c507 at %#x,", dev->name, ioaddr);
 
 	/* We should make a few more checks here, like the first three octets of
-	   the S.A. for the manufactor's code. */ 
+	   the S.A. for the manufactor's code. */
 
 	irq = inb(ioaddr + IRQ_CONFIG) & 0x0f;
 
@@ -356,7 +356,7 @@ int el16_probe1(struct device *dev, short ioaddr)
 		printk ("unable to get IRQ %d (irqval=%d).\n", irq, irqval);
 		return EAGAIN;
 	}
-	
+
 	/* We've committed to using the board, and can start filling in *dev. */
 	snarf_region(ioaddr, 16);
 	dev->base_addr = ioaddr;
@@ -539,19 +539,19 @@ el16_interrupt(int reg_ptr)
 	int ioaddr, status, boguscount = 0;
 	ushort ack_cmd = 0;
 	ushort *shmem;
-	
+
 	if (dev == NULL) {
 		printk ("net_interrupt(): irq %d for unknown device.\n", irq);
 		return;
 	}
 	dev->interrupt = 1;
-	
+
 	ioaddr = dev->base_addr;
 	lp = (struct net_local *)dev->priv;
 	shmem = ((ushort*)dev->mem_start);
-	
+
 	status = shmem[iSCB_STATUS>>1];
-	
+
 	if (net_debug > 4) {
 		printk("%s: 3c507 interrupt, status %4.4x.\n", dev->name, status);
 	}
@@ -678,7 +678,7 @@ init_rx_bufs(struct device *dev)
 	unsigned short SCB_base = SCB_BASE;
 
 	int cur_rxbuf = lp->rx_head = RX_BUF_START;
-	
+
 	/* Initialize each Rx frame + data buffer. */
 	do {	/* While there is room for one more. */
 
@@ -695,18 +695,18 @@ init_rx_bufs(struct device *dev)
 		*write_ptr++ = 0x0000;
 		*write_ptr++ = 0x0000;
 		*write_ptr++ = 0x0000;				/* Pad for protocol. */
-		
+
 		*write_ptr++ = 0x0000;				/* Buffer: Actual count */
 		*write_ptr++ = -1;					/* Buffer: Next (none). */
 		*write_ptr++ = cur_rxbuf + 0x20 + SCB_base;	/* Buffer: Address low */
 		*write_ptr++ = 0x0000;
 		/* Finally, the number of bytes in the buffer. */
 		*write_ptr++ = 0x8000 + RX_BUF_SIZE-0x20;
-		
+
 		lp->rx_tail = cur_rxbuf;
 		cur_rxbuf += RX_BUF_SIZE;
 	} while (cur_rxbuf <= RX_BUF_END - RX_BUF_SIZE);
-	
+
 	/* Terminate the list by setting the EOL bit, and wrap the pointer to make
 	   the list a ring. */
 	write_ptr = (unsigned short *)
@@ -873,7 +873,7 @@ el16_rx(struct device *dev)
 
 			/* 'skb->data' points to the start of sk_buff data area. */
 			memcpy(skb->data, data_frame + 5, pkt_len);
-		
+
 #ifdef HAVE_NETIF_RX
 			netif_rx(skb);
 #else
@@ -912,4 +912,3 @@ el16_rx(struct device *dev)
  *  c-indent-level: 4
  * End:
  */
-

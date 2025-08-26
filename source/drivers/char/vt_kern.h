@@ -1,12 +1,13 @@
 #ifndef _VT_KERN_H
 #define _VT_KERN_H
+#include "../../include/linux/tty.h"
 
 /*
  * this really is an extension of the vc_cons structure in console.c, but
  * with information needed by the vt package
  */
 
-#include <linux/vt.h>
+#include "../../include/linux/vt.h"
 
 extern struct vt_struct {
 	unsigned char	vc_mode;		/* KD_TEXT, ... */

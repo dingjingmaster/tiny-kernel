@@ -10,11 +10,11 @@
  *  Copyright (C) 1991, 1992  Linus Torvalds
  */
 
-#include <linux/sched.h>
-#include <linux/ext_fs.h>
-#include <linux/stat.h>
-#include <linux/fcntl.h>
-#include <linux/errno.h>
+#include "../../include/linux/sched.h"
+#include "../../include/linux/ext_fs.h"
+#include "../../include/linux/stat.h"
+#include "../../include/linux/fcntl.h"
+#include "../../include/linux/errno.h"
 
 /*
  * Truncate has the most races in the whole filesystem: coding it is

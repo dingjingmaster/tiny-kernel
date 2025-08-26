@@ -19,7 +19,7 @@
  * Also restructured routines so that there is more of a separation
  * between the high-level tty routines (tty_io.c and tty_ioctl.c) and
  * the low-level tty routines (serial.c, pty.c, console.c).  This
- * makes for cleaner and more compact code.  -TYT, 9/17/92 
+ * makes for cleaner and more compact code.  -TYT, 9/17/92
  *
  * Modified by Fred N. van Kempen, 01/29/93, to add line disciplines
  * which can be dynamically activated and de-activated by the line
@@ -37,23 +37,23 @@
  * 	-- julian@uhunix.uhcc.hawaii.edu (J. Cowley), 13Jan94
  */
 
-#include <linux/types.h>
-#include <linux/major.h>
-#include <linux/errno.h>
-#include <linux/signal.h>
-#include <linux/fcntl.h>
-#include <linux/sched.h>
-#include <linux/tty.h>
-#include <linux/timer.h>
-#include <linux/ctype.h>
-#include <linux/kd.h>
-#include <linux/mm.h>
-#include <linux/string.h>
-#include <linux/malloc.h>
+#include "../../include/linux/types.h"
+#include "../../include/linux/major.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/signal.h"
+#include "../../include/linux/fcntl.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/tty.h"
+#include "../../include/linux/timer.h"
+#include "../../include/linux/ctype.h"
+#include "../../include/linux/kd.h"
+#include "../../include/linux/mm.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/malloc.h"
 
-#include <asm/segment.h>
-#include <asm/system.h>
-#include <asm/bitops.h>
+#include "../../include/asm/segment.h"
+#include "../../include/asm/system.h"
+#include "../../include/asm/bitops.h"
 
 #include "kbd_kern.h"
 #include "vt_kern.h"
@@ -91,13 +91,13 @@ int tty_register_ldisc(int disc, struct tty_ldisc *new_ldisc)
 {
 	if (disc < N_TTY || disc >= NR_LDISCS)
 		return -EINVAL;
-	
+
 	if (new_ldisc) {
 		ldiscs[disc] = *new_ldisc;
 		ldiscs[disc].flags |= LDISC_FLAG_DEFINED;
 	} else
 		memset(&ldiscs[disc], 0, sizeof(struct tty_ldisc));
-	
+
 	return 0;
 }
 
@@ -1291,7 +1291,7 @@ repeat:
 			memset(o_ltp, 0, sizeof(struct termios));
 			goto repeat;
 		}
-		
+
 	}
 	/* Now we have allocated all the structures: update all the pointers.. */
 	if (!tty_termios[dev]) {
@@ -1403,7 +1403,7 @@ static void release_dev(int dev, struct file * filp)
 	}
 	if (tty->count)
 		return;
-	
+
 #ifdef TTY_DEBUG_HANGUP
 	printk("freeing tty structure...");
 #endif
@@ -1425,7 +1425,7 @@ static void release_dev(int dev, struct file * filp)
 		ldiscs[tty->disc].close(tty);
 	tty->disc = N_TTY;
 	tty->termios->c_line = N_TTY;
-	
+
 	if (o_tty) {
 		if (o_tty->count)
 			return;
@@ -1503,9 +1503,9 @@ retry_open:
 #if 0
 	/* clean up the packet stuff. */
 	/*
-	 *  Why is this not done in init_dev?  Right here, if another 
-	 * process opens up a tty in packet mode, all the packet 
-	 * variables get cleared.  Come to think of it, is anything 
+	 *  Why is this not done in init_dev?  Right here, if another
+	 * process opens up a tty in packet mode, all the packet
+	 * variables get cleared.  Come to think of it, is anything
 	 * using the packet mode at all???  - Ted, 1/27/93
 	 *
 	 * Not to worry, a pty master can only be opened once.
@@ -1622,7 +1622,7 @@ static int normal_select(struct tty_struct * tty, struct inode * inode,
  * prevent trojan horses by killing all processes associated with this
  * tty when the user hits the "Secure Attention Key".  Required for
  * super-paranoid applications --- see the Orange Book for more details.
- * 
+ *
  * This code could be nicer; ideally it should send a HUP, wait a few
  * seconds, then send a INT, and then a KILL signal.  But you then
  * have to coordinate with the init process, since all processes associated
@@ -1639,7 +1639,7 @@ void do_SAK( struct tty_struct *tty)
 	int session = tty->session;
 	int		i;
 	struct file	*filp;
-	
+
 	flush_input(tty);
 	flush_output(tty);
  	for (p = &LAST_TASK ; p > &FIRST_TASK ; --p) {
@@ -1761,7 +1761,7 @@ void tty_bh_routine(void * unused)
 			}
 		}
 	}
-	
+
 }
 
 /*
@@ -1816,7 +1816,7 @@ static struct tty_ldisc tty_ldisc_N_TTY = {
 	copy_to_cooked		/* handler */
 };
 
-	
+
 long tty_init(long kmem_start)
 {
 	int i;

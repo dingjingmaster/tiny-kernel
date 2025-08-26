@@ -1,15 +1,15 @@
 /*
  * linux/ipc/msg.c
- * Copyright (C) 1992 Krishna Balasubramanian 
+ * Copyright (C) 1992 Krishna Balasubramanian
  */
 
-#include <linux/errno.h>
-#include <linux/sched.h>
-#include <linux/msg.h>
-#include <linux/stat.h>
-#include <linux/malloc.h>
+#include "../include/linux/errno.h"
+#include "../include/linux/sched.h"
+#include "../include/linux/msg.h"
+#include "../include/linux/stat.h"
+#include "../include/linux/malloc.h"
 
-#include <asm/segment.h>
+#include "../include/asm/segment.h"
 
 extern int ipcperms (struct ipc_perm *ipcp, short msgflg);
 
@@ -28,8 +28,8 @@ static struct wait_queue *msg_lock = NULL;
 void msg_init (void)
 {
 	int id;
-	
-	for (id=0; id < MSGMNI; id++) 
+
+	for (id=0; id < MSGMNI; id++)
 		msgque[id] = (struct msqid_ds *) IPC_UNUSED;
 	msgbytes = msghdrs = msg_seq = max_msqid = used_queues = 0;
 	msg_lock = NULL;
@@ -43,13 +43,13 @@ int sys_msgsnd (int msqid, struct msgbuf *msgp, int msgsz, int msgflg)
 	struct ipc_perm *ipcp;
 	struct msg *msgh;
 	long mtype;
-	
+
 	if (msgsz > MSGMAX || msgsz < 0 || msqid < 0)
 		return -EINVAL;
-	if (!msgp) 
+	if (!msgp)
 		return -EFAULT;
 	err = verify_area (VERIFY_READ, msgp->mtext, msgsz);
-	if (err) 
+	if (err)
 		return err;
 	if ((mtype = get_fs_long (&msgp->mtype)) < 1)
 		return -EINVAL;
@@ -57,15 +57,15 @@ int sys_msgsnd (int msqid, struct msgbuf *msgp, int msgsz, int msgflg)
 	msq = msgque [id];
 	if (msq == IPC_UNUSED || msq == IPC_NOID)
 		return -EINVAL;
-	ipcp = &msq->msg_perm; 
+	ipcp = &msq->msg_perm;
 
  slept:
-	if (ipcp->seq != (msqid / MSGMNI)) 
+	if (ipcp->seq != (msqid / MSGMNI))
 		return -EIDRM;
-	if (ipcperms(ipcp, S_IWUGO)) 
+	if (ipcperms(ipcp, S_IWUGO))
 		return -EACCES;
-	
-	if (msgsz + msq->msg_cbytes > msq->msg_qbytes) { 
+
+	if (msgsz + msq->msg_cbytes > msq->msg_qbytes) {
 		/* no space in queue */
 		if (msgflg & IPC_NOWAIT)
 			return -EAGAIN;
@@ -74,14 +74,14 @@ int sys_msgsnd (int msqid, struct msgbuf *msgp, int msgsz, int msgflg)
 		interruptible_sleep_on (&msq->wwait);
 		goto slept;
 	}
-	
-	/* allocate message header and text space*/ 
+
+	/* allocate message header and text space*/
 	msgh = (struct msg *) kmalloc (sizeof(*msgh) + msgsz, GFP_USER);
 	if (!msgh)
 		return -ENOMEM;
 	msgh->msg_spot = (char *) (msgh + 1);
-	memcpy_fromfs (msgh->msg_spot, msgp->mtext, msgsz); 
-	
+	memcpy_fromfs (msgh->msg_spot, msgp->mtext, msgsz);
+
 	if (msgque[id] == IPC_UNUSED || msgque[id] == IPC_NOID
 		|| ipcp->seq != msqid / MSGMNI) {
 		kfree_s (msgh, sizeof(*msgh) + msgsz);
@@ -108,7 +108,7 @@ int sys_msgsnd (int msqid, struct msgbuf *msgp, int msgsz, int msgflg)
 	return msgsz;
 }
 
-int sys_msgrcv (int msqid, struct msgbuf *msgp, int msgsz, long msgtyp, 
+int sys_msgrcv (int msqid, struct msgbuf *msgp, int msgsz, long msgtyp,
 		int msgflg)
 {
 	struct msqid_ds *msq;
@@ -129,44 +129,44 @@ int sys_msgrcv (int msqid, struct msgbuf *msgp, int msgsz, long msgtyp,
 	msq = msgque [id];
 	if (msq == IPC_NOID || msq == IPC_UNUSED)
 		return -EINVAL;
-	ipcp = &msq->msg_perm; 
+	ipcp = &msq->msg_perm;
 
-	/* 
+	/*
 	 *  find message of correct type.
 	 *  msgtyp = 0 => get first.
 	 *  msgtyp > 0 => get first message of matching type.
-	 *  msgtyp < 0 => get message with least type must be < abs(msgtype).  
+	 *  msgtyp < 0 => get message with least type must be < abs(msgtype).
 	 */
 	while (!nmsg) {
 		if(ipcp->seq != msqid / MSGMNI)
 			return -EIDRM;
 		if (ipcperms (ipcp, S_IRUGO))
 			return -EACCES;
-		if (msgtyp == 0) 
+		if (msgtyp == 0)
 			nmsg = msq->msg_first;
 		else if (msgtyp > 0) {
-			if (msgflg & MSG_EXCEPT) { 
-				for (tmsg = msq->msg_first; tmsg; 
+			if (msgflg & MSG_EXCEPT) {
+				for (tmsg = msq->msg_first; tmsg;
 				     tmsg = tmsg->msg_next)
 					if (tmsg->msg_type != msgtyp)
 						break;
 				nmsg = tmsg;
 			} else {
-				for (tmsg = msq->msg_first; tmsg; 
+				for (tmsg = msq->msg_first; tmsg;
 				     tmsg = tmsg->msg_next)
 					if (tmsg->msg_type == msgtyp)
 						break;
 				nmsg = tmsg;
 			}
 		} else {
-			for (leastp = tmsg = msq->msg_first; tmsg; 
-			     tmsg = tmsg->msg_next) 
-				if (tmsg->msg_type < leastp->msg_type) 
+			for (leastp = tmsg = msq->msg_first; tmsg;
+			     tmsg = tmsg->msg_next)
+				if (tmsg->msg_type < leastp->msg_type)
 					leastp = tmsg;
 			if (leastp && leastp->msg_type <= - msgtyp)
 				nmsg = leastp;
 		}
-		
+
 		if (nmsg) { /* done finding a message */
 			if ((msgsz < nmsg->msg_ts) && !(msgflg & MSG_NOERROR))
 				return -E2BIG;
@@ -174,9 +174,9 @@ int sys_msgrcv (int msqid, struct msgbuf *msgp, int msgsz, long msgtyp,
 			if (nmsg ==  msq->msg_first)
 				msq->msg_first = nmsg->msg_next;
 			else {
-				for (tmsg= msq->msg_first; tmsg; 
+				for (tmsg= msq->msg_first; tmsg;
 				     tmsg = tmsg->msg_next)
-					if (tmsg->msg_next == nmsg) 
+					if (tmsg->msg_next == nmsg)
 						break;
 				tmsg->msg_next = nmsg->msg_next;
 				if (nmsg == msq->msg_last)
@@ -184,23 +184,23 @@ int sys_msgrcv (int msqid, struct msgbuf *msgp, int msgsz, long msgtyp,
 			}
 			if (!(--msq->msg_qnum))
 				msq->msg_last = msq->msg_first = NULL;
-			
+
 			msq->msg_rtime = CURRENT_TIME;
 			msq->msg_lrpid = current->pid;
-			msgbytes -= nmsg->msg_ts; 
-			msghdrs--; 
+			msgbytes -= nmsg->msg_ts;
+			msghdrs--;
 			msq->msg_cbytes -= nmsg->msg_ts;
 			if (msq->wwait)
 				wake_up (&msq->wwait);
 			put_fs_long (nmsg->msg_type, &msgp->mtype);
 			memcpy_tofs (msgp->mtext, nmsg->msg_spot, msgsz);
-			kfree_s (nmsg, sizeof(*nmsg) + msgsz); 
+			kfree_s (nmsg, sizeof(*nmsg) + msgsz);
 			return msgsz;
 		} else {  /* did not find a message */
 			if (msgflg & IPC_NOWAIT)
 				return -ENOMSG;
 			if (current->signal & ~current->blocked)
-				return -EINTR; 
+				return -EINTR;
 			interruptible_sleep_on (&msq->rwait);
 		}
 	} /* end while */
@@ -212,9 +212,9 @@ static int findkey (key_t key)
 {
 	int id;
 	struct msqid_ds *msq;
-	
+
 	for (id=0; id <= max_msqid; id++) {
-		while ((msq = msgque[id]) == IPC_NOID) 
+		while ((msq = msgque[id]) == IPC_NOID)
 			interruptible_sleep_on (&msg_lock);
 		if (msq == IPC_UNUSED)
 			continue;
@@ -230,7 +230,7 @@ static int newque (key_t key, int msgflg)
 	struct msqid_ds *msq;
 	struct ipc_perm *ipcp;
 
-	for (id=0; id < MSGMNI; id++) 
+	for (id=0; id < MSGMNI; id++)
 		if (msgque[id] == IPC_UNUSED) {
 			msgque[id] = (struct msqid_ds *) IPC_NOID;
 			goto found;
@@ -271,8 +271,8 @@ int sys_msgget (key_t key, int msgflg)
 {
 	int id;
 	struct msqid_ds *msq;
-	
-	if (key == IPC_PRIVATE) 
+
+	if (key == IPC_PRIVATE)
 		return newque(key, msgflg);
 	if ((id = findkey (key)) == -1) { /* key not used */
 		if (!(msgflg & IPC_CREAT))
@@ -287,7 +287,7 @@ int sys_msgget (key_t key, int msgflg)
 	if (ipcperms(&msq->msg_perm, msgflg))
 		return -EACCES;
 	return msq->msg_perm.seq * MSGMNI +id;
-} 
+}
 
 static void freeque (int id)
 {
@@ -303,10 +303,10 @@ static void freeque (int id)
 	used_queues--;
 	while (msq->rwait || msq->wwait) {
 		if (msq->rwait)
-			wake_up (&msq->rwait); 
+			wake_up (&msq->rwait);
 		if (msq->wwait)
 			wake_up (&msq->wwait);
-		schedule(); 
+		schedule();
 	}
 	for (msgp = msq->msg_first; msgp; msgp = msgh ) {
 		msgh = msgp->msg_next;
@@ -321,15 +321,15 @@ int sys_msgctl (int msqid, int cmd, struct msqid_ds *buf)
 	int id, err;
 	struct msqid_ds *msq, tbuf;
 	struct ipc_perm *ipcp;
-	
+
 	if (msqid < 0 || cmd < 0)
 		return -EINVAL;
 	switch (cmd) {
-	case IPC_INFO: 
-	case MSG_INFO: 
+	case IPC_INFO:
+	case MSG_INFO:
 		if (!buf)
 			return -EFAULT;
-	{ 
+	{
 		struct msginfo msginfo;
 		msginfo.msgmni = MSGMNI;
 		msginfo.msgmax = MSGMAX;
@@ -363,7 +363,7 @@ int sys_msgctl (int msqid, int cmd, struct msqid_ds *buf)
 			return -EINVAL;
 		if (ipcperms (&msq->msg_perm, S_IRUGO))
 			return -EACCES;
-		id = msqid + msq->msg_perm.seq * MSGMNI; 
+		id = msqid + msq->msg_perm.seq * MSGMNI;
 		memcpy_tofs (buf, msq, sizeof(*msq));
 		return id;
 	case IPC_SET:
@@ -396,11 +396,11 @@ int sys_msgctl (int msqid, int cmd, struct msqid_ds *buf)
 		return 0;
 		break;
 	case IPC_RMID: case IPC_SET:
-		if (!suser() && current->euid != ipcp->cuid && 
+		if (!suser() && current->euid != ipcp->cuid &&
 		    current->euid != ipcp->uid)
 			return -EPERM;
 		if (cmd == IPC_RMID) {
-			freeque (id); 
+			freeque (id);
 			return 0;
 		}
 		if (tbuf.msg_qbytes > MSGMNB && !suser())
@@ -408,7 +408,7 @@ int sys_msgctl (int msqid, int cmd, struct msqid_ds *buf)
 		msq->msg_qbytes = tbuf.msg_qbytes;
 		ipcp->uid = tbuf.msg_perm.uid;
 		ipcp->gid =  tbuf.msg_perm.gid;
-		ipcp->mode = (ipcp->mode & ~S_IRWXUGO) | 
+		ipcp->mode = (ipcp->mode & ~S_IRWXUGO) |
 			(S_IRWXUGO & tbuf.msg_perm.mode);
 		msq->msg_ctime = CURRENT_TIME;
 		break;

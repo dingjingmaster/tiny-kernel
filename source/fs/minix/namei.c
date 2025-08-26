@@ -4,15 +4,15 @@
  *  Copyright (C) 1991, 1992  Linus Torvalds
  */
 
-#include <linux/sched.h>
-#include <linux/minix_fs.h>
-#include <linux/kernel.h>
-#include <linux/string.h>
-#include <linux/stat.h>
-#include <linux/fcntl.h>
-#include <linux/errno.h>
+#include "../../include/linux/sched.h"
+#include "../../include/linux/minix_fs.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/stat.h"
+#include "../../include/linux/fcntl.h"
+#include "../../include/linux/errno.h"
 
-#include <asm/segment.h>
+#include "../../include/asm/segment.h"
 
 /*
  * comment out this line if you want names > info->s_namelen chars to be
@@ -698,7 +698,7 @@ start_up:
 	if (!old_inode)
 		goto end_rename;
 	retval = -EPERM;
-	if ((old_dir->i_mode & S_ISVTX) && 
+	if ((old_dir->i_mode & S_ISVTX) &&
 	    current->euid != old_inode->i_uid &&
 	    current->euid != old_dir->i_uid && !suser())
 		goto end_rename;
@@ -729,7 +729,7 @@ start_up:
 			goto end_rename;
 	}
 	retval = -EPERM;
-	if (new_inode && (new_dir->i_mode & S_ISVTX) && 
+	if (new_inode && (new_dir->i_mode & S_ISVTX) &&
 	    current->euid != new_inode->i_uid &&
 	    current->euid != new_dir->i_uid && !suser())
 		goto end_rename;

@@ -30,9 +30,9 @@
 #ifndef _SOCK_H
 #define _SOCK_H
 
-#include <linux/timer.h>
-#include <linux/ip.h>		/* struct options */
-#include <linux/tcp.h>		/* struct tcphdr */
+#include "../../include/linux/timer.h"
+#include "../../include/linux/ip.h"		/* struct options */
+#include "../../include/linux/tcp.h"		/* struct tcphdr */
 
 #include "skbuff.h"		/* struct sk_buff */
 #include "protocol.h"		/* struct inet_protocol */
@@ -149,7 +149,7 @@ struct sock {
   char				ax25_rrtimer;
   char				ax25_timer;
   ax25_digi			*ax25_digipeat;
-#endif  
+#endif
 /* IP 'private area' or will be eventually */
   int				ip_ttl;		/* TTL setting */
   int				ip_tos;		/* TOS */
@@ -161,13 +161,13 @@ struct sock {
 
   /* identd */
   struct socket			*socket;
-  
+
   /* Callbacks */
   void				(*state_change)(struct sock *sk);
   void				(*data_ready)(struct sock *sk,int bytes);
   void				(*write_space)(struct sock *sk);
   void				(*error_report)(struct sock *sk);
-  
+
 };
 
 struct proto {
@@ -223,7 +223,7 @@ struct proto {
   int			(*setsockopt)(struct sock *sk, int level, int optname,
   				 char *optval, int optlen);
   int			(*getsockopt)(struct sock *sk, int level, int optname,
-  				char *optval, int *option);  	 
+  				char *optval, int *option);
   unsigned short	max_header;
   unsigned long		retransmits;
   struct sock *		sock_array[SOCK_ARRAY_SIZE];
@@ -247,7 +247,7 @@ struct proto {
 
 extern void			destroy_sock(struct sock *sk);
 extern unsigned short		get_new_socknum(struct proto *, unsigned short);
-extern void			put_sock(unsigned short, struct sock *); 
+extern void			put_sock(unsigned short, struct sock *);
 extern void			release_sock(struct sock *sk);
 extern struct sock		*get_sock(struct proto *, unsigned short,
 					  unsigned long, unsigned short,

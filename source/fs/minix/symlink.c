@@ -6,13 +6,13 @@
  *  minix symlink handling code
  */
 
-#include <asm/segment.h>
+#include "../../include/asm/segment.h"
 
-#include <linux/errno.h>
-#include <linux/sched.h>
-#include <linux/fs.h>
-#include <linux/minix_fs.h>
-#include <linux/stat.h>
+#include "../../include/linux/errno.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/fs.h"
+#include "../../include/linux/minix_fs.h"
+#include "../../include/linux/stat.h"
 
 static int minix_readlink(struct inode *, char *, int);
 static int minix_follow_link(struct inode *, struct inode *, int, int, struct inode **);

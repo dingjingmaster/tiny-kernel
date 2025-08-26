@@ -9,15 +9,15 @@
  * version 0.3
  */
 
-#include <linux/kernel.h>
-#include <linux/sched.h>
-#include <linux/signal.h>
-#include <linux/errno.h>
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/signal.h"
+#include "../../include/linux/errno.h"
 
-#include <asm/io.h>
-#include <asm/segment.h>
-#include <asm/system.h>
-#include <asm/irq.h>
+#include "../../include/asm/io.h"
+#include "../../include/asm/segment.h"
+#include "../../include/asm/system.h"
+#include "../../include/asm/irq.h"
 
 #define ATIXL_MOUSE_IRQ		5 /* H/W interrupt # set up on ATIXL board */
 #define ATIXL_BUSMOUSE		3 /* Minor device # (mknod c 10 3 /dev/bm) */

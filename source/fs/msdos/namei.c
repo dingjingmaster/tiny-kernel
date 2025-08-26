@@ -4,14 +4,14 @@
  *  Written 1992,1993 by Werner Almesberger
  */
 
-#include <asm/segment.h>
+#include "../../include/asm/segment.h"
 
-#include <linux/sched.h>
-#include <linux/msdos_fs.h>
-#include <linux/kernel.h>
-#include <linux/errno.h>
-#include <linux/string.h>
-#include <linux/stat.h>
+#include "../../include/linux/sched.h"
+#include "../../include/linux/msdos_fs.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/stat.h"
 
 /* MS-DOS "device special files" */
 
@@ -23,7 +23,7 @@ static char *reserved_names[] = {
 
 
 /* Characters that are undesirable in an MS-DOS file name */
-  
+
 static char bad_chars[] = "*?<>|\"";
 static char bad_if_strict[] = "+=,; ";
 

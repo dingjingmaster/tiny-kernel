@@ -22,36 +22,36 @@
  *		Charles Hedrick :	CSLIP header length problem fix.
  *		Alan Cox	:	Corrected non-IP cases of the above.
  */
- 
-#include <asm/segment.h>
-#include <asm/system.h>
 
-#include <linux/config.h>
-#include <linux/types.h>
-#include <linux/kernel.h>
-#include <linux/sched.h>
-#include <linux/string.h>
-#include <linux/mm.h>
-#include <linux/socket.h>
-#include <linux/sockios.h>
-#include <linux/interrupt.h>
-#include <linux/tty.h>
-#include <linux/errno.h>
-#include <linux/stat.h>
-#include <linux/in.h>
-#include "inet.h"
-#include "dev.h"
+#include "../../include/asm/segment.h"
+#include "../../include/asm/system.h"
+
+#include "../../include/linux/config.h"
+#include "../../include/linux/types.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/mm.h"
+#include "../../include/linux/socket.h"
+#include "../../include/linux/sockios.h"
+#include "../../include/linux/interrupt.h"
+#include "../../include/linux/tty.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/stat.h"
+#include "../../include/linux/in.h"
+#include "../../net/inet/inet.h"
+#include "../../net/inet/dev.h"
 #ifdef CONFIG_AX25
 #include "ax25.h"
 #endif
-#include "eth.h"
-#include "ip.h"
-#include "route.h"
-#include "protocol.h"
-#include "tcp.h"
-#include "skbuff.h"
-#include "sock.h"
-#include "arp.h"
+#include "../../net/inet/eth.h"
+#include "../../net/inet/ip.h"
+#include "../../net/inet/route.h"
+#include "../../net/inet/protocol.h"
+#include "../../net/inet/tcp.h"
+#include "../../net/inet/skbuff.h"
+#include "../../net/inet/sock.h"
+#include "../../net/inet/arp.h"
 #include "slip.h"
 #include "slhc.h"
 
@@ -88,7 +88,7 @@ ip_dump(unsigned char *ptr, int len)
   ip = (struct iphdr *) ptr;
   th = (struct tcphdr *) (ptr + ip->ihl * 4);
   printk("\r%s -> %s seq %lx ack %lx len %d\n",
-	 in_ntoa(ip->saddr), in_ntoa(ip->daddr), 
+	 in_ntoa(ip->saddr), in_ntoa(ip->daddr),
 	 ntohl(th->seq), ntohl(th->ack_seq), ntohs(ip->tot_len));
   return;
 
@@ -144,7 +144,7 @@ sl_initialize(struct slip *sl, struct device *dev)
 #else
   sl->mode		= SL_MODE_SLIP;		/* Default for non compressors */
 #endif
-#endif  
+#endif
 
   sl->line		= dev->base_addr;
   sl->tty		= NULL;
@@ -223,14 +223,14 @@ sl_free(struct slip *sl)
 /* MTU has been changed by the IP layer. Unfortunately we are not told about this, but
    we spot it ourselves and fix things up. We could be in an upcall from the tty
    driver, or in an ip packet queue. */
-   
+
 static void sl_changedmtu(struct slip *sl)
 {
 	struct device *dev=sl->dev;
 	unsigned char *tb,*rb,*cb,*tf,*rf,*cf;
 	int l;
 	int omtu=sl->mtu;
-	
+
 	sl->mtu=dev->mtu;
 	l=(dev->mtu *2);
 /*
@@ -240,13 +240,13 @@ static void sl_changedmtu(struct slip *sl)
  */
 	if (l < (576 * 2))
 	  l = 576 * 2;
-	
+
 	DPRINTF((DBG_SLIP,"SLIP: mtu changed!\n"));
-	
+
 	tb= (unsigned char *) kmalloc(l + 4, GFP_ATOMIC);
 	rb= (unsigned char *) kmalloc(l + 4, GFP_ATOMIC);
 	cb= (unsigned char *) kmalloc(l + 4, GFP_ATOMIC);
-	
+
 	if(tb==NULL || rb==NULL || cb==NULL)
 	{
 		printk("Unable to grow slip buffers. MTU change cancelled.\n");
@@ -260,30 +260,30 @@ static void sl_changedmtu(struct slip *sl)
 			kfree(cb);
 		return;
 	}
-	
+
 	cli();
-	
+
 	tf=(unsigned char *)sl->dev->mem_start;
 	sl->dev->mem_start=(unsigned long)tb;
 	sl->dev->mem_end=(unsigned long) (sl->dev->mem_start + l);
 	rf=(unsigned char *)sl->dev->rmem_start;
 	sl->dev->rmem_start=(unsigned long)rb;
 	sl->dev->rmem_end=(unsigned long) (sl->dev->rmem_start + l);
-	
+
 	sl->xbuff = (unsigned char *) sl->dev->mem_start;
 	sl->rbuff = (unsigned char *) sl->dev->rmem_start;
 	sl->rend  = (unsigned char *) sl->dev->rmem_end;
 	sl->rhead = sl->rbuff;
-	
+
 	cf=sl->cbuff;
 	sl->cbuff=cb;
-	
+
 	sl->escape=0;
 	sl->sending=0;
 	sl->rcount=0;
 
-	sti();	
-	
+	sti();
+
 	if(rf!=NULL)
 		kfree(rf);
 	if(tf!=NULL)
@@ -441,12 +441,12 @@ sl_encaps(struct slip *sl, unsigned char *icp, int len)
 
   DPRINTF((DBG_SLIP, "SLIP: sl_encaps(0x%X, %d) called\n", icp, len));
   DPRINTF((DBG_SLIP, ">> \"%s\" sent:\r\n", sl->dev->name));
-  
+
   ip_dump(icp, len);
-  
+
   if(sl->mtu != sl->dev->mtu)	/* Someone has been ifconfigging */
   	sl_changedmtu(sl);
-  
+
   if(len>sl->mtu)		/* Sigh, shouldn't occur BUT ... */
   {
   	len=sl->mtu;
@@ -457,7 +457,7 @@ sl_encaps(struct slip *sl, unsigned char *icp, int len)
   if(sl->mode & SL_MODE_CSLIP)
 	  len = slhc_compress(sl->slcomp, p, len, sl->cbuff, &p, 1);
 
-#ifdef OLD  
+#ifdef OLD
   /*
    * Send an initial END character to flush out any
    * data that may have accumulated in the receiver
@@ -489,14 +489,14 @@ sl_encaps(struct slip *sl, unsigned char *icp, int len)
 			count++;
 	}
   }
-  *bp++ = END;  
+  *bp++ = END;
   count++;
 #else
   if(sl->mode & SL_MODE_SLIP6)
   	count=slip_esc6(p, (unsigned char *)sl->xbuff,len);
   else
   	count=slip_esc(p, (unsigned char *)sl->xbuff,len);
-#endif  	  
+#endif
   sl->spacket++;
   bp = sl->xbuff;
 
@@ -552,7 +552,7 @@ sl_xmit(struct sk_buff *skb, struct device *dev)
 
   /* We were not, so we are now... :-) */
   if (skb != NULL) {
-#ifdef CONFIG_AX25  
+#ifdef CONFIG_AX25
 	if(sl->mode & SL_MODE_AX25)
 	{
 		if(!skb->arp && dev->rebuild_header(skb->data,dev))
@@ -563,7 +563,7 @@ sl_xmit(struct sk_buff *skb, struct device *dev)
 		}
 		skb->arp=1;
 	}
-#endif  	
+#endif
 	sl_lock(sl);
 	size = skb->len;
 	if (!(sl->mode & SL_MODE_AX25)) {
@@ -604,7 +604,7 @@ sl_header(unsigned char *buff, struct device *dev, unsigned short type,
   struct slip *sl=&sl_ctrl[dev->base_addr];
   if((sl->mode&SL_MODE_AX25) && type!=NET16(ETH_P_AX25))
   	return ax25_encapsulate_ip(buff,dev,type,daddr,saddr,len);
-#endif  
+#endif
 
   return(0);
 }
@@ -616,10 +616,10 @@ sl_add_arp(unsigned long addr, struct sk_buff *skb, struct device *dev)
 {
 #ifdef CONFIG_AX25
 	struct slip *sl=&sl_ctrl[dev->base_addr];
-	
+
 	if(sl->mode&SL_MODE_AX25)
 		arp_add(addr,((char *) skb->data)+8,dev);
-#endif		
+#endif
 }
 
 
@@ -629,10 +629,10 @@ sl_rebuild_header(void *buff, struct device *dev)
 {
 #ifdef CONFIG_AX25
   struct slip *sl=&sl_ctrl[dev->base_addr];
-  
+
   if(sl->mode&SL_MODE_AX25)
   	return ax25_rebuild_header(buff,dev);
-#endif  
+#endif
   return(0);
 }
 
@@ -674,7 +674,7 @@ sl_open(struct device *dev)
 	DPRINTF((DBG_SLIP, "SLIP: no memory for SLIP XMIT buffer!\n"));
 	return(-ENOMEM);
   }
-  
+
   sl->mtu		= dev->mtu;
   sl->dev->mem_start	= (unsigned long) p;
   sl->dev->mem_end	= (unsigned long) (sl->dev->mem_start + l);
@@ -761,13 +761,13 @@ slip_recv(struct tty_struct *tty)
   unsigned char *p;
   struct slip *sl;
   int count, error=0;
-  
+
   DPRINTF((DBG_SLIP, "SLIP: slip_recv(%d) called\n", tty->line));
   if ((sl = sl_find(tty)) == NULL) return;	/* not connected */
 
   if(sl->mtu!=sl->dev->mtu)	/* Argh! mtu change time! - costs us the packet part received at the change */
   	sl_changedmtu(sl);
-  	
+
   /* Suck the bytes out of the TTY queues. */
   do {
 	count = tty_read_raw_data(tty, buff, 128);
@@ -779,7 +779,7 @@ slip_recv(struct tty_struct *tty)
 		break;
 	}
 	p = buff;
-#ifdef OLD	
+#ifdef OLD
 	while (count--) {
 		c = *p++;
 		if (sl->escape) {
@@ -805,14 +805,14 @@ slip_recv(struct tty_struct *tty)
 		slip_unesc6(sl,buff,count,error);
 	else
 		slip_unesc(sl,buff,count,error);
-#endif		
+#endif
   } while(1);
-  
+
 }
 
 
 /*
- * Open the high-level part of the SLIP channel.  
+ * Open the high-level part of the SLIP channel.
  * This function is called by the TTY module when the
  * SLIP line discipline is called for.  Because we are
  * sure the tty line exists, we only have to link it to
@@ -849,7 +849,7 @@ slip_open(struct tty_struct *tty)
   return(sl->line);
 }
 
- 
+
 static struct enet_statistics *
 sl_get_stats(struct device *dev)
 {
@@ -903,31 +903,31 @@ slip_close(struct tty_struct *tty)
 					tty->line, sl->dev->name));
 }
 
- 
+
  /************************************************************************
   *			STANDARD SLIP ENCAPSULATION			*
   ************************************************************************
   *
   */
- 
+
  int
  slip_esc(unsigned char *s, unsigned char *d, int len)
  {
      int count = 0;
- 
+
      /*
       * Send an initial END character to flush out any
       * data that may have accumulated in the receiver
       * due to line noise.
       */
- 
+
      d[count++] = END;
- 
+
      /*
       * For each byte in the packet, send the appropriate
       * character sequence, according to the SLIP protocol.
       */
- 
+
      while(len-- > 0) {
      	switch(*s) {
      	case END:
@@ -946,12 +946,12 @@ slip_close(struct tty_struct *tty)
      d[count++] = END;
      return(count);
  }
- 
+
  void
  slip_unesc(struct slip *sl, unsigned char *s, int count, int error)
  {
      int i;
- 
+
      for (i = 0; i < count; ++i, ++s) {
  	switch(*s) {
  	case ESC:
@@ -972,7 +972,7 @@ slip_close(struct tty_struct *tty)
 	    sl->flags &= ~SLF_ESCAPE;
 	    break;
 	case END:
- 	    if (sl->rcount > 2) 
+ 	    if (sl->rcount > 2)
  	    	sl_bump(sl);
  	    sl_dequeue(sl, sl->rcount);
  	    sl->rcount = 0;
@@ -986,13 +986,13 @@ slip_close(struct tty_struct *tty)
      if (error)
      	sl->flags |= SLF_ERROR;
  }
- 
+
  /************************************************************************
   *			 6 BIT SLIP ENCAPSULATION			*
   ************************************************************************
   *
   */
- 
+
  int
  slip_esc6(unsigned char *s, unsigned char *d, int len)
  {
@@ -1000,25 +1000,25 @@ slip_close(struct tty_struct *tty)
      int i;
      unsigned short v = 0;
      short bits = 0;
- 
+
      /*
       * Send an initial END character to flush out any
       * data that may have accumulated in the receiver
       * due to line noise.
       */
- 
+
      d[count++] = 0x70;
- 
+
      /*
       * Encode the packet into printable ascii characters
       */
- 
+
      for (i = 0; i < len; ++i) {
      	v = (v << 8) | s[i];
      	bits += 8;
      	while (bits >= 6) {
      	    unsigned char c;
- 
+
      	    bits -= 6;
      	    c = 0x30 + ((v >> bits) & 0x3F);
      	    d[count++] = c;
@@ -1026,20 +1026,20 @@ slip_close(struct tty_struct *tty)
      }
      if (bits) {
      	unsigned char c;
- 
+
      	c = 0x30 + ((v << (6 - bits)) & 0x3F);
      	d[count++] = c;
      }
      d[count++] = 0x70;
      return(count);
  }
- 
+
  void
  slip_unesc6(struct slip *sl, unsigned char *s, int count, int error)
  {
      int i;
      unsigned char c;
- 
+
      for (i = 0; i < count; ++i, ++s) {
      	if (*s == 0x70) {
  	    if (sl->rcount > 8) {	/* XXX must be 2 for compressed slip */
@@ -1065,7 +1065,7 @@ slip_close(struct tty_struct *tty)
  	    	c = (unsigned char)(sl->xdata >> sl->xbits);
  		sl_enqueue(sl, c);
  	    }
- 
+
  	}
      }
      if (error)
@@ -1114,7 +1114,7 @@ slip_ioctl(struct tty_struct *tty, void *file, int cmd, void *arg)
 	case SIOCSIFENCAP:
 		err=verify_area(VERIFY_READ,arg,sizeof(long));
 		sl->mode=get_fs_long((long *)arg);
-#ifdef CONFIG_AX25		
+#ifdef CONFIG_AX25
 		if(sl->mode & SL_MODE_AX25)
 		{
 			sl->dev->addr_len=7;	/* sizeof an AX.25 addr */
@@ -1127,10 +1127,10 @@ slip_ioctl(struct tty_struct *tty, void *file, int cmd, void *arg)
 			sl->dev->hard_header_len=0;
 			sl->dev->type=0;
 		}
-#endif		
+#endif
 		return(0);
 	case SIOCSIFHWADDR:
-#ifdef CONFIG_AX25	
+#ifdef CONFIG_AX25
 		return sl_set_mac_address(sl->dev,arg);
 #endif
 	default:
@@ -1146,7 +1146,7 @@ slip_init(struct device *dev)
 {
   struct slip *sl;
   int i;
-#ifdef CONFIG_AX25  
+#ifdef CONFIG_AX25
   static char ax25_bcast[7]={'Q'<<1,'S'<<1,'T'<<1,' '<<1,' '<<1,' '<<1,'0'<<1};
   static char ax25_test[7]={'L'<<1,'I'<<1,'N'<<1,'U'<<1,'X'<<1,' '<<1,'1'<<1};
 #endif
@@ -1159,7 +1159,7 @@ slip_init(struct device *dev)
 	printk("CSLIP: code copyright 1989 Regents of the University of California\n");
 #ifdef CONFIG_AX25
 	printk("AX25: KISS encapsulation enabled\n");
-#endif	
+#endif
 	/* Fill in our LDISC request block. */
 	sl_ldisc.flags	= 0;
 	sl_ldisc.open	= slip_open;
@@ -1202,10 +1202,10 @@ slip_init(struct device *dev)
   dev->hard_header_len	= 0;
   dev->addr_len		= 0;
   dev->type		= 0;
-#ifdef CONFIG_AX25  
+#ifdef CONFIG_AX25
   memcpy(dev->broadcast,ax25_bcast,7);		/* Only activated in AX.25 mode */
   memcpy(dev->dev_addr,ax25_test,7);		/*    ""      ""       ""    "" */
-#endif  
+#endif
   dev->queue_xmit	= dev_queue_xmit;
   dev->rebuild_header	= sl_rebuild_header;
   for (i = 0; i < DEV_NUMBUFFS; i++)

@@ -1,6 +1,6 @@
 #ifndef _LINUX_MSG_H
 #define _LINUX_MSG_H
-#include <linux/ipc.h>
+#include "../../include/linux/ipc.h"
 
 /* msgrcv options */
 #define MSG_NOERROR     010000  /* no error if message is too big */
@@ -10,7 +10,7 @@
 /* one msg structure for each message */
 struct msg {
     struct msg *msg_next;   /* next message on queue */
-    long  msg_type;          
+    long  msg_type;
     char *msg_spot;         /* message text address */
     short msg_ts;           /* message text size */
 };
@@ -42,13 +42,13 @@ struct msgbuf {
 
 struct msginfo {
     int msgpool;
-    int msgmap; 
-    int msgmax; 
-    int msgmnb; 
-    int msgmni; 
-    int msgssz; 
-    int msgtql; 
-    ushort  msgseg; 
+    int msgmap;
+    int msgmax;
+    int msgmnb;
+    int msgmni;
+    int msgssz;
+    int msgtql;
+    ushort  msgseg;
 };
 
 #define MSGMNI   128   /* <= 1K */     /* max # of msg queue identifiers */

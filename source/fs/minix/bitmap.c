@@ -6,13 +6,13 @@
 
 /* bitmap.c contains the code that handles the inode and block bitmaps */
 
-#include <linux/sched.h>
-#include <linux/minix_fs.h>
-#include <linux/stat.h>
-#include <linux/kernel.h>
-#include <linux/string.h>
+#include "../../include/linux/sched.h"
+#include "../../include/linux/minix_fs.h"
+#include "../../include/linux/stat.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/string.h"
 
-#include <asm/bitops.h>
+#include "../../include/asm/bitops.h"
 
 #define clear_block(addr) \
 __asm__("cld\n\t" \
@@ -43,11 +43,11 @@ static unsigned long count_used(struct buffer_head *map[], unsigned numblocks,
 {
 	unsigned i, j, end, sum = 0;
 	struct buffer_head *bh;
-  
+
 	for (i=0; (i<numblocks) && numbits; i++) {
-		if (!(bh=map[i])) 
+		if (!(bh=map[i]))
 			return(0);
-		if (numbits >= (8*BLOCK_SIZE)) { 
+		if (numbits >= (8*BLOCK_SIZE)) {
 			end = BLOCK_SIZE;
 			numbits -= 8*BLOCK_SIZE;
 		} else {
@@ -57,9 +57,9 @@ static unsigned long count_used(struct buffer_head *map[], unsigned numblocks,
 			tmp = bh->b_data[end] & ((1<<numbits)-1);
 			sum += nibblemap[tmp&0xf] + nibblemap[(tmp>>4)&0xf];
 			numbits = 0;
-		}  
+		}
 		for (j=0; j<end; j++)
-			sum += nibblemap[bh->b_data[j] & 0xf] 
+			sum += nibblemap[bh->b_data[j] & 0xf]
 				+ nibblemap[(bh->b_data[j]>>4)&0xf];
 	}
 	return(sum);

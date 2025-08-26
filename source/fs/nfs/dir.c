@@ -6,17 +6,17 @@
  *  nfs directory handling functions
  */
 
-#include <linux/sched.h>
-#include <linux/errno.h>
-#include <linux/stat.h>
-#include <linux/nfs_fs.h>
-#include <linux/fcntl.h>
-#include <linux/string.h>
-#include <linux/kernel.h>
-#include <linux/malloc.h>
-#include <linux/mm.h>
+#include "../../include/linux/sched.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/stat.h"
+#include "../../include/linux/nfs_fs.h"
+#include "../../include/linux/fcntl.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/malloc.h"
+#include "../../include/linux/mm.h"
 
-#include <asm/segment.h>	/* for fs functions */
+#include "../../include/asm/segment.h"	/* for fs functions */
 
 static int nfs_dir_read(struct inode *, struct file *filp, char *buf,
 			int count);
@@ -603,4 +603,3 @@ void nfs_refresh_inode(struct inode *inode, struct nfs_fattr *fattr)
 	}
 	nfs_lookup_cache_refresh(inode, fattr);
 }
-

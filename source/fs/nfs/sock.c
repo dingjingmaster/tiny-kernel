@@ -6,15 +6,15 @@
  *  low-level nfs remote procedure call interface
  */
 
-#include <linux/config.h>
-#include <linux/sched.h>
-#include <linux/nfs_fs.h>
-#include <linux/errno.h>
-#include <linux/socket.h>
-#include <linux/fcntl.h>
-#include <asm/segment.h>
-#include <linux/in.h>
-#include <linux/net.h>
+#include "../../include/linux/config.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/nfs_fs.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/socket.h"
+#include "../../include/linux/fcntl.h"
+#include "../../include/asm/segment.h"
+#include "../../include/linux/in.h"
+#include "../../include/linux/net.h"
 
 
 extern struct socket *socki_lookup(struct inode *inode);
@@ -182,4 +182,3 @@ int nfs_rpc_call(struct nfs_server *server, int *start, int *end)
 	wake_up(&server->wait);
 	return result;
 }
-

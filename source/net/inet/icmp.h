@@ -18,7 +18,7 @@
 #ifndef _ICMP_H
 #define	_ICMP_H
 
-#include <linux/icmp.h>
+#include "../../include/linux/icmp.h"
 
 
 extern struct icmp_err icmp_err_convert[];

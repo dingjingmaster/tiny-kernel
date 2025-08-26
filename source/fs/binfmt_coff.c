@@ -15,20 +15,20 @@
  *      Cleared first page of bss section using put_fs_byte.
  */
 
-#include <linux/fs.h>
-#include <linux/sched.h>
-#include <linux/mm.h>
-#include <linux/mman.h>
-#include <linux/a.out.h>
-#include <linux/errno.h>
-#include <linux/signal.h>
-#include <linux/binfmts.h>
-#include <asm/segment.h>
-#include <linux/string.h>
-#include <linux/fcntl.h>
-#include <linux/ptrace.h>
-#include <linux/coff.h>
-#include <linux/malloc.h>
+#include "../include/linux/fs.h"
+#include "../include/linux/sched.h"
+#include "../include/linux/mm.h"
+#include "../include/linux/mman.h"
+#include "../include/linux/a.out.h"
+#include "../include/linux/errno.h"
+#include "../include/linux/signal.h"
+#include "../include/linux/binfmts.h"
+#include "../include/asm/segment.h"
+#include "../include/linux/string.h"
+#include "../include/linux/fcntl.h"
+#include "../include/linux/ptrace.h"
+#include "../include/linux/coff.h"
+#include "../include/linux/malloc.h"
 
 asmlinkage int sys_exit (int exit_code);
 asmlinkage int sys_close (unsigned fd);
@@ -86,7 +86,7 @@ int clear_memory (unsigned long addr, unsigned long size)
     if (size == 0)
         status = 0;
     else {
-      
+
 #ifdef COFF_DEBUG
         printk ("un-initialized storage in last page %d\n", size);
 #endif

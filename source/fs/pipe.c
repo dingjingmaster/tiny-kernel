@@ -4,14 +4,14 @@
  *  Copyright (C) 1991, 1992  Linus Torvalds
  */
 
-#include <asm/segment.h>
+#include "../include/asm/segment.h"
 
-#include <linux/sched.h>
-#include <linux/kernel.h>
-#include <linux/errno.h>
-#include <linux/signal.h>
-#include <linux/fcntl.h>
-#include <linux/termios.h>
+#include "../include/linux/sched.h"
+#include "../include/linux/kernel.h"
+#include "../include/linux/errno.h"
+#include "../include/linux/signal.h"
+#include "../include/linux/fcntl.h"
+#include "../include/linux/termios.h"
 
 
 /* We don't use the head/tail construction any more. Now we use the start/len*/
@@ -67,7 +67,7 @@ static int pipe_read(struct inode * inode, struct file * filp, char * buf, int c
 		return -EAGAIN;
 	return 0;
 }
-	
+
 static int pipe_write(struct inode * inode, struct file * filp, char * buf, int count)
 {
 	int chars = 0, free = 0, written = 0;

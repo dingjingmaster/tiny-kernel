@@ -6,23 +6,23 @@
 
 #include <stdarg.h>
 
-#include <asm/system.h>
-#include <asm/io.h>
+#include "../include/asm/system.h"
+#include "../include/asm/io.h"
 
-#include <linux/types.h>
-#include <linux/fcntl.h>
-#include <linux/config.h>
-#include <linux/sched.h>
-#include <linux/tty.h>
-#include <linux/head.h>
-#include <linux/unistd.h>
-#include <linux/string.h>
-#include <linux/timer.h>
-#include <linux/fs.h>
-#include <linux/ctype.h>
-#include <linux/delay.h>
-#include <linux/utsname.h>
-#include <linux/ioport.h>
+#include "../include/linux/types.h"
+#include "../include/linux/fcntl.h"
+#include "../include/linux/config.h"
+#include "../include/linux/sched.h"
+#include "../include/linux/tty.h"
+#include "../include/linux/head.h"
+#include "../include/linux/unistd.h"
+#include "../include/linux/string.h"
+#include "../include/linux/timer.h"
+#include "../include/linux/fs.h"
+#include "../include/linux/ctype.h"
+#include "../include/linux/delay.h"
+#include "../include/linux/utsname.h"
+#include "../include/linux/ioport.h"
 
 extern unsigned long * prof_buffer;
 extern unsigned long prof_len;
@@ -151,7 +151,7 @@ static char fpu_error = 0;
 
 static char command_line[80] = { 0, };
 
-char *get_options(char *str, int *ints) 
+char *get_options(char *str, int *ints)
 {
 	char *cur = str;
 	int i=1;
@@ -249,7 +249,7 @@ static void calibrate_delay(void)
 	}
 	printk("failed\n");
 }
-	
+
 
 /*
  * This is a simple kernel command line parsing function: it parses
@@ -311,7 +311,7 @@ static void parse_options(char *line)
 		/*
 		 * Then check if it's an environment variable or
 		 * an option.
-		 */	
+		 */
 		if (strchr(line,'=')) {
 			if (envs >= MAX_INIT_ENVS)
 				break;
@@ -412,7 +412,7 @@ asmlinkage void start_kernel(void)
 	ipc_init();
 #endif
 	sti();
-	
+
 	/*
 	 * check if exception 16 works correctly.. This is truly evil
 	 * code: it disables the high 8 interrupts to make sure that

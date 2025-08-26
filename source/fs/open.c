@@ -4,20 +4,20 @@
  *  Copyright (C) 1991, 1992  Linus Torvalds
  */
 
-#include <linux/vfs.h>
-#include <linux/types.h>
-#include <linux/utime.h>
-#include <linux/errno.h>
-#include <linux/fcntl.h>
-#include <linux/stat.h>
-#include <linux/string.h>
-#include <linux/sched.h>
-#include <linux/kernel.h>
-#include <linux/signal.h>
-#include <linux/tty.h>
-#include <linux/time.h>
+#include "../include/linux/vfs.h"
+#include "../include/linux/types.h"
+#include "../include/linux/utime.h"
+#include "../include/linux/errno.h"
+#include "../include/linux/fcntl.h"
+#include "../include/linux/stat.h"
+#include "../include/linux/string.h"
+#include "../include/linux/sched.h"
+#include "../include/linux/kernel.h"
+#include "../include/linux/signal.h"
+#include "../include/linux/tty.h"
+#include "../include/linux/time.h"
 
-#include <asm/segment.h>
+#include "../include/asm/segment.h"
 
 extern void fcntl_remove_locks(struct task_struct *, struct file *, unsigned int fd);
 
@@ -178,7 +178,7 @@ asmlinkage int sys_access(const char * filename,int mode)
 	 * XXX we are doing this test last because we really should be
 	 * swapping the effective with the real user id (temporarily),
 	 * and then calling suser() routine.  If we do call the
-	 * suser() routine, it needs to be called last. 
+	 * suser() routine, it needs to be called last.
 	 *
 	 * XXX nope.  suser() is inappropriate and swapping the ids while
 	 * decomposing the path would be racy.
@@ -463,7 +463,7 @@ int close_fp(struct file *filp, unsigned int fd)
 }
 
 asmlinkage int sys_close(unsigned int fd)
-{	
+{
 	struct file * filp;
 
 	if (fd >= NR_OPEN)

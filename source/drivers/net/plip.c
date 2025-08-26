@@ -2,7 +2,7 @@
 /*
     Written 1993 by Donald Becker and TANABE Hiroyasu.
     This code is distributed under the GPL.
-    
+
     The current author is reached as hiro@sanpo.t.u-tokyo.ac.jp .
     For more information do 'whois -h whois.nic.ad.jp HT043JP'
 
@@ -22,26 +22,26 @@
     Recent versions were debugged and maintained by TANABE Hiroyasu.
 
     Updated for 0.99pl12 by Donald Becker.
-    
+
     Changes even more Alan Cox <iiitac@pyr.swan.ac.uk>
     Fixed: sets skb->arp=1, always claims success like ethernet, doesn't
     free skb and then claim fail. Incorrect brackets causing reset problem
     Attempting to make it work (works for me - email me if it does work)
-    
+
     Bugs:
-    	Should be timer oriented state machine. 
+    	Should be timer oriented state machine.
     	Should never use jiffies for timeouts.
     	Protocol is buggy when broadcasts occur (Must ask Russ Nelson)
     	Can hang forever on collisions (tough - you fix it!).
     	I get 15K/second NFS throughput (about 20-25K second IP).
     	Change the protocol back.
-    	
+
 */
 
 static char *version =
     "Net2Debugged PLIP 1.01 (from plip.c:v0.15 for 0.99pl12+, 8/11/93)\n";
 
-#include <linux/config.h>
+#include "../../include/linux/config.h"
 
 /*
   Sources:
@@ -74,27 +74,27 @@ make one yourself.  The wiring is:
     extra grounds are 18,19,20,21,22,23,24
 */
 
-#include <linux/kernel.h>
-#include <linux/sched.h>
-#include <linux/types.h>
-#include <linux/fcntl.h>
-#include <linux/interrupt.h>
-#include <linux/string.h>
-#include <linux/ptrace.h>
-#include <linux/if_ether.h>
-#include <asm/system.h>
-#include <asm/io.h>
-#include <netinet/in.h>
-#include <errno.h>
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/types.h"
+#include "../../include/linux/fcntl.h"
+#include "../../include/linux/interrupt.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/ptrace.h"
+#include "../../include/linux/if_ether.h"
+#include "../../include/asm/system.h"
+#include "../../include/asm/io.h"
+#include "../../include/netinet/in.h"
+#include "../../include/linux/errno.h"
 
-#include "dev.h"
-#include "eth.h"
-#include "ip.h"
-#include "protocol.h"
-#include "tcp.h"
-#include "skbuff.h"
-#include "sock.h"
-#include "arp.h"
+#include "../../net/inet/dev.h"
+#include "../../net/inet/eth.h"
+#include "../../net/inet/ip.h"
+#include "../../net/inet/protocol.h"
+#include "../../net/inet/tcp.h"
+#include "../../net/inet/skbuff.h"
+#include "../../net/inet/sock.h"
+#include "../../net/inet/arp.h"
 
 #ifdef PRINTK
 #undef PRINTK
@@ -426,7 +426,7 @@ plip_receive_packet(struct device *dev)
     struct ethhdr eth;
 
     localstats = (struct netstats*) dev->priv;
-    
+
     outb(1, dev->base_addr + PAR_DATA);		/* Ack: 'Ready' */
 
     {
@@ -466,7 +466,7 @@ plip_receive_packet(struct device *dev)
 	}
     }
     {
-	/* get skb area from kernel and 
+	/* get skb area from kernel and
 	 * set appropriate values to skb
 	 */
 	int sksize;
@@ -563,14 +563,14 @@ static int send_byte(struct device *dev, unsigned char val)
 /*
  * plip_send_start
  * trigger remoto rx interrupt and establish a connection.
- * 
+ *
  * return value
  * 0 : establish the connection
  * -1 : connection failed.
  */
 static int
 plip_send_start(struct device *dev, struct ethhdr *eth)
-{	
+{
     int timeout;
     int status;
     int lasttrigger;
@@ -671,7 +671,7 @@ plip_send_packet(struct device *dev, unsigned char *buf, int length)
 	int i;
 	struct ethhdr *eth = (struct ethhdr *)buf;
 
-	plip_type = PLIP_HEADER_TYPE2;	
+	plip_type = PLIP_HEADER_TYPE2;
 	for ( i = 0; i < ETH_ALEN - 1; i++)
 	    if (eth->h_dest[i] != eth->h_source[i])
 		plip_type = PLIP_HEADER_TYPE1;
@@ -716,12 +716,12 @@ plip_send_packet(struct device *dev, unsigned char *buf, int length)
     {
 	/* phase of terminating this connection */
 	int timeout;
-	
+
 	outb(0x00, dev->base_addr + PAR_DATA);
 	/* Wait for the remote end to reset. */
 	timeout = jiffies + ((length * timeoutfactor) >> 4);
 	while ((inb(dev->base_addr + PAR_STATUS) & 0xe8) != 0x80) {
-	    if (timeout < jiffies ) {	
+	    if (timeout < jiffies ) {
 		double_timeoutfactor();
 		PRINTK(("Remote end has not reset.\n"));
 		error++;

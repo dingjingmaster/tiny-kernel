@@ -2,25 +2,25 @@
  *  linux/fs/xiafs/symlink.c
  *
  *  Copyright (C) Q. Frank Xia, 1993.
- *  
+ *
  *  Based on Linus' minix/symlink.c
  *  Copyright (C) Linus Torvalds, 1991, 1992.
  *
  *  This software may be redistributed per Linux Copyright.
  */
 
-#include <asm/segment.h>
+#include "../../include/asm/segment.h"
 
-#include <linux/errno.h>
-#include <linux/sched.h>
-#include <linux/fs.h>
-#include <linux/xia_fs.h>
-#include <linux/stat.h>
+#include "../../include/linux/errno.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/fs.h"
+#include "../../include/linux/xia_fs.h"
+#include "../../include/linux/stat.h"
 
-static int 
+static int
 xiafs_readlink(struct inode *, char *, int);
 
-static int 
+static int
 xiafs_follow_link(struct inode *, struct inode *, int, int, struct inode **);
 
 /*
@@ -113,6 +113,3 @@ static int xiafs_follow_link(struct inode * dir, struct inode * inode,
     brelse(bh);
     return error;
 }
-
-
-

@@ -5,18 +5,18 @@
  *  Dynamic diacritical handling - aeb@cwi.nl - Dec 1993
  */
 
-#include <linux/types.h>
-#include <linux/errno.h>
-#include <linux/sched.h>
-#include <linux/tty.h>
-#include <linux/timer.h>
-#include <linux/kernel.h>
-#include <linux/kd.h>
-#include <linux/vt.h>
-#include <linux/string.h>
+#include "../../include/linux/types.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/tty.h"
+#include "../../include/linux/timer.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/kd.h"
+#include "../../include/linux/vt.h"
+#include "../../include/linux/string.h"
 
-#include <asm/io.h>
-#include <asm/segment.h>
+#include "../../include/asm/io.h"
+#include "../../include/asm/segment.h"
 
 #include "kbd_kern.h"
 #include "vt_kern.h"
@@ -111,7 +111,7 @@ kd_mksound(unsigned int count, unsigned int ticks)
 
 /*
  * We handle the console-specific ioctl's here.  We allow the
- * capability to modify any console, not just the fg_console. 
+ * capability to modify any console, not just the fg_console.
  */
 int vt_ioctl(struct tty_struct *tty, struct file * file,
 	     unsigned int cmd, unsigned long arg)

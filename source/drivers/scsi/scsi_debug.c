@@ -7,17 +7,17 @@
  *  anything out of the ordinary is seen.
  */
 
-#include <linux/kernel.h>
-#include <linux/sched.h>
-#include <linux/timer.h>
-#include <linux/head.h>
-#include <linux/types.h>
-#include <linux/string.h>
-#include <linux/genhd.h>
-#include <linux/fs.h>
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/timer.h"
+#include "../../include/linux/head.h"
+#include "../../include/linux/types.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/genhd.h"
+#include "../../include/linux/fs.h"
 
-#include <asm/system.h>
-#include <asm/io.h>
+#include "../../include/asm/system.h"
+#include "../../include/asm/io.h"
 
 #include "../block/blk.h"
 #include "scsi.h"
@@ -151,7 +151,7 @@ int scsi_debug_queuecommand(Scsi_Cmnd * SCpnt, void (*done)(Scsi_Cmnd *))
     sgpnt = NULL;
 
     DEB(if (target > 1) { SCpnt->result = DID_TIME_OUT << 16;done(SCpnt);return 0;});
-    
+
     buff = (unsigned char *) SCpnt->request_buffer;
 
     if(target>=2 || SCpnt->lun != 0) {
@@ -159,7 +159,7 @@ int scsi_debug_queuecommand(Scsi_Cmnd * SCpnt, void (*done)(Scsi_Cmnd *))
       done(SCpnt);
       return 0;
     };
-    
+
     switch(*cmd){
     case REQUEST_SENSE:
       printk("Request sense...\n");
@@ -174,7 +174,7 @@ int scsi_debug_queuecommand(Scsi_Cmnd * SCpnt, void (*done)(Scsi_Cmnd *))
       memcpy(buff, sense_buffer, bufflen);
       memset(sense_buffer, 0, sizeof(sense_buffer));
       SCpnt->result = 0;
-      done(SCpnt); 
+      done(SCpnt);
       return 0;
     case ALLOW_MEDIUM_REMOVAL:
       if(cmd[4]) printk("Medium removal inhibited...");
@@ -215,8 +215,8 @@ int scsi_debug_queuecommand(Scsi_Cmnd * SCpnt, void (*done)(Scsi_Cmnd *))
       printk("Read...");
 #endif
       if ((*cmd) == READ_10)
-	block = cmd[5] + (cmd[4] << 8) + (cmd[3] << 16) + (cmd[2] << 24); 
-      else 
+	block = cmd[5] + (cmd[4] << 8) + (cmd[3] << 16) + (cmd[2] << 24);
+      else
 	block = cmd[3] + (cmd[2] << 8) + ((cmd[1] & 0x1f) << 16);
       VERIFY_DEBUG(READ);
       printk("(r%d)",SCpnt->request.nr_sectors);
@@ -259,7 +259,7 @@ int scsi_debug_queuecommand(Scsi_Cmnd * SCpnt, void (*done)(Scsi_Cmnd *))
 	  starts[0] += 10;
 	  starts[1] += 10;
 	  starts[2] += 10;
-	 
+
 #ifdef DEBUG
       { int i;
 	printk("scsi_debug: Filling sense buffer:");
@@ -297,8 +297,8 @@ int scsi_debug_queuecommand(Scsi_Cmnd * SCpnt, void (*done)(Scsi_Cmnd *))
       printk("Write\n");
 #endif
       if ((*cmd) == WRITE_10)
-	block = cmd[5] + (cmd[4] << 8) + (cmd[3] << 16) + (cmd[2] << 24); 
-      else 
+	block = cmd[5] + (cmd[4] << 8) + (cmd[3] << 16) + (cmd[2] << 24);
+      else
 	block = cmd[3] + (cmd[2] << 8) + ((cmd[1] & 0x1f) << 16);
       VERIFY_DEBUG(WRITE);
       printk("(w%d)",SCpnt->request.nr_sectors);
@@ -329,7 +329,7 @@ int scsi_debug_queuecommand(Scsi_Cmnd * SCpnt, void (*done)(Scsi_Cmnd *))
       if (SCint[i] == 0) break;
     };
 
-    if (i >= SCSI_DEBUG_MAILBOXES || SCint[i] != 0) 
+    if (i >= SCSI_DEBUG_MAILBOXES || SCint[i] != 0)
       panic("Unable to find empty SCSI_DEBUG command slot.\n");
 
     SCint[i] = SCpnt;
@@ -387,7 +387,7 @@ static void scsi_debug_intr_handle(void)
 {
     Scsi_Cmnd * SCtmp;
     int i, pending;
-    void (*my_done)(Scsi_Cmnd *); 
+    void (*my_done)(Scsi_Cmnd *);
    int to;
 
     timer_table[SCSI_DEBUG_TIMER].expires = 0;
@@ -413,7 +413,7 @@ static void scsi_debug_intr_handle(void)
 	};
       };
       if (pending && pending != INT_MAX) {
-	timer_table[SCSI_DEBUG_TIMER].expires = 
+	timer_table[SCSI_DEBUG_TIMER].expires =
 	  (pending <= jiffies ? jiffies+1 : pending);
 	timer_active |= 1 << SCSI_DEBUG_TIMER;
       };
@@ -432,10 +432,10 @@ static void scsi_debug_intr_handle(void)
       sti();
 
       if (!my_done) {
-	printk("scsi_debug_intr_handle: Unexpected interrupt\n"); 
+	printk("scsi_debug_intr_handle: Unexpected interrupt\n");
 	return;
       }
-      
+
 #ifdef DEBUG
       printk("In intr_handle...");
       printk("...done %d %x %d %d\n",i , my_done, to, jiffies);
@@ -511,5 +511,3 @@ char *scsi_debug_info(void)
     static char buffer[] = " ";			/* looks nicer without anything here */
     return buffer;
 }
-
-

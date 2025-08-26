@@ -29,6 +29,7 @@ extern int EISA_bus;
 #define MCA_bus 0
 
 #include "tasks.h"
+#include "../../include/linux/types.h"
 #include "../../include/asm/system.h"
 
 /*
@@ -74,7 +75,7 @@ extern unsigned long avenrun[];		/* Load averages */
 
 #include "head.h"
 #include "fs.h"
-#include "mm.h"
+// #include "mm.h"
 #include "signal.h"
 #include "time.h"
 #include "param.h"
@@ -93,7 +94,7 @@ extern unsigned long avenrun[];		/* Load averages */
 #define NULL ((void *) 0)
 #endif
 
-#ifdef __KERNEL__
+#if 1 //def __KERNEL__
 
 extern void sched_init(void);
 extern void show_state(void);

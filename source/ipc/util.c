@@ -3,17 +3,17 @@
  * Copyright (C) 1992 Krishna Balasubramanian
  */
 
-#include <linux/config.h>
-#include <linux/errno.h>
-#include <asm/segment.h>
-#include <linux/sched.h>
-#include <linux/sem.h>
-#include <linux/msg.h>
-#include <linux/shm.h>
-#include <linux/stat.h>
+#include "../include/linux/config.h"
+#include "../include/linux/errno.h"
+#include "../include/asm/segment.h"
+#include "../include/linux/sched.h"
+#include "../include/linux/sem.h"
+#include "../include/linux/msg.h"
+#include "../include/linux/shm.h"
+#include "../include/linux/stat.h"
 
 void ipc_init (void);
-asmlinkage int sys_ipc (uint call, int first, int second, int third, void *ptr); 
+asmlinkage int sys_ipc (uint call, int first, int second, int third, void *ptr);
 
 #ifdef CONFIG_SYSVIPC
 
@@ -40,7 +40,7 @@ void ipc_init (void)
 	return;
 }
 
-/* 
+/*
  * Check user, group, other permissions for access
  * to ipc resources. return 0 if allowed
  */
@@ -62,9 +62,9 @@ int ipcperms (struct ipc_perm *ipcp, short flag)
 	return 0;
 }
 
-asmlinkage int sys_ipc (uint call, int first, int second, int third, void *ptr) 
+asmlinkage int sys_ipc (uint call, int first, int second, int third, void *ptr)
 {
-	
+
 	if (call <= SEMCTL)
 		switch (call) {
 		case SEMOP:
@@ -76,16 +76,16 @@ asmlinkage int sys_ipc (uint call, int first, int second, int third, void *ptr)
 		default:
 			return -EINVAL;
 		}
-	if (call <= MSGCTL) 
+	if (call <= MSGCTL)
 		switch (call) {
 		case MSGSND:
-			return sys_msgsnd (first, (struct msgbuf *) ptr, 
+			return sys_msgsnd (first, (struct msgbuf *) ptr,
 					   second, third);
 		case MSGRCV: {
-			struct ipc_kludge tmp; 
+			struct ipc_kludge tmp;
 			if (!ptr)
 				return -EINVAL;
-			memcpy_fromfs (&tmp,(struct ipc_kludge *) ptr, 
+			memcpy_fromfs (&tmp,(struct ipc_kludge *) ptr,
 				       sizeof (tmp));
 			return sys_msgrcv (first, tmp.msgp, second, tmp.msgtyp,
 					 	third);
@@ -93,22 +93,22 @@ asmlinkage int sys_ipc (uint call, int first, int second, int third, void *ptr)
 		case MSGGET:
 			return sys_msgget ((key_t) first, second);
 		case MSGCTL:
-			return sys_msgctl (first, second, 
+			return sys_msgctl (first, second,
 						(struct msqid_ds *) ptr);
 		default:
 			return -EINVAL;
 		}
-	if (call <= SHMCTL) 
+	if (call <= SHMCTL)
 		switch (call) {
 		case SHMAT: /* returning shmaddr > 2G will screw up */
-			return sys_shmat (first, (char *) ptr, second, 
+			return sys_shmat (first, (char *) ptr, second,
 							(ulong *) third);
-		case SHMDT: 
+		case SHMDT:
 			return sys_shmdt ((char *)ptr);
 		case SHMGET:
 			return sys_shmget (first, second, third);
 		case SHMCTL:
-			return sys_shmctl (first, second, 
+			return sys_shmctl (first, second,
 						(struct shmid_ds *) ptr);
 		default:
 			return -EINVAL;
@@ -118,7 +118,7 @@ asmlinkage int sys_ipc (uint call, int first, int second, int third, void *ptr)
 
 #else /* not CONFIG_SYSVIPC */
 
-asmlinkage int sys_ipc (uint call, int first, int second, int third, void *ptr) 
+asmlinkage int sys_ipc (uint call, int first, int second, int third, void *ptr)
 {
     return -ENOSYS;
 }

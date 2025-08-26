@@ -17,9 +17,9 @@
  |    other processes using the emulator while swapping is in progress.      |
  +---------------------------------------------------------------------------*/
 
-#include <linux/signal.h>
+#include "../../include/linux/signal.h"
 
-#include <asm/segment.h>
+#include "../../include/asm/segment.h"
 
 #include "fpu_system.h"
 #include "exception.h"
@@ -138,7 +138,7 @@ if ( partial_status & SW_Invalid )     printk("SW: invalid operation\n");
 	 partial_status & SW_Precision?1:0, partial_status & SW_Underflow?1:0,
 	 partial_status & SW_Overflow?1:0, partial_status & SW_Zero_Div?1:0,
 	 partial_status & SW_Denorm_Op?1:0, partial_status & SW_Invalid?1:0);
-  
+
 printk(" CW: ic=%d rc=%ld%ld pc=%ld%ld iem=%d     ef=%d%d%d%d%d%d\n",
 	 control_word & 0x1000 ? 1 : 0,
 	 (control_word & 0x800) >> 11, (control_word & 0x400) >> 10,
@@ -309,12 +309,12 @@ void exception(int n)
       /* My message from the sponsor */
       printk(FPU_VERSION" "__DATE__" (C) W. Metzenthen.\n");
 #endif PRINT_MESSAGES
-      
+
       /* Get a name string for error reporting */
       for (i=0; exception_names[i].type; i++)
 	if ( (exception_names[i].type & n) == exception_names[i].type )
 	  break;
-      
+
       if (exception_names[i].type)
 	{
 #ifdef PRINT_MESSAGES
@@ -323,7 +323,7 @@ void exception(int n)
 	}
       else
 	printk("FPU emulator: Unknown Exception: 0x%04x!\n", n);
-      
+
       if ( n == EX_INTERNAL )
 	{
 	  printk("FPU emulator: Internal error type 0x%04x\n", int_type);
@@ -414,7 +414,7 @@ asmlinkage int real_2op_NaN(FPU_REG const *a, FPU_REG const *b, FPU_REG *dest)
     }
 
   EXCEPTION(EX_Invalid);
-  
+
   return !(control_word & CW_Invalid);
 }
 
@@ -425,13 +425,13 @@ asmlinkage int arith_invalid(FPU_REG *dest)
 {
 
   EXCEPTION(EX_Invalid);
-  
+
   if ( control_word & CW_Invalid )
     {
       /* The masked response */
       reg_move(&CONST_QNaN, dest);
     }
-  
+
   return !(control_word & CW_Invalid);
 
 }
@@ -447,7 +447,7 @@ asmlinkage int divide_by_zero(int sign, FPU_REG *dest)
       reg_move(&CONST_INF, dest);
       dest->sign = (unsigned char)sign;
     }
- 
+
   EXCEPTION(EX_ZeroDiv);
 
   return !(control_word & CW_ZeroDiv);
@@ -640,4 +640,3 @@ void stack_underflow_pop(int i)
   return;
 
 }
-

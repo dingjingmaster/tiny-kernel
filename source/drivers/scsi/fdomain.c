@@ -17,7 +17,7 @@
  * General Public License for more details.
 
  **************************************************************************
- 
+
  DESCRIPTION:
 
  This is the Linux low-level SCSI driver for Future Domain TMC-1660/1680
@@ -38,7 +38,7 @@
  your board.  Please refer to the Seagate driver for more information and
  possible support.
 
- 
+
 
  REFERENCES USED:
 
@@ -61,7 +61,7 @@
  Youngdale (eric@tantalus.nrl.navy.mil), 1992.
 
 
- 
+
  NOTES ON REFERENCES:
 
  The Maxtor manuals were free.  Maxtor telephone technical support is
@@ -77,7 +77,7 @@
  They have been much more helpful since they started to recognize that the
  word "Linux" refers to an operating system :-).
 
- 
+
 
  ALPHA TESTERS:
 
@@ -96,9 +96,9 @@
  driver works with the 18C50 chip.
 
  All of the alpha testers deserve much thanks.
- 
 
- 
+
+
  NOTES ON USER DEFINABLE OPTIONS:
 
  DEBUG: This turns on the printing of various debug informaiton.
@@ -133,16 +133,16 @@
 
  **************************************************************************/
 
-#include <linux/sched.h>
-#include <asm/io.h>
+#include "../../include/linux/sched.h"
+#include "../../include/asm/io.h"
 #include "../block/blk.h"
 #include "scsi.h"
 #include "hosts.h"
 #include "fdomain.h"
-#include <asm/system.h>
-#include <linux/errno.h>
-#include <linux/string.h>
-#include <linux/ioport.h>
+#include "../../include/asm/system.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/ioport.h"
 
 #define VERSION          "$Revision: 5.9 $"
 
@@ -264,7 +264,7 @@ static void *addresses[] = {
    (void *)0xce000,
    (void *)0xde000 };
 #define ADDRESS_COUNT (sizeof( addresses ) / sizeof( unsigned ))
-		       
+
 static unsigned short ports[] = { 0x140, 0x150, 0x160, 0x170 };
 #define PORT_COUNT (sizeof( ports ) / sizeof( unsigned short ))
 
@@ -332,7 +332,7 @@ static void print_banner( void )
 	   bios_major, bios_minor,
 	   chip == tmc1800 ? "TMC-1800"
 	   : (chip == tmc18c50 ? "TMC-18C50" : "Unknown") );
-   
+
    if (interrupt_level) {
       printk( "Future Domain: BIOS at %x; port base at %x; using IRQ %d\n",
 	      (unsigned)bios_base, port_base, interrupt_level );
@@ -363,7 +363,7 @@ static int fdomain_is_valid_port( int port )
 {
    int options;
 
-#if DEBUG_DETECT 
+#if DEBUG_DETECT
    printk( " (%x%x),",
 	   inb( port + MSB_ID_Code ), inb( port + LSB_ID_Code ) );
 #endif
@@ -469,7 +469,7 @@ int fdomain_16x0_detect( int hostnum )
 
       port_base = *((char *)bios_base + 0x1fcc)
 	    + (*((char *)bios_base + 0x1fcd) << 8);
-   
+
 #if DEBUG_DETECT
       printk( " %x,", port_base );
 #endif
@@ -484,13 +484,13 @@ int fdomain_16x0_detect( int hostnum )
    }
 
    if (!flag) {			/* Cannot get port base from BIOS RAM */
-      
+
       /* This is a bad sign.  It usually means that someone patched the
 	 BIOS signature list (the signatures variable) to contain a BIOS
 	 signature for a board *OTHER THAN* the TMC-1660/TMC-1680.  It
 	 also means that we don't have a Version 2.0 BIOS :-)
        */
-      
+
 #if DEBUG_DETECT
       if (bios_major != 2) printk( " RAM FAILED, " );
 #endif
@@ -556,7 +556,7 @@ int fdomain_16x0_detect( int hostnum )
    this_host = hostnum;
 
 				/* Log IRQ with kernel */
-   
+
    if (!interrupt_level) {
       panic( "Future Domain: *NO* interrupt level selected!\n" );
    } else {
@@ -566,7 +566,7 @@ int fdomain_16x0_detect( int hostnum )
       sa.sa_flags    = SA_INTERRUPT;
       sa.sa_mask     = 0;
       sa.sa_restorer = NULL;
-      
+
       retcode = irqaction( interrupt_level, &sa );
 
       if (retcode < 0) {
@@ -598,7 +598,7 @@ int fdomain_16x0_detect( int hostnum )
       adapter_mask = 0x80;
       scsi_hosts[this_host].this_id = 7;
    }
-   
+
 #if DO_DETECT
 
    /* These routines are here because of the way the SCSI bus behaves after
@@ -631,12 +631,12 @@ int fdomain_16x0_detect( int hostnum )
 	    retcode = fdomain_16x0_command(&SCinit);
 	    if (!retcode) {
 	       unsigned long blocks, size, capacity;
-	       
+
 	       blocks = (buf[0] << 24) | (buf[1] << 16)
 		     | (buf[2] << 8) | buf[3];
 	       size = (buf[4] << 24) | (buf[5] << 16) | (buf[6] << 8) | buf[7];
 	       capacity = +( +(blocks / 1024L) * +(size * 10L)) / 1024L;
-	       
+
 	       printk( "%lu MB (%lu byte blocks)",
 		       ((capacity + 5L) / 10L), size );
 	    } else {
@@ -659,7 +659,7 @@ const char *fdomain_16x0_info(void)
 {
    static char buffer[80];
    char        *pt;
-   
+
    strcpy( buffer, "Future Domain: TMC-16x0 SCSI driver, version" );
    if (strchr( VERSION, ':')) { /* Assume VERSION is an RCS Revision string */
       strcat( buffer, strchr( VERSION, ':' ) + 1 );
@@ -673,7 +673,7 @@ const char *fdomain_16x0_info(void)
    } else {			/* Assume VERSION is a number */
       strcat( buffer, " " VERSION "\n" );
    }
-      
+
    return buffer;
 }
 
@@ -686,7 +686,7 @@ static int fdomain_arbitrate( void )
 #if EVERY_ACCESS
    printk( "fdomain_arbitrate()\n" );
 #endif
-   
+
    outb( 0x00, SCSI_Cntl_port );              /* Disable data drivers */
    outb( adapter_mask, port_base + SCSI_Data_NoACK ); /* Set our id bit */
    outb( 0x04 | PARITY_MASK, TMC_Cntl_port ); /* Start arbitration */
@@ -695,7 +695,7 @@ static int fdomain_arbitrate( void )
    while (jiffies < timeout) {
       status = inb( TMC_Status_port );        /* Read adapter status */
       if (status & 0x02)		      /* Arbitration complete */
-	    return 0;	
+	    return 0;
    }
 
    /* Make bus idle */
@@ -721,7 +721,7 @@ static int fdomain_select( int target )
    outb( adapter_mask | (1 << target), SCSI_Data_NoACK_port );
 
    /* Stop arbitration and enable parity */
-   outb( PARITY_MASK, TMC_Cntl_port ); 
+   outb( PARITY_MASK, TMC_Cntl_port );
 
    timeout = jiffies + 25;	        /* 250mS */
    while (jiffies < timeout) {
@@ -768,7 +768,7 @@ void fdomain_16x0_intr( int unused )
    unsigned data_count;
 
    sti();
-   
+
    outb( 0x00, Interrupt_Cntl_port );
 
    /* We usually have one spurious interrupt after each command.  Ignore it. */
@@ -803,12 +803,12 @@ void fdomain_16x0_intr( int unused )
 	 return;
       }
       current_SC->SCp.phase = in_selection;
-      
+
       outb( 0x40 | FIFO_COUNT, Interrupt_Cntl_port );
 
       outb( 0x82, SCSI_Cntl_port ); /* Bus Enable + Select */
       outb( adapter_mask | (1 << current_SC->target), SCSI_Data_NoACK_port );
-      
+
       /* Stop arbitration and enable parity */
       outb( 0x10 | PARITY_MASK, TMC_Cntl_port );
 #if DEBUG_RACE
@@ -841,15 +841,15 @@ void fdomain_16x0_intr( int unused )
 #endif
       return;
    }
-   
+
    /* current_SC->SCp.phase == in_other: this is the body of the routine */
-   
+
    status = inb( SCSI_Status_port );
-   
+
    if (status & 0x10) {	/* REQ */
-      
+
       switch (status & 0x0e) {
-       
+
       case 0x08:		/* COMMAND OUT */
 	 outb( current_SC->cmnd[current_SC->SCp.sent_command++],
 	       Write_SCSI_Data_port );
@@ -918,7 +918,7 @@ void fdomain_16x0_intr( int unused )
 	COMPARE                      39 DATA OUT
 	COPY                         18 DATA OUT
 	COPY AND VERIFY              3a DATA OUT
-	INQUIRY                      12 
+	INQUIRY                      12
 	LOG SELECT                   4c DATA OUT
 	LOG SENSE                    4d
 	MODE SELECT (6)              15 DATA OUT
@@ -979,7 +979,7 @@ void fdomain_16x0_intr( int unused )
 	SYNCHRONIZE BUFFER           10
 
 	p. 315: Commands for processor devices (not previously listed)
-	
+
 	p. 321: Commands for write-once devices (not previously listed)
 	MEDIUM SCAN                  38
 	READ (12)                    a8
@@ -1032,7 +1032,7 @@ void fdomain_16x0_intr( int unused )
 	GET MESSAGE (10)             28
 	GET MESSAGE (12)             a8
       */
-	
+
       switch (current_SC->cmnd[0]) {
       case CHANGE_DEFINITION: case COMPARE:         case COPY:
       case COPY_VERIFY:       case LOG_SELECT:      case MODE_SELECT:
@@ -1051,16 +1051,16 @@ void fdomain_16x0_intr( int unused )
       case 0x38:              case 0x3d:
 
       case 0xb6:
-	 
+
       case 0xea:		/* alternate number for WRITE LONG */
-	 
+
 	 current_SC->SCp.have_data_in = -1;
 	 outb( 0xd0 | PARITY_MASK, TMC_Cntl_port );
 	 break;
 
       case 0x00:
       default:
-	 
+
 	 current_SC->SCp.have_data_in = 1;
 	 outb( 0x90 | PARITY_MASK, TMC_Cntl_port );
 	 break;
@@ -1099,7 +1099,7 @@ void fdomain_16x0_intr( int unused )
 	 }
       }
    }
-   
+
    if (current_SC->SCp.have_data_in == 1) { /* DATA IN */
       while ((data_count = inw( FIFO_Data_Count_port )) > 0) {
 #if EVERY_ACCESS
@@ -1130,7 +1130,7 @@ void fdomain_16x0_intr( int unused )
 	 }
       }
    }
-   
+
    if (done) {
 #if EVERY_ACCESS
       printk( " ** IN DONE %d ** ", current_SC->SCp.have_data_in );
@@ -1156,7 +1156,7 @@ void fdomain_16x0_intr( int unused )
 		&& !(key == ILLEGAL_REQUEST && (code == 0x25
 						|| code == 0x24
 						|| !code)))
-		  
+
 		  printk( "Future Domain: REQUEST SENSE "
 			  "Key = %x, Code = %x, Qualifier = %x\n",
 			  key, code, qualifier );
@@ -1171,7 +1171,7 @@ void fdomain_16x0_intr( int unused )
 #if EVERY_ACCESS
       printk( "RETURNING.\n" );
 #endif
-      
+
    } else {
       if (current_SC->SCp.phase & disconnect) {
 	 outb( 0xd0 | FIFO_COUNT, Interrupt_Cntl_port );
@@ -1218,8 +1218,8 @@ int fdomain_16x0_queue( Scsi_Cmnd * SCpnt, void (*done)(Scsi_Cmnd *))
       current_SC->SCp.buffer           = NULL;
       current_SC->SCp.buffers_residual = 0;
    }
-	 
-   
+
+
    current_SC->SCp.Status              = 0;
    current_SC->SCp.Message             = 0;
    current_SC->SCp.have_data_in        = 0;
@@ -1267,7 +1267,7 @@ void print_info( Scsi_Cmnd *SCpnt )
    unsigned int imr;
    unsigned int irr;
    unsigned int isr;
-   
+
    print_banner();
    switch (SCpnt->SCp.phase) {
    case in_arbitration: printk( "arbitration " ); break;
@@ -1357,7 +1357,7 @@ int fdomain_16x0_abort( Scsi_Cmnd *SCpnt, int code )
    current_SC->result = code ? code : DID_ABORT;
 
    sti();
-   
+
    /* Aborts are not done well. . . */
    my_done( code << 16 );
 
@@ -1378,7 +1378,7 @@ int fdomain_16x0_reset( Scsi_Cmnd *SCpnt )
    if (called_once) print_info( current_SC );
    called_once = 1;
 #endif
-   
+
    outb( 1, SCSI_Cntl_port );
    do_pause( 2 );
    outb( 0, SCSI_Cntl_port );
@@ -1392,7 +1392,7 @@ int fdomain_16x0_reset( Scsi_Cmnd *SCpnt )
 
    if (SCpnt)
 	 SCpnt->flags |= NEEDS_JUMPSTART;
-   
+
    return 0;
 }
 
@@ -1404,12 +1404,12 @@ int fdomain_16x0_biosparam( int size, int dev, int *info_array )
       unsigned char  heads;
       unsigned char  sectors;
    } *i;
-   
+
    /* NOTES:
       The RAM area starts at 0x1f00 from the bios_base address.
 
       For BIOS Version 2.0:
-      
+
       The drive parameter table seems to start at 0x1f30.
       The first byte's purpose is not known.
       Next is the cylinder, head, and sector information.
@@ -1452,7 +1452,7 @@ int fdomain_16x0_biosparam( int size, int dev, int *info_array )
    } else {
       /* How the data is stored in the RAM area is very BIOS-dependent.
          Therefore, assume a version 3 layout, and check for validity. */
-      
+
       i = (struct drive_info *)( (char *)bios_base + 0x1f71 + drive * 10 );
       info_array[0] = i->heads + 1;
       info_array[1] = i->sectors;
@@ -1468,13 +1468,13 @@ int fdomain_16x0_biosparam( int size, int dev, int *info_array )
 				     "do the right thing"?
 				   */
 	  ) {
-	 
+
 	 info_array[0]
 	       = info_array[1]
 	       = info_array[2]
 	       = 0;
       }
    }
-   
+
    return 0;
 }

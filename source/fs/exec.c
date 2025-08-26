@@ -20,31 +20,32 @@
  * current->executable is only used by the procfs.  This allows a dispatch
  * table to check for several different types  of binary formats.  We keep
  * trying until we recognize the file or we run out of supported binary
- * formats. 
+ * formats.
  */
 
-#include <linux/fs.h>
-#include <linux/sched.h>
-#include <linux/kernel.h>
-#include <linux/mm.h>
-#include <linux/mman.h>
-#include <linux/a.out.h>
-#include <linux/errno.h>
-#include <linux/signal.h>
-#include <linux/string.h>
-#include <linux/stat.h>
-#include <linux/fcntl.h>
-#include <linux/ptrace.h>
-#include <linux/user.h>
-#include <linux/segment.h>
-#include <linux/malloc.h>
+#include "../include/linux/fs.h"
+#include "../include/linux/sched.h"
+#include "../include/linux/kernel.h"
+#include "../include/linux/mm.h"
+#include "../include/linux/mman.h"
+#include "../include/linux/a.out.h"
+#include "../include/linux/errno.h"
+#include "../include/linux/signal.h"
+#include "../include/linux/string.h"
+#include "../include/linux/stat.h"
+#include "../include/linux/fcntl.h"
+#include "../include/linux/ptrace.h"
+#include "../include/linux/user.h"
+#include "../include/linux/segment.h"
+#include "../include/linux/malloc.h"
 
-#include <asm/system.h>
+#include "../include/asm/system.h"
 
-#include <linux/binfmts.h>
+#include "../include/linux/binfmts.h"
 
-#include <asm/segment.h>
-#include <asm/system.h>
+#include "../include/asm/segment.h"
+#include "../include/asm/system.h"
+
 
 asmlinkage int sys_exit(int exit_code);
 asmlinkage int sys_close(unsigned fd);
@@ -102,7 +103,7 @@ while (file.f_op->write(inode,&file,(char *)(addr),(nr)) != (nr)) goto close_cor
 if (file.f_op->lseek) { \
 	if (file.f_op->lseek(inode,&file,(offset),0) != (offset)) \
  		goto close_coredump; \
-} else file.f_pos = (offset)		
+} else file.f_pos = (offset)
 
 /*
  * Routine writes a core dump image in the current directory.
@@ -168,7 +169,7 @@ int core_dump(long signr, struct pt_regs * regs)
 	dump.u_dsize = ((unsigned long) (current->brk + (PAGE_SIZE-1))) >> 12;
 	dump.u_dsize -= dump.u_tsize;
 	dump.u_ssize = 0;
-	for(i=0; i<8; i++) dump.u_debugreg[i] = current->debugreg[i];  
+	for(i=0; i<8; i++) dump.u_debugreg[i] = current->debugreg[i];
 	if (dump.start_stack < TASK_SIZE)
 		dump.u_ssize = ((unsigned long) (TASK_SIZE - dump.start_stack)) >> 12;
 /* If the size of the dump file exceeds the rlimit, then see what would happen
@@ -332,12 +333,12 @@ static int count(char ** argv)
  *
  * Modified by TYT, 11/24/91 to add the from_kmem argument, which specifies
  * whether the string and the string array are from user or kernel segments:
- * 
+ *
  * from_kmem     argv *        argv **
  *    0          user space    user space
  *    1          kernel space  user space
  *    2          kernel space  kernel space
- * 
+ *
  * We do this by playing games with the fs segment register.  Since it
  * it is expensive to load a segment register, we try to avoid calling
  * set_fs() unless we absolutely have to.
@@ -378,7 +379,7 @@ unsigned long copy_strings(int argc,char ** argv,unsigned long *page,
 					set_fs(old_fs);
 				if (!(pag = (char *) page[p/PAGE_SIZE]) &&
 				    !(pag = (char *) page[p/PAGE_SIZE] =
-				      (unsigned long *) get_free_page(GFP_USER))) 
+				      (unsigned long *) get_free_page(GFP_USER)))
 					return 0;
 				if (from_kmem==2)
 					set_fs(new_fs);
@@ -507,12 +508,12 @@ void flush_old_exec(struct linux_binprm * bprm)
 					     FIRST_LDT_ENTRY,&default_ldt, 1);
 				load_ldt(i);
 			}
-		}	
+		}
 	}
 
 	for (i=0 ; i<8 ; i++) current->debugreg[i] = 0;
 
-	if (bprm->e_uid != current->euid || bprm->e_gid != current->egid || 
+	if (bprm->e_uid != current->euid || bprm->e_gid != current->egid ||
 	    !permission(bprm->inode,MAY_READ))
 		current->dumpable = 0;
 	current->signal = 0;
@@ -556,7 +557,7 @@ static int do_execve(char * filename, char ** argv, char ** envp, struct pt_regs
 	bprm.filename = filename;
 	bprm.argc = count(argv);
 	bprm.envc = count(envp);
-	
+
 restart_interp:
 	if (!S_ISREG(bprm.inode->i_mode)) {	/* must be regular file */
 		retval = -EACCES;
@@ -767,7 +768,7 @@ int load_aout_binary(struct linux_binprm * bprm, struct pt_regs * regs)
 	unsigned long p = bprm->p;
 
 	ex = *((struct exec *) bprm->buf);		/* exec-header */
-	if ((N_MAGIC(ex) != ZMAGIC && N_MAGIC(ex) != OMAGIC && 
+	if ((N_MAGIC(ex) != ZMAGIC && N_MAGIC(ex) != OMAGIC &&
 	     N_MAGIC(ex) != QMAGIC) ||
 	    ex.a_trsize || ex.a_drsize ||
 	    bprm->inode->i_size < ex.a_text+ex.a_data+ex.a_syms+N_TXTOFF(ex)) {
@@ -784,7 +785,7 @@ int load_aout_binary(struct linux_binprm * bprm, struct pt_regs * regs)
 		printk("N_TXTOFF != BLOCK_SIZE. See a.out.h.");
 		return -ENOEXEC;
 	}
-	
+
 	/* OK, This is the point of no return */
 	flush_old_exec(bprm);
 
@@ -805,9 +806,9 @@ int load_aout_binary(struct linux_binprm * bprm, struct pt_regs * regs)
 	} else {
 		if (ex.a_text & 0xfff || ex.a_data & 0xfff)
 			printk("%s: executable not page aligned\n", current->comm);
-		
+
 		fd = open_inode(bprm->inode, O_RDONLY);
-		
+
 		if (fd < 0)
 			return fd;
 		file = current->filp[fd];
@@ -829,7 +830,7 @@ int load_aout_binary(struct linux_binprm * bprm, struct pt_regs * regs)
 			send_sig(SIGSEGV, current, 0);
 			return 0;
 		};
-		
+
  		error = do_mmap(file, N_TXTADDR(ex) + ex.a_text, ex.a_data,
 				PROT_READ | PROT_WRITE | PROT_EXEC,
 				MAP_FIXED | MAP_PRIVATE, N_TXTOFF(ex) + ex.a_text);
@@ -843,7 +844,7 @@ int load_aout_binary(struct linux_binprm * bprm, struct pt_regs * regs)
 	}
 beyond_if:
 	sys_brk(current->brk+ex.a_bss);
-	
+
 	p += change_ldt(ex.a_text,bprm->page);
 	p -= MAX_ARG_PAGES*PAGE_SIZE;
 	p = (unsigned long) create_tables((char *)p,bprm->argc,bprm->envc,0);
@@ -865,28 +866,28 @@ int load_aout_library(int fd)
 	unsigned int bss;
 	unsigned int start_addr;
 	int error;
-	
+
 	file = current->filp[fd];
 	inode = file->f_inode;
-	
+
 	set_fs(KERNEL_DS);
 	if (file->f_op->read(inode, file, (char *) &ex, sizeof(ex)) != sizeof(ex)) {
 		return -EACCES;
 	}
 	set_fs(USER_DS);
-	
+
 	/* We come in here for the regular a.out style of shared libraries */
 	if ((N_MAGIC(ex) != ZMAGIC && N_MAGIC(ex) != QMAGIC) || ex.a_trsize ||
 	    ex.a_drsize || ((ex.a_entry & 0xfff) && N_MAGIC(ex) == ZMAGIC) ||
 	    inode->i_size < ex.a_text+ex.a_data+ex.a_syms+N_TXTOFF(ex)) {
 		return -ENOEXEC;
 	}
-	if (N_MAGIC(ex) == ZMAGIC && N_TXTOFF(ex) && 
+	if (N_MAGIC(ex) == ZMAGIC && N_TXTOFF(ex) &&
 	    (N_TXTOFF(ex) < inode->i_sb->s_blocksize)) {
 		printk("N_TXTOFF < BLOCK_SIZE. Please convert library\n");
 		return -ENOEXEC;
 	}
-	
+
 	if (N_FLAGS(ex)) return -ENOEXEC;
 
 	/* For  QMAGIC, the starting address is 0x20 into the page.  We mask

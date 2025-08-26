@@ -24,9 +24,9 @@
  *		as published by the Free Software Foundation; either version
  *		2 of the License, or (at your option) any later version.
  */
-#include <linux/config.h>
-#include <linux/ddi.h>
-#include "dev.h"
+#include "../../include/linux/config.h"
+#include "../../include/linux/ddi.h"
+#include "../../net/inet/dev.h"
 
 #define LOOPBACK			/* always present, right?	*/
 
@@ -227,7 +227,7 @@ static struct device eth0_dev = {
 #   undef	NEXT_DEV
 #   define	NEXT_DEV	(&slip0_dev)
 #endif	/* SLIP */
-  
+
 #if defined(CONFIG_PPP)
 extern int ppp_init(struct device *);
 static struct device ppp3_dev = {

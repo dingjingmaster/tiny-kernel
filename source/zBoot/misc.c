@@ -1,7 +1,7 @@
 /*
  * misc.c
- * 
- * This is a collection of several routines from gzip-1.0.3 
+ *
+ * This is a collection of several routines from gzip-1.0.3
  * adapted for Linux.
  *
  * malloc by Hannu Savolainen 1993
@@ -11,7 +11,7 @@
 #include "gzip.h"
 #include "lzw.h"
 
-#include <linux/segment.h>
+#include "../include/linux/segment.h"
 
 /*
  * These are set up by the setup-routine at boot-time:
@@ -126,7 +126,7 @@ static void puts(char *s)
 				y--;
 			}
 		} else {
-			vidmem [ ( x + cols * y ) * 2 ] = c; 
+			vidmem [ ( x + cols * y ) * 2 ] = c;
 			if ( ++x >= cols ) {
 				x = 0;
 				if ( ++y >= lines ) {
@@ -240,7 +240,7 @@ void flush_window()
 }
 
 /*
- * Code to compute the CRC-32 table. Borrowed from 
+ * Code to compute the CRC-32 table. Borrowed from
  * gzip-1.0.3/makecrc.c.
  */
 

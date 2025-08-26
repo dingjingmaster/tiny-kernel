@@ -38,29 +38,29 @@
  *			status display
  */
 
-#include <linux/types.h>
-#include <linux/sched.h>
-#include <linux/mm.h>
-#include <linux/string.h>
-#include <linux/socket.h>
-#include <linux/sockios.h>
-#include <linux/termios.h>
-#include <linux/in.h>
-#include <linux/fcntl.h>
-#include "inet.h"
-#include "dev.h"
-#include "ip.h"
-#include "protocol.h"
-#include "icmp.h"
-#include "tcp.h"
-#include "skbuff.h"
-#include "sock.h"
-#include "arp.h"
-#include <linux/errno.h>
-#include <linux/timer.h>
-#include <asm/system.h>
-#include <asm/segment.h>
-#include <linux/mm.h>
+#include "../../include/linux/types.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/mm.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/socket.h"
+#include "../../include/linux/sockios.h"
+#include "../../include/linux/termios.h"
+#include "../../include/linux/in.h"
+#include "../../include/linux/fcntl.h"
+#include "../../net/inet/inet.h"
+#include "../../net/inet/dev.h"
+#include "../../net/inet/ip.h"
+#include "../../net/inet/protocol.h"
+#include "../../net/inet/icmp.h"
+#include "../../net/inet/tcp.h"
+#include "../../net/inet/skbuff.h"
+#include "../../net/inet/sock.h"
+#include "../../net/inet/arp.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/timer.h"
+#include "../../include/asm/system.h"
+#include "../../include/asm/segment.h"
+#include "../../include/linux/mm.h"
 #include "slhc.h"
 
 #define DPRINT(x)
@@ -85,7 +85,7 @@ slhc_init(int rslots, int tslots)
 	register struct cstate *ts;
 	struct slcompress *comp;
 
-	comp = (struct slcompress *)kmalloc(sizeof(struct slcompress), 
+	comp = (struct slcompress *)kmalloc(sizeof(struct slcompress),
 					    GFP_KERNEL);
 	if (! comp)
 		return NULL;
@@ -103,7 +103,7 @@ slhc_init(int rslots, int tslots)
 	}
 
 	if ( tslots > 0  &&  tslots < 256 ) {
-		comp->tstate = 
+		comp->tstate =
 		  (struct cstate *)kmalloc(tslots * sizeof(struct cstate),
 					   GFP_KERNEL);
 		if (! comp->tstate)
@@ -203,7 +203,7 @@ decode(unsigned char **cpp)
 	}
 }
 
-/* 
+/*
  * icp and isize are the original packet.
  * ocp is a place to put a copy if necessary.
  * cpp is initially a pointer to icp.  If the copy is used,
@@ -228,9 +228,9 @@ slhc_compress(struct slcompress *comp, unsigned char *icp, int isize,
 	ip = (struct iphdr *) icp;
 
 	/* Bail if this packet isn't TCP, or is an IP fragment */
-	if(ip->protocol != IPPROTO_TCP || (ntohs(ip->frag_off) & 0x1fff) || 
+	if(ip->protocol != IPPROTO_TCP || (ntohs(ip->frag_off) & 0x1fff) ||
 				       (ip->frag_off & 32)){
-		DPRINT(("comp: noncomp 1 %d %d %d\n", ip->protocol, 
+		DPRINT(("comp: noncomp 1 %d %d %d\n", ip->protocol,
 		      ntohs(ip->frag_off), ip->frag_off));
 		/* Send as regular IP */
 		if(ip->protocol != IPPROTO_TCP)
@@ -249,7 +249,7 @@ slhc_compress(struct slcompress *comp, unsigned char *icp, int isize,
 	 */
 	if(th->syn || th->fin || th->rst ||
 	    ! (th->ack)){
-		DPRINT(("comp: noncomp 2 %x %x %d %d %d %d\n", ip, th, 
+		DPRINT(("comp: noncomp 2 %x %x %d %d %d %d\n", ip, th,
 		       th->syn, th->fin, th->rst, th->ack));
 		/* TCP connection stuff; send as regular IP */
 		comp->sls_o_tcp++;
@@ -338,7 +338,7 @@ found:
 		DPRINT(("comp: incompat\n"));
 		goto uncompressed;
 	}
-	
+
 	/*
 	 * Figure out which of the changing fields changed.  The
 	 * receiver expects changes in the order: urgent, window,
@@ -373,7 +373,7 @@ found:
 		cp = encode(cp,deltaS);
 		changes |= NEW_S;
 	}
-	
+
 	switch(changes){
 	case 0:	/* Nothing changed. If this packet contains data and the
 		 * last one didn't, this is probably a data packet following
@@ -382,7 +382,7 @@ found:
 		 * retransmitted ack or window probe.  Send it uncompressed
 		 * in case the other side missed the compressed version.
 		 */
-		if(ip->tot_len != cs->cs_ip.tot_len && 
+		if(ip->tot_len != cs->cs_ip.tot_len &&
 		   ntohs(cs->cs_ip.tot_len) == hlen)
 			break;
 		DPRINT(("comp: retrans\n"));
@@ -522,7 +522,7 @@ slhc_uncompress(struct slcompress *comp, unsigned char *icp, int isize)
 	thp->check = htons(x);
 
 	thp->psh = (changes & TCP_PUSH_BIT) ? 1 : 0;
-/* 
+/*
  * we can use the same number for the length of the saved header and
  * the current one, because the packet wouldn't have been sent
  * as compressed unless the options were the same as the previous one
@@ -559,7 +559,7 @@ slhc_uncompress(struct slcompress *comp, unsigned char *icp, int isize)
 			if((x = decode(&cp)) == -1) {
 				DPRINT(("uncomp: bad W\n"));
 				goto bad;
-			}	
+			}
 			thp->window = htons( ntohs(thp->window) + x);
 		}
 		if(changes & NEW_A){
@@ -722,4 +722,3 @@ void slhc_o_status(struct slcompress *comp)
 			comp->sls_o_misses);
 	}
 }
-

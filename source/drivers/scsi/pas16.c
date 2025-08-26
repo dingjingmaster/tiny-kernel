@@ -10,19 +10,19 @@
  *	drew@colorado.edu
  *      +1 (303) 666-5836
  *
- *  ( Based on T128 - DISTRIBUTION RELEASE 3. ) 
+ *  ( Based on T128 - DISTRIBUTION RELEASE 3. )
  *
  * Modified to work with the Pro Audio Spectrum/Studio 16
  * by John Weidman.
  *
  *
- * For more information, please consult 
+ * For more information, please consult
  *
  * Media Vision
  * (510) 770-8600
  * (800) 348-7116
- * 
- * and 
+ *
+ * and
  *
  * NCR 5380 Family
  * SCSI Protocol Controller
@@ -36,15 +36,15 @@
  */
 
 /*
- * Options : 
+ * Options :
  * AUTOSENSE - if defined, REQUEST SENSE will be performed automatically
- *      for commands that return with a CHECK CONDITION status. 
+ *      for commands that return with a CHECK CONDITION status.
  *
  * PSEUDO_DMA - enables PSEUDO-DMA hardware, should give a 3-4X performance
  * increase compared to polled I/O.
  *
  * PARITY - enable parity checking.  Not supported.
- * 
+ *
  * SCSI2 - enable support for SCSI-II tagged queueing.  Untested.
  *
  *
@@ -55,7 +55,7 @@
  *
  * USLEEP - enable support for devices that don't disconnect.  Untested.
  *
- * The card is detected and initialized in one of several ways : 
+ * The card is detected and initialized in one of several ways :
  * 1.  Autoprobe (default) - There are many different models of
  *     the Pro Audio Spectrum/Studio 16, and I only have one of
  *     them, so this may require a little tweaking.  An interrupt
@@ -65,25 +65,25 @@
  *     current board number.
  *
  *
- * 2.  With command line overrides - pas16=port,irq may be 
+ * 2.  With command line overrides - pas16=port,irq may be
  *     used on the LILO command line to override the defaults.
  *     NOTE:  untested.
  *
- * 3.  With the PAS16_OVERRIDE compile time define.  This is 
+ * 3.  With the PAS16_OVERRIDE compile time define.  This is
  *     specified as an array of address, irq tupples.  Ie, for
- *     one board at the default 0x388 address, IRQ10, I could say 
+ *     one board at the default 0x388 address, IRQ10, I could say
  *     -DPAS16_OVERRIDE={{0x388, 10}}
  *     NOTE:  Also untested.
- *	
+ *
  *     Note that if the override methods are used, place holders must
  *     be specified for other boards in the system.
- * 
+ *
  */
- 
-#include <asm/system.h>
-#include <linux/signal.h>
-#include <linux/sched.h>
-#include <asm/io.h>
+
+#include "../../include/asm/system.h"
+#include "../../include/linux/signal.h"
+#include "../../include/linux/sched.h"
+#include "../../include/asm/io.h"
 #include "../block/blk.h"
 #include "scsi.h"
 #include "hosts.h"
@@ -111,7 +111,7 @@ int default_irqs[] = {  PAS16_DEFAULT_BOARD_1_IRQ,
 static struct override {
     unsigned short io_port;
     int  irq;
-} overrides 
+} overrides
 #ifdef PAS16_OVERRIDE
     [] = PAS16_OVERRIDE;
 #else
@@ -205,7 +205,7 @@ void	init_board( unsigned short io_port, int irq )
  * Function : pas16_hw_detect( unsigned short board_num )
  *
  * Purpose : determine if a pas16 board is present
- * 
+ *
  * Inputs : board_num - logical board number ( 0 - 3 )
  *
  * Returns : 0 if board not found, 1 if found.
@@ -240,7 +240,7 @@ int     pas16_hw_detect( unsigned short  board_num )
     if( board_rev != tmp ) 	/* Not a PAS-16 */
 	return 0;
 
-    if( ( inb( port + OPERATION_MODE_1 ) & 0x03 ) != 0x03 ) 
+    if( ( inb( port + OPERATION_MODE_1 ) & 0x03 ) != 0x03 )
 	return 0;  	/* return if no SCSI interface found */
 
     return 1;
@@ -251,7 +251,7 @@ int     pas16_hw_detect( unsigned short  board_num )
  * Function : pas16_setup(char *str, int *ints)
  *
  * Purpose : LILO command line initialization of the overrides array,
- * 
+ *
  * Inputs : str - unused, ints - array of integer paramters with ints[0]
  *	equal to the number of ints.
  *
@@ -260,9 +260,9 @@ int     pas16_hw_detect( unsigned short  board_num )
 void pas16_setup(char *str, int *ints) {
     static int commandline_current = 0;
     int i;
-    if (ints[0] != 2) 
+    if (ints[0] != 2)
         printk("pas16_setup : usage pas16=io_port,irq\n");
-    else 
+    else
         if (commandline_current < NO_OVERRIDES) {
             overrides[commandline_current].io_port = (unsigned short) ints[1];
             overrides[commandline_current].irq = ints[2];
@@ -277,15 +277,15 @@ void pas16_setup(char *str, int *ints) {
 
 static struct sigaction pas16_sigaction =  { pas16_intr, 0, SA_INTERRUPT , NULL };
 
-/* 
+/*
  * Function : int pas16_detect(int hostno)
  *
  * Purpose : detects and initializes PAS16 controllers
- *	that were autoprobed, overriden on the LILO command line, 
+ *	that were autoprobed, overriden on the LILO command line,
  *	or specified at compile time.
  *
  * Inputs : hostno - id of this SCSI adapter.
- * 
+ *
  * Returns : 1 if a host adapter was found, 0 if not.
  *
  */
@@ -314,7 +314,7 @@ int pas16_detect(int hostno) {
 	        if ( !bases[current_base].noauto &&
 		     pas16_hw_detect( current_base ) ){
 		        io_port = bases[current_base].io_port;
-			init_board( io_port, default_irqs[ current_base ] ); 
+			init_board( io_port, default_irqs[ current_base ] );
 #if (PDEBUG & PDEBUG_INIT)
 		        printk("scsi%d : detected board.\n", hostno);
 #endif
@@ -336,15 +336,15 @@ int pas16_detect(int hostno) {
 
 	if (overrides[current_override].irq != IRQ_AUTO)
 	    instance->irq = overrides[current_override].irq;
-	else 
+	else
 	    instance->irq = NCR5380_probe_irq(instance, PAS16_IRQS);
 
-	if (instance->irq != IRQ_NONE) 
+	if (instance->irq != IRQ_NONE)
 	    if (irqaction (instance->irq, &pas16_sigaction)) {
-		printk("scsi%d : IRQ%d not free, interrupts disabled\n", 
+		printk("scsi%d : IRQ%d not free, interrupts disabled\n",
 		    hostno, instance->irq);
 		instance->irq = IRQ_NONE;
-	    } 
+	    }
 
 	if (instance->irq == IRQ_NONE) {
 	    printk("scsi%d : interrupts not enabled. for better interactive performance,\n", hostno);
@@ -355,11 +355,11 @@ int pas16_detect(int hostno) {
 	printk("scsi%d : irq = %d\n", hostno, instance->irq);
 #endif
 
-	printk("scsi%d : at 0x%04x", instance->host_no, (int) 
+	printk("scsi%d : at 0x%04x", instance->host_no, (int)
 	    instance->io_port);
 	if (instance->irq == IRQ_NONE)
 	    printk (" interrupts disabled");
-	else 
+	else
 	    printk (" irq %d", instance->irq);
 	printk(" options CAN_QUEUE=%d  CMD_PER_LUN=%d release=%d",
 	    CAN_QUEUE, CMD_PER_LUN, PAS16_PUBLIC_RELEASE);
@@ -376,17 +376,17 @@ int pas16_detect(int hostno) {
 /*
  * Function : int pas16_biosparam(int size, int dev, int *ip)
  *
- * Purpose : Generates a BIOS / DOS compatable H-C-S mapping for 
+ * Purpose : Generates a BIOS / DOS compatable H-C-S mapping for
  *	the specified device / size.
- * 
+ *
  * Inputs : size = size of device in sectors (512 bytes), dev = block device
- *	major / minor, ip[] = {heads, sectors, cylinders}  
+ *	major / minor, ip[] = {heads, sectors, cylinders}
  *
  * Returns : allways 0 (success), initializes ip
- *	
+ *
  */
 
-/* 
+/*
  * XXX Most SCSI boards use this mapping, I could be incorrect.  Some one
  * using hard disks on a trantor should verify that this mapping corresponds
  * to that used by the BIOS / ASPI driver by running the linux fdisk program
@@ -402,28 +402,28 @@ int pas16_biosparam(int size, int dev, int * ip)
 }
 
 /*
- * Function : int NCR5380_pread (struct Scsi_Host *instance, 
+ * Function : int NCR5380_pread (struct Scsi_Host *instance,
  *	unsigned char *dst, int len)
  *
- * Purpose : Fast 5380 pseudo-dma read function, transfers len bytes to 
+ * Purpose : Fast 5380 pseudo-dma read function, transfers len bytes to
  *	dst
- * 
+ *
  * Inputs : dst = destination, len = length in bytes
  *
- * Returns : 0 on success, non zero on a failure such as a watchdog 
+ * Returns : 0 on success, non zero on a failure such as a watchdog
  * 	timeout.
  */
 
 static inline int NCR5380_pread (struct Scsi_Host *instance, unsigned char *dst,
     int len) {
     register unsigned char  *d = dst;
-    register unsigned short reg = (unsigned short) (instance->io_port + 
+    register unsigned short reg = (unsigned short) (instance->io_port +
         P_DATA_REG_OFFSET);
     register i = len;
 
     while ( inb(instance->io_port + P_STATUS_REG_OFFSET) & P_ST_RDY );
 
-    for (; i; --i) 
+    for (; i; --i)
 	*d++ = (unsigned char) inb(reg);
 
     if ( inb(instance->io_port + P_TIMEOUT_STATUS_REG_OFFSET) & P_TS_TIM) {
@@ -436,15 +436,15 @@ static inline int NCR5380_pread (struct Scsi_Host *instance, unsigned char *dst,
 }
 
 /*
- * Function : int NCR5380_pwrite (struct Scsi_Host *instance, 
+ * Function : int NCR5380_pwrite (struct Scsi_Host *instance,
  *	unsigned char *src, int len)
  *
  * Purpose : Fast 5380 pseudo-dma write function, transfers len bytes from
  *	src
- * 
+ *
  * Inputs : src = source, len = length in bytes
  *
- * Returns : 0 on success, non zero on a failure such as a watchdog 
+ * Returns : 0 on success, non zero on a failure such as a watchdog
  * 	timeout.
  */
 
@@ -463,7 +463,7 @@ static inline int NCR5380_pwrite (struct Scsi_Host *instance, unsigned char *src
 	printk("scsi%d : watchdog timer fired in NCR5480_pwrite()\n",
 	    instance->host_no);
 	return -1;
-    } else 
+    } else
 	return 0;
 }
 

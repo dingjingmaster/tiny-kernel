@@ -6,7 +6,7 @@
 	Director, National Security Agency.	 This software may be used and
 	distributed according to the terms of the GNU Public License,
 	incorporated herein by reference.
-	
+
 	This driver is for the 3Com EtherLinkIII series.
 
 	The author may be reached as becker@super.org or
@@ -15,23 +15,23 @@
 
 static char *version = "3c509.c:pl15k 3/5/94 becker@super.org\n";
 
-#include <linux/config.h>
-#include <linux/kernel.h>
-#include <linux/sched.h>
-#include <linux/string.h>
-#include <linux/interrupt.h>
-#include <linux/ptrace.h>
-#include <linux/errno.h>
-#include <linux/in.h>
-#include <linux/malloc.h>
-#include <linux/ioport.h>
-#include <asm/bitops.h>
-#include <asm/io.h>
+#include "../../include/linux/config.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/interrupt.h"
+#include "../../include/linux/ptrace.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/in.h"
+#include "../../include/linux/malloc.h"
+#include "../../include/linux/ioport.h"
+#include "../../include/asm/bitops.h"
+#include "../../include/asm/io.h"
 
-#include "dev.h"
-#include "eth.h"
-#include "skbuff.h"
-#include "arp.h"
+#include "../../net/inet/dev.h"
+#include "../../net/inet/eth.h"
+#include "../../net/inet/skbuff.h"
+#include "../../net/inet/arp.h"
 
 #ifndef HAVE_ALLOC_SKB
 #define alloc_skb(size, priority) (struct sk_buff *) kmalloc(size,priority)
@@ -129,7 +129,7 @@ int el3_probe(struct device *dev)
 		mca_adaptor_select_mode(0);
 
 	}
-#endif	  
+#endif
 
 	/* Send the ID sequence to the ID_PORT. */
 	outb(0x00, ID_PORT);
@@ -262,7 +262,7 @@ static ushort read_eeprom(short ioaddr, int index)
 static ushort id_read_eeprom(int index)
 {
 	int timer, bit, word = 0;
-	
+
 	/* Issue read command, and pause for at least 162 us. for it to complete.
 	   Assume extra-fast 16Mhz bus. */
 	outb(EEPROM_READ + index, ID_PORT);
@@ -273,7 +273,7 @@ static ushort id_read_eeprom(int index)
 
 	for (bit = 15; bit >= 0; bit--)
 		word = (word << 1) + (inb(ID_PORT) & 0x01);
-		
+
 	if (el3_debug > 3)
 		printk("  3c509 EEPROM word %d %#4.4x.\n", index, word);
 
@@ -405,7 +405,7 @@ el3_start_xmit(struct sk_buff *skb, struct device *dev)
 		outw(0x00, ioaddr + TX_FIFO);
 		/* ... and the packet rounded to a doubleword. */
 		outsl(ioaddr + TX_FIFO, skb->data, (skb->len + 3) >> 2);
-	
+
 		dev->trans_start = jiffies;
 		if (inw(ioaddr + TX_FREE) > 1536) {
 			dev->tbusy=0;
@@ -457,7 +457,7 @@ el3_interrupt(int reg_ptr)
 
 	if (el3_debug > 4)
 		printk("%s: interrupt, status %4.4x.\n", dev->name, status);
-	
+
 	while ((status = inw(ioaddr + EL3_STATUS)) & 0x01) {
 
 		if (status & 0x10)
@@ -473,7 +473,7 @@ el3_interrupt(int reg_ptr)
 		}
 		if (status & 0x80)				/* Statistics full. */
 			update_stats(ioaddr, dev);
-		
+
 		if (++i > 10) {
 			printk("%s: Infinite loop in interrupt, status %4.4x.\n",
 				   dev->name, status);
@@ -489,7 +489,7 @@ el3_interrupt(int reg_ptr)
 		printk("%s: exiting interrupt, status %4.4x.\n", dev->name,
 			   inw(ioaddr + EL3_STATUS));
 	}
-	
+
 	dev->interrupt = 0;
 	return;
 }

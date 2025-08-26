@@ -14,16 +14,16 @@
 
 #include <stdarg.h>
 
-#include <asm/segment.h>
-#include <asm/system.h>
+#include "../../include/asm/segment.h"
+#include "../../include/asm/system.h"
 
-#include <linux/errno.h>
-#include <linux/fs.h>
-#include <linux/ext2_fs.h>
-#include <linux/sched.h>
-#include <linux/stat.h>
-#include <linux/string.h>
-#include <linux/locks.h>
+#include "../../include/linux/errno.h"
+#include "../../include/linux/fs.h"
+#include "../../include/linux/ext2_fs.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/stat.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/locks.h"
 
 extern int vsprintf (char *, const char *, va_list);
 
@@ -116,7 +116,7 @@ void ext2_put_super (struct super_block * sb)
 	return;
 }
 
-static struct super_operations ext2_sops = { 
+static struct super_operations ext2_sops = {
 	ext2_read_inode,
 	NULL,
 	ext2_write_inode,
@@ -146,7 +146,7 @@ static int convert_pre_02b_fs (struct super_block * sb,
 		return 0;
 	}
 	memcpy (old_group_desc, bh2->b_data, BLOCK_SIZE);
-	groups_count = (sb->u.ext2_sb.s_blocks_count - 
+	groups_count = (sb->u.ext2_sb.s_blocks_count -
 			sb->u.ext2_sb.s_first_data_block +
 			(EXT2_BLOCK_SIZE(sb) * 8) - 1) /
 				(EXT2_BLOCK_SIZE(sb) * 8);
@@ -403,8 +403,8 @@ struct super_block * ext2_read_super (struct super_block * sb, void * data,
 	}
 	sb->s_blocksize = EXT2_MIN_BLOCK_SIZE << es->s_log_block_size;
 	sb->s_blocksize_bits = EXT2_BLOCK_SIZE_BITS(sb);
-	if (sb->s_blocksize != BLOCK_SIZE && 
-	    (sb->s_blocksize == 1024 || sb->s_blocksize == 2048 ||  
+	if (sb->s_blocksize != BLOCK_SIZE &&
+	    (sb->s_blocksize == 1024 || sb->s_blocksize == 2048 ||
 	     sb->s_blocksize == 4096)) {
 		unsigned long offset;
 
@@ -451,7 +451,7 @@ struct super_block * ext2_read_super (struct super_block * sb, void * data,
 		if (es->s_blocks_count > 262144) {
 			/*
 			 * fs > 256 MB can't be converted
-			 */ 
+			 */
 			sb->s_dev = 0;
 			unlock_super (sb);
 			brelse (bh);
@@ -646,7 +646,7 @@ int ext2_remount (struct super_block * sb, int * flags, char * data)
 	else {
 		/*
 		 * Mounting a RDONLY partition read-write, so reread and
-		 * store the current valid flag.  (It may have been changed 
+		 * store the current valid flag.  (It may have been changed
 		 * by e2fsck since we originally mounted the partition.)
 		 */
 		sb->u.ext2_sb.s_mount_state = es->s_state;

@@ -4,13 +4,13 @@
  *  Written 1992,1993 by Werner Almesberger
  */
 
-#include <linux/fs.h>
-#include <linux/msdos_fs.h>
-#include <linux/sched.h>
-#include <linux/kernel.h>
-#include <linux/errno.h>
-#include <linux/string.h>
-#include <linux/stat.h>
+#include "../../include/linux/fs.h"
+#include "../../include/linux/msdos_fs.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/stat.h"
 
 /* Well-known binary file extensions */
 

@@ -6,15 +6,15 @@
  *  MS-DOS regular file handling primitives
  */
 
-#include <asm/segment.h>
-#include <asm/system.h>
+#include "../../include/asm/segment.h"
+#include "../../include/asm/system.h"
 
-#include <linux/sched.h>
-#include <linux/fs.h>
-#include <linux/msdos_fs.h>
-#include <linux/errno.h>
-#include <linux/fcntl.h>
-#include <linux/stat.h>
+#include "../../include/linux/sched.h"
+#include "../../include/linux/fs.h"
+#include "../../include/linux/msdos_fs.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/fcntl.h"
+#include "../../include/linux/stat.h"
 
 #define MIN(a,b) (((a) < (b)) ? (a) : (b))
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))

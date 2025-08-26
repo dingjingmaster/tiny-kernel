@@ -23,14 +23,14 @@
  * when a file system is mounted (see ext2_read_super).
  */
 
-#include <linux/fs.h>
-#include <linux/ext2_fs.h>
-#include <linux/stat.h>
-#include <linux/sched.h>
-#include <linux/string.h>
-#include <linux/locks.h>
+#include "../../include/linux/fs.h"
+#include "../../include/linux/ext2_fs.h"
+#include "../../include/linux/stat.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/locks.h"
 
-#include <asm/bitops.h>
+#include "../../include/asm/bitops.h"
 
 #define clear_block(addr,size) \
 	__asm__("cld\n\t" \
@@ -73,7 +73,7 @@ static inline int find_next_zero_bit (unsigned long * addr, int size,
 {
 	unsigned long * p = ((unsigned long *) addr) + (offset >> 5);
 	int set = 0, bit = offset & 31, res;
-	
+
 	if (bit) {
 		/*
 		 * Look for zero in first byte
@@ -137,7 +137,7 @@ static struct ext2_group_desc * get_group_desc (struct super_block * sb,
 			    "Group descriptor not loaded\n"
 			    "block_group = %d, group_desc = %lu, desc = %lu",
 			     block_group, group_desc, desc);
-	gdp = (struct ext2_group_desc *) 
+	gdp = (struct ext2_group_desc *)
 	      sb->u.ext2_sb.s_group_desc[group_desc]->b_data;
 	if (bh)
 		*bh = sb->u.ext2_sb.s_group_desc[group_desc];
@@ -150,7 +150,7 @@ static void read_block_bitmap (struct super_block * sb,
 {
 	struct ext2_group_desc * gdp;
 	struct buffer_head * bh;
-	
+
 	gdp = get_group_desc (sb, block_group, NULL);
 	bh = bread (sb->s_dev, gdp->bg_block_bitmap, sb->s_blocksize);
 	if (!bh)
@@ -237,10 +237,10 @@ static inline int load_block_bitmap (struct super_block * sb,
 	if (sb->u.ext2_sb.s_loaded_block_bitmaps > 0 &&
 	    sb->u.ext2_sb.s_block_bitmap_number[0] == block_group)
 		return 0;
-	
-	if (sb->u.ext2_sb.s_groups_count <= EXT2_MAX_GROUP_LOADED && 
+
+	if (sb->u.ext2_sb.s_groups_count <= EXT2_MAX_GROUP_LOADED &&
 	    sb->u.ext2_sb.s_block_bitmap_number[block_group] == block_group &&
-	    sb->u.ext2_sb.s_block_bitmap[block_group]) 
+	    sb->u.ext2_sb.s_block_bitmap[block_group])
 		return block_group;
 
 	return load__block_bitmap (sb, block_group);
@@ -264,7 +264,7 @@ void ext2_free_blocks (struct super_block * sb, unsigned long block,
 	}
 	lock_super (sb);
 	es = sb->u.ext2_sb.s_es;
-	if (block < es->s_first_data_block || 
+	if (block < es->s_first_data_block ||
 	    (block + count) > es->s_blocks_count) {
 		ext2_error (sb, "ext2_free_blocks",
 			    "Freeing blocks not in datazone\n"
@@ -302,14 +302,14 @@ void ext2_free_blocks (struct super_block * sb, unsigned long block,
 	for (i = 0; i < count; i++) {
 		if (!clear_bit (bit + i, bh->b_data))
 			ext2_warning (sb, "ext2_free_blocks",
-				      "bit already cleared for block %lu", 
+				      "bit already cleared for block %lu",
 				      block);
 		else {
 			gdp->bg_free_blocks_count++;
 			es->s_free_blocks_count++;
 		}
 	}
-	
+
 	bh2->b_dirt = 1;
 	sb->u.ext2_sb.s_sbh->b_dirt = 1;
 
@@ -326,7 +326,7 @@ void ext2_free_blocks (struct super_block * sb, unsigned long block,
 /*
  * ext2_new_block uses a goal block to assist allocation.  If the goal is
  * free, or there is a free block within 32 blocks of the goal, that block
- * is allocated.  Otherwise a forward search is made for a free block; within 
+ * is allocated.  Otherwise a forward search is made for a free block; within
  * each block group the search first looks for an entire free byte in the block
  * bitmap, and then for any free bit if that fails.
  */
@@ -387,7 +387,7 @@ repeat:
 		}
 		if (j) {
 			/*
-			 * The goal was occupied; search forward for a free 
+			 * The goal was occupied; search forward for a free
 			 * block within the next 32 blocks
 			 */
 			lmap = ((((unsigned long *) bh->b_data)[j >> 5]) >>
@@ -408,7 +408,7 @@ repeat:
 				}
 			}
 		}
-	
+
 		ext2_debug ("Bit not found near goal\n");
 
 		/*
@@ -416,19 +416,19 @@ repeat:
 		 * of the goal: do a search forward through the block groups,
 		 * searching in each group first for an entire free byte in
 		 * the bitmap and then for any free bit.
-		 * 
+		 *
 		 * Search first in the remainder of the current group; then,
 		 * cyclicly search throught the rest of the groups.
 		 */
 		p = ((char *) bh->b_data) + (j >> 3);
-		r = find_first_zero_byte (p, 
+		r = find_first_zero_byte (p,
 					  (EXT2_BLOCKS_PER_GROUP(sb) - j + 7) >> 3);
 		k = (r - ((char *) bh->b_data)) << 3;
 		if (k < EXT2_BLOCKS_PER_GROUP(sb)) {
 			j = k;
 			goto search_back;
 		}
-		k = find_next_zero_bit ((unsigned long *) bh->b_data, 
+		k = find_next_zero_bit ((unsigned long *) bh->b_data,
 					EXT2_BLOCKS_PER_GROUP(sb),
 					j);
 		if (k < EXT2_BLOCKS_PER_GROUP(sb)) {
@@ -440,7 +440,7 @@ repeat:
 	ext2_debug ("Bit not found in block group %d.\n", i);
 
 	/*
-	 * Now search the rest of the groups.  We assume that 
+	 * Now search the rest of the groups.  We assume that
 	 * i and gdp correctly point to the last group visited.
 	 */
 	for (k = 0; k < sb->u.ext2_sb.s_groups_count; k++) {
@@ -457,7 +457,7 @@ repeat:
 	}
 	bitmap_nr = load_block_bitmap (sb, i);
 	bh = sb->u.ext2_sb.s_block_bitmap[bitmap_nr];
-	r = find_first_zero_byte (bh->b_data, 
+	r = find_first_zero_byte (bh->b_data,
 				  EXT2_BLOCKS_PER_GROUP(sb) >> 3);
 	j = (r - bh->b_data) << 3;
 	if (j < EXT2_BLOCKS_PER_GROUP(sb))
@@ -473,13 +473,13 @@ repeat:
 	}
 
 search_back:
-	/* 
+	/*
 	 * We have succeeded in finding a free byte in the block
 	 * bitmap.  Now search backwards up to 7 bits to find the
 	 * start of this group of free blocks.
 	 */
 	for (k = 0; k < 7 && j > 0 && !test_bit (j - 1, bh->b_data); k++, j--);
-	
+
 got_block:
 
 	ext2_debug ("using block group %d(%d)\n", i, gdp->bg_free_blocks_count);
@@ -514,7 +514,7 @@ got_block:
 			if (set_bit (j + k, bh->b_data))
 				break;
 			(*prealloc_count)++;
-		}	
+		}
 		gdp->bg_free_blocks_count -= *prealloc_count;
 		es->s_free_blocks_count -= *prealloc_count;
 		ext2_debug ("Preallocated a further %lu bits.\n",
@@ -567,7 +567,7 @@ unsigned long ext2_count_free_blocks (struct super_block * sb)
 	int bitmap_nr;
 	struct ext2_group_desc * gdp;
 	int i;
-	
+
 	lock_super (sb);
 	es = sb->u.ext2_sb.s_es;
 	desc_count = 0;

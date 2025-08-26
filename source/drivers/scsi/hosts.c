@@ -1,7 +1,7 @@
 /*
- *	hosts.c Copyright (C) 1992 Drew Eckhardt 
+ *	hosts.c Copyright (C) 1992 Drew Eckhardt
  *	mid to lowlevel SCSI driver interface by
- *		Drew Eckhardt 
+ *		Drew Eckhardt
  *
  *	<drew@colorado.edu>
  */
@@ -10,16 +10,16 @@
 /*
  *	This file contains the medium level SCSI
  *	host interface initialization, as well as the scsi_hosts array of SCSI
- *	hosts currently present in the system. 
+ *	hosts currently present in the system.
  */
 
-#include <linux/config.h>
+#include "../../include/linux/config.h"
 #include "../block/blk.h"
-#include <linux/kernel.h>
-#include <linux/string.h>
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/string.h"
 #include "scsi.h"
 
-#ifndef NULL 
+#ifndef NULL
 #define NULL 0L
 #endif
 
@@ -76,9 +76,9 @@ static const char RCSid[] = "$Header: /usr/src/linux/kernel/blk_drv/scsi/RCS/hos
 */
 
 /*
- *	The scsi host entries should be in the order you wish the 
+ *	The scsi host entries should be in the order you wish the
  *	cards to be detected.  A driver may appear more than once IFF
- *	it can deal with being detected (and therefore initialized) 
+ *	it can deal with being detected (and therefore initialized)
  *	with more than one simulatenous host number, can handle being
  *	rentrant, etc.
  *
@@ -94,9 +94,9 @@ static const char RCSid[] = "$Header: /usr/src/linux/kernel/blk_drv/scsi/RCS/hos
 	        NULL, NULL, 0, 0, 0, 0, 0, 0}
 
 /*
- *	When figure is run, we don't want to link to any object code.  Since 
- *	the macro for each host will contain function pointers, we cannot 
- *	use it and instead must use a "blank" that does no such 
+ *	When figure is run, we don't want to link to any object code.  Since
+ *	the macro for each host will contain function pointers, we cannot
+ *	use it and instead must use a "blank" that does no such
  *	idiocy.
  */
 
@@ -140,7 +140,7 @@ Scsi_Host_Template scsi_hosts[] =
 #define MAX_SCSI_HOSTS (sizeof(scsi_hosts) / sizeof(Scsi_Host_Template))
 
 /*
- *	Our semaphores and timeout counters, where size depends on MAX_SCSI_HOSTS here. 
+ *	Our semaphores and timeout counters, where size depends on MAX_SCSI_HOSTS here.
  */
 
 struct Scsi_Host * scsi_hostlist = NULL;
@@ -178,10 +178,10 @@ struct Scsi_Host * scsi_register(int i, int j){
 	scsi_init_memory_start += sizeof(struct Scsi_Host) + j;
 	retval->host_busy = 0;
 	retval->host_no = next_host++;
-	retval->host_queue = NULL;	
-	retval->host_wait = NULL;	
-	retval->last_reset = 0;	
-	retval->hostt = &scsi_hosts[i];	
+	retval->host_queue = NULL;
+	retval->host_wait = NULL;
+	retval->last_reset = 0;
+	retval->hostt = &scsi_hosts[i];
 	retval->next = NULL;
 #ifdef DEBUG
 	printk("Register %x %x: %d %d\n", retval, retval->hostt, i, j);
@@ -216,19 +216,19 @@ scsi_init(unsigned long memory_start,unsigned long memory_end)
 	if(called) return memory_start;
 
 	scsi_init_memory_start = memory_start;
-	called = 1;	
+	called = 1;
 	for (i = 0; i < MAX_SCSI_HOSTS; ++i)
 	{
 		/*
-		 * Initialize our semaphores.  -1 is interpreted to mean 
+		 * Initialize our semaphores.  -1 is interpreted to mean
 		 * "inactive" - where as 0 will indicate a time out condition.
-		 */ 
-		
+		 */
+
 		pcount = next_host;
-		if ((scsi_hosts[i].detect) && 
-		    (scsi_hosts[i].present = 
+		if ((scsi_hosts[i].detect) &&
+		    (scsi_hosts[i].present =
 		     scsi_hosts[i].detect(i)))
-		{		
+		{
 			/* The only time this should come up is when people use
 			   some kind of patched driver of some kind or another. */
 			if(pcount == next_host) {
@@ -244,7 +244,7 @@ scsi_init(unsigned long memory_start,unsigned long memory_end)
 		}
 	}
 	printk ("scsi : %d hosts.\n", count);
-	
+
 	max_scsi_hosts = count;
 	return scsi_init_memory_start;
 }

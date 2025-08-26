@@ -16,7 +16,7 @@
 #include <unistd.h>	/* contains read/write */
 #include <fcntl.h>
 #include <a.out.h>
-#include <linux/config.h>
+#include "../include/linux/config.h"
 
 #define GCC_HEADER 1024
 
@@ -44,7 +44,7 @@ int main(int argc, char ** argv)
 
 	if (argc  != 2)
 		usage();
-	
+
 	if ((id=open(argv[1],O_RDONLY,0))<0)
 		die("Unable to open 'system'");
 	if (read(id,buf,GCC_HEADER) != GCC_HEADER)
@@ -65,7 +65,7 @@ int main(int argc, char ** argv)
 
 		if ((n=read(id, buf, l)) !=l)
 		{
-			if (n == -1) 
+			if (n == -1)
 			   perror(argv[1]);
 			else
 			   fprintf(stderr, "Unexpected EOF\n");

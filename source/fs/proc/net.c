@@ -18,14 +18,14 @@
  *
  *  proc net directory handling functions
  */
-#include <linux/autoconf.h>
+#include "../../include/linux/autoconf.h"
 
-#include <asm/segment.h>
+#include "../../include/asm/segment.h"
 
-#include <linux/errno.h>
-#include <linux/sched.h>
-#include <linux/proc_fs.h>
-#include <linux/stat.h>
+#include "../../include/linux/errno.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/proc_fs.h"
+#include "../../include/linux/stat.h"
 
 /* forward references */
 static int proc_readnet(struct inode * inode, struct file * file,

@@ -14,12 +14,12 @@
  * of the mouse drivers, as they are now completely independent. Linus.
  */
 
-#include <linux/fs.h>
-#include <linux/errno.h>
-#include <linux/mouse.h>
-#include <linux/config.h>
-#include <linux/kernel.h>
-#include <linux/major.h>
+#include "../../include/linux/fs.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/mouse.h"
+#include "../../include/linux/config.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/major.h"
 
 /*
  * note that you can remove any or all of the drivers by undefining

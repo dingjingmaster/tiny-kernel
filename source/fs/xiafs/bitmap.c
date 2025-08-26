@@ -2,21 +2,21 @@
  *  linux/fs/xiafs/bitmap.c
  *
  *  Copyright (C) Q. Frank Xia, 1993.
- *  
+ *
  *  Based on Linus' minix/bitmap.c
  *  Copyright (C) Linus Torvalds, 1991, 1992.
- *  
+ *
  *  This software may be redistributed per Linux Copyright.
  */
 
 /* bitmap.c contains the code that handles the inode and block bitmaps */
 
-#include <linux/sched.h>
-#include <linux/locks.h>
-#include <linux/xia_fs.h>
-#include <linux/stat.h>
-#include <linux/kernel.h>
-#include <linux/string.h>
+#include "../../include/linux/sched.h"
+#include "../../include/linux/locks.h"
+#include "../../include/linux/xia_fs.h"
+#include "../../include/linux/stat.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/string.h"
 
 #include "xiafs_mac.h"
 
@@ -27,13 +27,13 @@ __asm__ __volatile__("btrl %1,%2\n\tsetnb %0": \
 "=q" (res):"r" (nr),"m" (*(addr))); \
 res;})
 
-char internal_error_message[]="XIA-FS: internal error %s %d\n"; 
+char internal_error_message[]="XIA-FS: internal error %s %d\n";
 
-static int find_first_zero(struct buffer_head *bh, int start_bit, int end_bit) 
+static int find_first_zero(struct buffer_head *bh, int start_bit, int end_bit)
 {
     /* This routine searches first 0 bit from (start_bit) to (end_bit-1).
      * If found the bit is set to 1 and the bit # is returned, otherwise,
-     * -1 is returned. Race condition is avoid by using "btsl" and 
+     * -1 is returned. Race condition is avoid by using "btsl" and
      * "goto repeat".  ---Frank.
      */
 
@@ -46,7 +46,7 @@ static int find_first_zero(struct buffer_head *bh, int start_bit, int end_bit)
 
 repeat:
     i=start_bit >> 5;
-    if ( (tmp=(~bmap[i]) & (0xffffffff << (start_bit & 31))) )        
+    if ( (tmp=(~bmap[i]) & (0xffffffff << (start_bit & 31))) )
         goto zone_found;
     while (++i < end)
         if (~bmap[i]) {
@@ -55,7 +55,7 @@ repeat:
 	}
     if ( !(tmp=~bmap[i] & ((1 << (end_bit & 31)) -1)) )
         return -1;
-zone_found:    
+zone_found:
     for (j=0; j < 32; j++)
         if (tmp & (1 << j))
 	    break;
@@ -69,7 +69,7 @@ zone_found:
     return j + (i << 5);
 }
 
-static void clear_buf(struct buffer_head * bh) 
+static void clear_buf(struct buffer_head * bh)
 {
     register int i;
     register long * lp;
@@ -84,7 +84,7 @@ static void que(struct buffer_head * bmap[], int bznr[], int pos)
     struct buffer_head * tbh;
     int tmp;
     int i;
-    
+
     tbh=bmap[pos];
     tmp=bznr[pos];
     for (i=pos; i > 0; i--) {
@@ -110,9 +110,9 @@ static void que(struct buffer_head * bmap[], int bznr[], int pos)
 		      (sb)->u.xiafs_sb.s_zmap_zones, _XIAFS_ZMAP_SLOTS, \
 		      bit_nr, not_que)
 
-static struct buffer_head * 
+static struct buffer_head *
 get__map_zone(struct super_block *sb, struct buffer_head * bmap_buf[],
-	  int bznr[], u_char cache, int first_zone, 
+	  int bznr[], u_char cache, int first_zone,
 	  int bmap_zones, int slots, u_long bit_nr, int * not_que)
 {
     struct buffer_head * tmp_bh;
@@ -126,7 +126,7 @@ get__map_zone(struct super_block *sb, struct buffer_head * bmap_buf[],
     if (!cache)
         return bmap_buf[z_nr];
     lock_super(sb);
-    for (i=0; i < slots; i++) 
+    for (i=0; i < slots; i++)
         if (bznr[i]==z_nr)
 	    break;
     if (i < slots) {			/* cache hit */
@@ -171,17 +171,17 @@ get__map_zone(struct super_block *sb, struct buffer_head * bmap_buf[],
 		      sb->u.xiafs_sb.s_zmap_zones, \
 		      _XIAFS_ZMAP_SLOTS, prev_bit);
 
-static u_long 
+static u_long
 get_free__bit(struct super_block *sb, struct buffer_head * bmap_buf[],
-	      int bznr[], u_char cache, int first_zone, int bmap_zones, 
+	      int bznr[], u_char cache, int first_zone, int bmap_zones,
 	      int slots, u_long prev_bit)
 {
     struct buffer_head * bh;
     int not_done=0;
     u_long pos, start_bit, end_bit, total_bits;
     int z_nr, tmp;
- 
-    total_bits=bmap_zones << XIAFS_BITS_PER_Z_BITS(sb); 
+
+    total_bits=bmap_zones << XIAFS_BITS_PER_Z_BITS(sb);
     if (prev_bit >= total_bits)
         prev_bit=0;
     pos=prev_bit+1;
@@ -192,14 +192,14 @@ get_free__bit(struct super_block *sb, struct buffer_head * bmap_buf[],
 	    pos=0;
         if (!not_done) {		/* first time */
 	    not_done=1;
-	    start_bit= pos & (end_bit-1);     
-	} else 
+	    start_bit= pos & (end_bit-1);
+	} else
 	    start_bit=0;
 	if ( pos < prev_bit && pos+end_bit >= prev_bit) {   /* last time */
 	    not_done=0;
 	    end_bit=prev_bit & (end_bit-1);   /* only here end_bit modified */
 	}
-        bh = get__map_zone(sb, bmap_buf, bznr, cache, first_zone, 
+        bh = get__map_zone(sb, bmap_buf, bznr, cache, first_zone,
 			   bmap_zones, slots, pos, &z_nr);
 	if (!bh)
 	    return 0;
@@ -210,7 +210,7 @@ get_free__bit(struct super_block *sb, struct buffer_head * bmap_buf[],
 	pos=(pos & ~(end_bit-1))+end_bit;
     } while (not_done);
 
-    if (tmp < 0) 
+    if (tmp < 0)
         return 0;
     if (cache)
       que(bmap_buf, bznr, z_nr);
@@ -258,10 +258,10 @@ int xiafs_new_zone(struct super_block * sb, u_long prev_addr)
         printk(INTERN_ERR);
 	return 0;
     }
-    if (prev_addr < sb->u.xiafs_sb.s_firstdatazone || 
+    if (prev_addr < sb->u.xiafs_sb.s_firstdatazone ||
 	prev_addr >= sb->u.xiafs_sb.s_nzones) {
         prev_addr=sb->u.xiafs_sb.s_firstdatazone;
-    }      
+    }
     prev_znr=prev_addr-sb->u.xiafs_sb.s_firstdatazone+1;
     tmp=get_free_zbit(sb, prev_znr);
     if (!tmp)
@@ -321,7 +321,7 @@ struct inode * xiafs_new_inode(struct inode * dir)
     inode->i_sb = sb;
     inode->i_flags = inode->i_sb->s_flags;
 
-    tmp=get_free_ibit(sb, dir->i_ino); 
+    tmp=get_free_ibit(sb, dir->i_ino);
     if (!tmp) {
         iput(inode);
 	return NULL;
@@ -354,7 +354,7 @@ static u_long count_zone(struct buffer_head * bh)
         sum += nibblemap[tmp & 0xf] + nibblemap[(tmp & 0xff) >> 4];
     }
     return sum;
-} 
+}
 
 unsigned long xiafs_count_free_inodes(struct super_block *sb)
 {

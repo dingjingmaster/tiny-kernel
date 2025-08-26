@@ -19,7 +19,7 @@
 #define _IP_H
 
 
-#include <linux/ip.h>
+#include "../../include/linux/ip.h"
 
 
 #include "sock.h"	/* struct sock */

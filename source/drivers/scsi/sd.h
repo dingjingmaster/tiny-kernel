@@ -1,7 +1,7 @@
 /*
- *	sd.h Copyright (C) 1992 Drew Eckhardt 
+ *	sd.h Copyright (C) 1992 Drew Eckhardt
  *	SCSI disk driver header file by
- *		Drew Eckhardt 
+ *		Drew Eckhardt
  *
  *	<drew@colorado.edu>
  *
@@ -20,7 +20,7 @@
 #endif
 
 #ifndef _GENDISK_H
-#include <linux/genhd.h>
+#include "../../include/linux/genhd.h"
 #endif
 
 /*
@@ -34,13 +34,13 @@ extern struct hd_struct * sd;
 typedef struct {
 		unsigned capacity;		/* size in blocks */
 		unsigned sector_size;		/* size in bytes */
-		Scsi_Device  *device;		
+		Scsi_Device  *device;
 		unsigned char sector_bit_size;	/* sector_size = 2 to the  bit size power */
 		unsigned char sector_bit_shift;	/* power of 2 sectors per FS block */
 		unsigned ten:1;			/* support ten byte read / write */
 		unsigned remap:1;		/* support remapping  */
 		} Scsi_Disk;
-	
+
 extern Scsi_Disk * rscsi_disks;
 
 #endif

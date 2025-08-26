@@ -12,13 +12,13 @@
  *  ext directory handling functions
  */
 
-#include <asm/segment.h>
+#include "../../include/asm/segment.h"
 
-#include <linux/errno.h>
-#include <linux/kernel.h>
-#include <linux/fs.h>
-#include <linux/ext_fs.h>
-#include <linux/stat.h>
+#include "../../include/linux/errno.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/fs.h"
+#include "../../include/linux/ext_fs.h"
+#include "../../include/linux/stat.h"
 
 static int ext_dir_read(struct inode * inode, struct file * filp, char * buf, int count)
 {
@@ -109,7 +109,7 @@ static int ext_readdir(struct inode * inode, struct file * filp,
 					return i;
 				}
 			}
-			de = (struct ext_dir_entry *) ((char *) de 
+			de = (struct ext_dir_entry *) ((char *) de
 				+ de->rec_len);
 		}
 		brelse(bh);

@@ -1,9 +1,9 @@
-#include <linux/if_ether.h>
-#include <linux/types.h>
-#include <asm/io.h>
+#include "../../include/linux/if_ether.h"
+#include "../../include/linux/types.h"
+#include "../../include/asm/io.h"
 
 struct net_local {
-#ifdef __KERNEL__
+#if 1 //def __KERNEL__
     struct enet_statistics stats;
 #endif
     ushort saved_tx_size;

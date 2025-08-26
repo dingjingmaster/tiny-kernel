@@ -10,15 +10,15 @@
  *  Copyright (C) 1991, 1992  Linus Torvalds
  */
 
-#include <linux/sched.h>
-#include <linux/ext_fs.h>
-#include <linux/kernel.h>
-#include <linux/string.h>
-#include <linux/stat.h>
-#include <linux/fcntl.h>
-#include <linux/errno.h>
+#include "../../include/linux/sched.h"
+#include "../../include/linux/ext_fs.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/stat.h"
+#include "../../include/linux/fcntl.h"
+#include "../../include/linux/errno.h"
 
-#include <asm/segment.h>
+#include "../../include/asm/segment.h"
 
 /*
  * comment out this line if you want names > EXT_NAME_LEN chars to be
@@ -41,7 +41,7 @@
  * EXT_DIR_MIN_SIZE is the minimal size of a directory entry
  *
  * During allocations, a directory entry is split into 2 ones
- * *ONLY* if the size of the unused part is greater than or 
+ * *ONLY* if the size of the unused part is greater than or
  * equal to EXT_DIR_MIN_SIZE
  */
 #define EXT_DIR_MIN_SIZE 12
@@ -405,7 +405,7 @@ int ext_mkdir(struct inode * dir, const char * name, int len, int mode)
 	struct inode * inode;
 	struct buffer_head * bh, *dir_block;
 	struct ext_dir_entry * de;
-	
+
 	bh = ext_find_entry(dir,name,len,&de,NULL,NULL);
 	if (bh) {
 		brelse(bh);
@@ -483,7 +483,7 @@ static int empty_dir(struct inode * inode)
 	}
 	de = (struct ext_dir_entry *) bh->b_data;
 	de1 = (struct ext_dir_entry *) ((char *) de + de->rec_len);
-	if (de->inode != inode->i_ino || !de1->inode || 
+	if (de->inode != inode->i_ino || !de1->inode ||
 	    strcmp(".",de->name) || strcmp("..",de1->name)) {
 	    	printk("warning - bad directory on dev %04x\n",inode->i_dev);
 		return 1;
@@ -788,7 +788,7 @@ start_up:
 	if (!old_inode)
 		goto end_rename;
 	retval = -EPERM;
-	if ((old_dir->i_mode & S_ISVTX) && 
+	if ((old_dir->i_mode & S_ISVTX) &&
 	    current->euid != old_inode->i_uid &&
 	    current->euid != old_dir->i_uid && !suser())
 		goto end_rename;
@@ -809,7 +809,7 @@ start_up:
 		goto end_rename;
 	}
 	retval = -EPERM;
-	if (new_inode && (new_dir->i_mode & S_ISVTX) && 
+	if (new_inode && (new_dir->i_mode & S_ISVTX) &&
 	    current->euid != new_inode->i_uid &&
 	    current->euid != new_dir->i_uid && !suser())
 		goto end_rename;

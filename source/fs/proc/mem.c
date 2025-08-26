@@ -4,17 +4,17 @@
  *  Copyright (C) 1991, 1992  Linus Torvalds
  */
 
-#include <linux/types.h>
-#include <linux/errno.h>
-#include <linux/sched.h>
-#include <linux/kernel.h>
+#include "../../include/linux/types.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/kernel.h"
 
-#include <asm/segment.h>
-#include <asm/io.h>
+#include "../../include/asm/segment.h"
+#include "../../include/asm/io.h"
 
 /*
  * mem_write isn't really a good idea right now. It needs
- * to check a lot more: if the process we try to write to 
+ * to check a lot more: if the process we try to write to
  * dies in the middle right now, mem_write will overwrite
  * kernel memory.. This disables it altogether.
  */

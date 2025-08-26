@@ -19,13 +19,13 @@
  *  This file contains code for allocating/freeing inodes.
  */
 
-#include <linux/sched.h>
-#include <linux/kernel.h>
-#include <linux/fs.h>
-#include <linux/sysv_fs.h>
-#include <linux/stat.h>
-#include <linux/string.h>
-#include <linux/locks.h>
+#include "../../include/linux/sched.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/fs.h"
+#include "../../include/linux/sysv_fs.h"
+#include "../../include/linux/stat.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/locks.h"
 
 /* We don't trust the value of
    sb->sv_sbd->s_tinode = *sb->sv_sb_total_free_inodes
@@ -201,4 +201,3 @@ unsigned long sysv_count_free_inodes(struct super_block * sb)
 	return *sb->sv_sb_total_free_inodes;
 #endif
 }
-

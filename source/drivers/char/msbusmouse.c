@@ -28,16 +28,16 @@
  * version 0.3a
  */
 
-#include <linux/kernel.h>
-#include <linux/sched.h>
-#include <linux/busmouse.h>
-#include <linux/signal.h>
-#include <linux/errno.h>
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/busmouse.h"
+#include "../../include/linux/signal.h"
+#include "../../include/linux/errno.h"
 
-#include <asm/io.h>
-#include <asm/segment.h>
-#include <asm/system.h>
-#include <asm/irq.h>
+#include "../../include/asm/io.h"
+#include "../../include/asm/segment.h"
+#include "../../include/asm/system.h"
+#include "../../include/asm/irq.h"
 
 static struct mouse_status mouse;
 
@@ -73,7 +73,7 @@ static void ms_mouse_interrupt(int unused)
 static void release_mouse(struct inode * inode, struct file * file)
 {
 	MS_MSE_INT_OFF();
-	mouse.active = mouse.ready = 0; 
+	mouse.active = mouse.ready = 0;
 	free_irq(MOUSE_IRQ);
 }
 
@@ -84,14 +84,14 @@ static int open_mouse(struct inode * inode, struct file * file)
 	if (mouse.active)
 		return -EBUSY;
 	mouse.active = 1;
-	mouse.ready = mouse.dx = mouse.dy = 0;	
+	mouse.ready = mouse.dx = mouse.dy = 0;
 	mouse.buttons = 0x80;
 	if (request_irq(MOUSE_IRQ, ms_mouse_interrupt)) {
 		mouse.active = 0;
 		return -EBUSY;
 	}
 	outb(MS_MSE_START, MS_MSE_CONTROL_PORT);
-	MS_MSE_INT_ON();	
+	MS_MSE_INT_ON();
 	return 0;
 }
 
@@ -119,14 +119,14 @@ static int read_mouse(struct inode * inode, struct file * file, char * buffer, i
 	mouse.dx -= dx;
 	mouse.dy += dy;
 	mouse.ready = 0;
-	return i;	
+	return i;
 }
 
 static int mouse_select(struct inode *inode, struct file *file, int sel_type, select_table * wait)
 {
 	if (sel_type != SEL_IN)
 		return 0;
-	if (mouse.ready) 
+	if (mouse.ready)
 		return 1;
 	select_wait(&mouse.wait,wait);
 	return 0;

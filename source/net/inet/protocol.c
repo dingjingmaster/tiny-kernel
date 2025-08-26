@@ -21,14 +21,14 @@
  *		as published by the Free Software Foundation; either version
  *		2 of the License, or (at your option) any later version.
  */
-#include <asm/segment.h>
-#include <asm/system.h>
-#include <linux/types.h>
-#include <linux/kernel.h>
-#include <linux/sched.h>
-#include <linux/string.h>
-#include <linux/socket.h>
-#include <linux/in.h>
+#include "../../include/asm/segment.h"
+#include "../../include/asm/system.h"
+#include "../../include/linux/types.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/socket.h"
+#include "../../include/linux/in.h"
 #include "inet.h"
 #include "dev.h"
 #include "ip.h"

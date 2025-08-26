@@ -18,9 +18,9 @@
 #error I want gcc!
 #endif
 
-#include <linux/stat.h>		/* declares S_IFLNK etc. */
-#include <linux/sched.h>	/* declares wake_up() */
-#include <linux/sysv_fs_sb.h>	/* defines the sv_... shortcuts */
+#include "../../include/linux/stat.h"		/* declares S_IFLNK etc. */
+#include "../../include/linux/sched.h"	/* declares wake_up() */
+#include "../../include/linux/sysv_fs_sb.h"	/* defines the sv_... shortcuts */
 
 
 /* Layout on disk */
@@ -434,4 +434,3 @@ extern struct inode_operations sysv_dir_inode_operations;
 extern struct inode_operations sysv_symlink_inode_operations;
 
 #endif
-

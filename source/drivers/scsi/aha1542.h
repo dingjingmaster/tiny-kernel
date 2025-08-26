@@ -31,7 +31,7 @@
  *
  */
 
-#include <linux/types.h>
+#include "../../include/linux/types.h"
 
 /* I/O Port interface 4.2 */
 /* READ */

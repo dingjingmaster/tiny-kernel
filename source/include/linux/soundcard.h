@@ -24,12 +24,12 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * 
+ *
  */
 
- /* 
+ /*
   * If you make modifications to this file, please contact me before
-  * distributing the modified version. There is already enough 
+  * distributing the modified version. There is already enough
   * divercity in the world.
   *
   * Regards,
@@ -40,7 +40,7 @@
 #define SOUND_VERSION	203
 #define VOXWARE
 
-#include <sys/ioctl.h>
+#include "../../include/sys/ioctl.h"
 
 /*
  *	Supported card ID numbers (Should be somewhere else?)
@@ -135,7 +135,7 @@ struct patch_info {
 		long len;	/* Size of the wave data in bytes */
 		long loop_start, loop_end; /* Byte offsets from the beginning */
 
-/* 
+/*
  * The base_freq and base_note fields are used when computing the
  * playback speed for a note. The base_note defines the tone frequency
  * which is heard if the sample is played using the base_freq as the
@@ -164,7 +164,7 @@ struct patch_info {
 		unsigned char	env_rate[ 6 ];	 /* GUS HW ramping rate */
 		unsigned char	env_offset[ 6 ]; /* 255 == 100% */
 
-	/* 
+	/*
 	 * The tremolo, vibrato and scale info are not supported yet.
 	 * Enable by setting the mode bits WAVE_TREMOLO, WAVE_VIBRATO or
 	 * WAVE_SCALE
@@ -173,14 +173,14 @@ struct patch_info {
 		unsigned char	tremolo_sweep;
 		unsigned char	tremolo_rate;
 		unsigned char	tremolo_depth;
-	
+
 		unsigned char	vibrato_sweep;
 		unsigned char	vibrato_rate;
 		unsigned char	vibrato_depth;
 
 		int		scale_frequency;
 		unsigned int	scale_factor;		/* from 0 to 2048 or 0 to 2 */
-	
+
 	        int		volume;
 	        int		spare[4];
 		char data[1];	/* The waveform data starts here */
@@ -209,7 +209,7 @@ struct patch_info {
  * This structure is also used with ioctl(SNDCTL_PGMR_IFACE) which allows
  * a patch manager daemon to read and write device parameters. This
  * ioctl available through /dev/sequencer also. Avoid using it since it's
- * extremely hardware dependent. In addition access trough /dev/sequencer 
+ * extremely hardware dependent. In addition access trough /dev/sequencer
  * may confuse the patch manager daemon.
  */
 
@@ -223,8 +223,8 @@ struct patmgr_info {	/* Note! size must be < 4k since kmalloc() is used */
 	  int device;
 	  int command;
 
-/* 
- * Commands 0x000 to 0xfff reserved for patch manager programs 
+/*
+ * Commands 0x000 to 0xfff reserved for patch manager programs
  */
 #define PM_GET_DEVTYPE	1	/* Returns type of the patch mgr interface of dev */
 #define		PMTYPE_FM2	1	/* 2 OP fm */
@@ -244,7 +244,7 @@ struct patmgr_info {	/* Note! size must be < 4k since kmalloc() is used */
  */
 #define _PM_LOAD_PATCH	0x100
 
-/* 
+/*
  * Commands above 0xffff reserved for device specific use
  */
 
@@ -275,7 +275,7 @@ struct patmgr_info {	/* Note! size must be < 4k since kmalloc() is used */
  * /dev/sequencer input events.
  *
  * The data written to the /dev/sequencer is a stream of events. Events
- * are records of 4 or 8 bytes. The first byte defines the size. 
+ * are records of 4 or 8 bytes. The first byte defines the size.
  * Any number of events can be written with a write call. There
  * is a set of macros for sending these events. Use these macros if you
  * want to maximize portability of your program.
@@ -327,13 +327,13 @@ struct patmgr_info {	/* Note! size must be < 4k since kmalloc() is used */
  *	of the associated synthesizer device. There is no limit to the size
  *	of the extended events. These events are not queued but executed
  *	immediately when the write() is called (execution can take several
- *	seconds of time). 
+ *	seconds of time).
  *
  *	When a SEQ_FULLSIZE message is written to the device, it must
  *	be written using exactly one write() call. Other events cannot
  *	be mixed to the same write.
- *	
- *	For FM synths (YM3812/OPL3) use struct sbi_instrument and write it to the 
+ *
+ *	For FM synths (YM3812/OPL3) use struct sbi_instrument and write it to the
  *	/dev/sequencer. Don't write other data together with the instrument structure
  *	Set the key field of the structure to FM_PATCH. The device field is used to
  *	route the patch to the corresponding device.
@@ -395,7 +395,7 @@ struct synth_info {	/* Read only */
 		int	nr_voices;
 		int	nr_drums;	/* Obsolete field */
 		int	instr_bank_size;
-		unsigned long	capabilities;	
+		unsigned long	capabilities;
 #define SYNTH_CAP_PERCMODE		0x00000001 /* No longer used */
 #define SYNTH_CAP_OPL3			0x00000002 /* Set if OPL3 supported */
 		int	dummies[19];	/* Reserve space */
@@ -440,12 +440,12 @@ struct midi_info {
 /*********************************************
  * IOCTL commands for /dev/mixer
  */
-	
-/* 
+
+/*
  * Mixer devices
  *
  * There can be up to 20 different analog mixer channels. The
- * SOUND_MIXER_NRDEVICES gives the currently supported maximum. 
+ * SOUND_MIXER_NRDEVICES gives the currently supported maximum.
  * The SOUND_MIXER_READ_DEVMASK returns a bitmask which tells
  * the devices supported by the particular mixer.
  */

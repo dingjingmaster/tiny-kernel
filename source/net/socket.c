@@ -19,20 +19,20 @@
  *		2 of the License, or (at your option) any later version.
  */
 
-#include <linux/config.h>
-#include <linux/signal.h>
-#include <linux/errno.h>
-#include <linux/sched.h>
-#include <linux/kernel.h>
-#include <linux/major.h>
-#include <linux/stat.h>
-#include <linux/socket.h>
-#include <linux/fcntl.h>
-#include <linux/net.h>
-#include <linux/ddi.h>
+#include "../include/linux/config.h"
+#include "../include/linux/signal.h"
+#include "../include/linux/errno.h"
+#include "../include/linux/sched.h"
+#include "../include/linux/kernel.h"
+#include "../include/linux/major.h"
+#include "../include/linux/stat.h"
+#include "../include/linux/socket.h"
+#include "../include/linux/fcntl.h"
+#include "../include/linux/net.h"
+#include "../include/linux/ddi.h"
 
-#include <asm/system.h>
-#include <asm/segment.h>
+#include "../include/asm/system.h"
+#include "../include/asm/segment.h"
 
 #undef SOCK_DEBUG
 
@@ -590,7 +590,7 @@ sock_accept(int fd, struct sockaddr *upeer_sockaddr, int *upeer_addrlen)
   DPRINTF((net_debug, "NET: sock_accept: fd = %d\n", fd));
   if (fd < 0 || fd >= NR_OPEN || ((file = current->filp[fd]) == NULL))
 								return(-EBADF);
-  
+
   if (!(sock = sockfd_lookup(fd, &file))) return(-ENOTSOCK);
   if (sock->state != SS_UNCONNECTED) {
 	DPRINTF((net_debug, "NET: sock_accept: socket isn't unconnected\n"));
@@ -645,7 +645,7 @@ sock_connect(int fd, struct sockaddr *uservaddr, int addrlen)
   DPRINTF((net_debug, "NET: sock_connect: fd = %d\n", fd));
   if (fd < 0 || fd >= NR_OPEN || (file=current->filp[fd]) == NULL)
 								return(-EBADF);
-  
+
   if (!(sock = sockfd_lookup(fd, &file))) return(-ENOTSOCK);
   switch(sock->state) {
 	case SS_UNCONNECTED:
@@ -779,7 +779,7 @@ sock_setsockopt(int fd, int level, int optname, char *optval, int optlen)
 {
   struct socket *sock;
   struct file *file;
-	
+
   DPRINTF((net_debug, "NET: sock_setsockopt(fd=%d, level=%d, optname=%d,\n",
 							fd, level, optname));
   DPRINTF((net_debug, "                     optval = %X, optlen = %d)\n",
@@ -807,7 +807,7 @@ sock_getsockopt(int fd, int level, int optname, char *optval, int *optlen)
   if (fd < 0 || fd >= NR_OPEN || ((file = current->filp[fd]) == NULL))
 								return(-EBADF);
   if (!(sock = sockfd_lookup(fd, NULL))) return(-ENOTSOCK);
-	    
+
   if (!sock->ops || !sock->ops->getsockopt) return(0);
   return(sock->ops->getsockopt(sock, level, optname, optval, optlen));
 }

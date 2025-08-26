@@ -10,12 +10,12 @@
 #ifndef _LINUX_TPQIC02_H
 #define _LINUX_TPQIC02_H
 
-#include <linux/config.h>
+#include "../../include/linux/config.h"
 
 #if CONFIG_TAPE_QIC02
 
 /* need to have TAPE_QIC02_DRIVE and TAPE_QIC02_IFC expand to something */
-#include <linux/mtio.h>
+#include "../../include/linux/mtio.h"
 
 
 /* make TAPE_QIC02_IFC expand to something */
@@ -31,7 +31,7 @@
 
 /*********** START OF USER CONFIGURABLE SECTION ************/
 
-/* Tape configuration: 
+/* Tape configuration:
  *
  * Tape drive configuration:	(MT_IS* constants are defined in sys/mtio.h)
  *
@@ -46,7 +46,7 @@
  *	WANGTEK,
  *	ARCHIVE_SC402, ARCHIVE_SC499.	(both same programming interface)
  *
- * Make sure you have the I/O ports/DMA channels 
+ * Make sure you have the I/O ports/DMA channels
  * and IRQ stuff configured properly!
  * NOTE: Check for conflicts with TAPE_QIC02_TIMER in timer.h.
  */
@@ -131,7 +131,7 @@
 
 #define BLOCKS_BEYOND_EW	2	/* nr of blocks after Early Warning hole */
 
-#if TAPE_QIC02_IFC == WANGTEK	
+#if TAPE_QIC02_IFC == WANGTEK
   /* Wangtek interface card port locations */
 # define QIC_STAT_PORT	TAPE_QIC02_PORT
 # define QIC_CTL_PORT	TAPE_QIC02_PORT
@@ -150,7 +150,7 @@
 # define WT_CTL_ONLINE		0x01
 # define QIC_CTL_RESET		0x02
 # define QIC_CTL_REQUEST	0x04
-# define WT_CTL_CMDOFF		0xC0 
+# define WT_CTL_CMDOFF		0xC0
 # if TAPE_QIC02_DMA == 3   /* dip-switches alone don't seem to cut it */
 #  define WT_CTL_DMA		0x10			  /* enable dma chan3 */
 # elif TAPE_QIC02_DMA == 1

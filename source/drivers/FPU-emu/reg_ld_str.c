@@ -17,7 +17,7 @@
  |    other processes using the emulator while swapping is in progress.      |
  +---------------------------------------------------------------------------*/
 
-#include <asm/segment.h>
+#include "../../include/asm/segment.h"
 
 #include "fpu_system.h"
 #include "exception.h"
@@ -409,7 +409,7 @@ void reg_load_bcd(void)
       l *= 10;
       l += bcd & 0x0f;
     }
-  
+
   /* Finish all access to user memory before putting stuff into
      the static FPU_loaded_data */
   RE_ENTRANT_CHECK_OFF;
@@ -552,10 +552,10 @@ int reg_store_double(void)
 		  increment = 0;
 		  break;
 		}
-	  
+
 	      /* Truncate the mantissa */
 	      tmp.sigl &= 0xfffff800;
-	  
+
 	      if ( increment )
 		{
 		  set_precision_flag_up();
@@ -586,7 +586,7 @@ int reg_store_double(void)
 	      else
 		set_precision_flag_down();
 	    }
-	  
+
 	  l[0] = (tmp.sigl >> 11) | (tmp.sigh << 21);
 	  l[1] = ((tmp.sigh >> 11) & 0xfffff);
 
@@ -731,7 +731,7 @@ int reg_store_single(void)
 	    {
 	      unsigned long sigh = tmp.sigh;
 	      unsigned long sigl = tmp.sigl;
-	      
+
 	      switch (control_word & CW_RC)
 		{
 		case RC_RND:
@@ -751,10 +751,10 @@ int reg_store_single(void)
 		  increment = 0;
 		  break;
 		}
-	  
+
 	      /* Truncate part of the mantissa */
 	      tmp.sigl = 0;
-	  
+
 	      if (increment)
 		{
 		  set_precision_flag_up();
@@ -1095,7 +1095,7 @@ int reg_store_bcd(void)
 
 /*===========================================================================*/
 
-/* r gets mangled such that sig is int, sign: 
+/* r gets mangled such that sig is int, sign:
    it is NOT normalized */
 /* The return value (in eax) is zero if the result is exact,
    if bits are changed due to rounding, truncation, etc, then
@@ -1114,7 +1114,7 @@ int round_to_int(FPU_REG *r)
       significand(r) = 0;
       return 0;        /* o.k. */
     }
-  
+
   if (r->exp > EXP_BIAS + 63)
     {
       r->sigl = r->sigh = ~0;      /* The largest representable number */
@@ -1372,7 +1372,7 @@ char *fstenv(fpu_addr_modes addr_modes)
       RE_ENTRANT_CHECK_ON;
       d += 0x1c;
     }
-  
+
   control_word |= CW_Exceptions;
   partial_status &= ~(SW_Summary | SW_Backward);
 
@@ -1406,7 +1406,7 @@ static void write_to_extended(FPU_REG *rp, char *d)
 {
   long e;
   FPU_REG tmp;
-  
+
   e = rp->exp - EXP_BIAS + EXTENDED_Ebias;
 
 #ifdef PARANOID

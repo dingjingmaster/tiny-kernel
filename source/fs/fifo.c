@@ -4,10 +4,10 @@
  *  written by Paul H. Hargrove
  */
 
-#include <linux/sched.h>
-#include <linux/kernel.h>
-#include <linux/errno.h>
-#include <linux/fcntl.h>
+#include "../include/linux/sched.h"
+#include "../include/linux/kernel.h"
+#include "../include/linux/errno.h"
+#include "../include/linux/fcntl.h"
 
 static int fifo_open(struct inode * inode,struct file * filp)
 {
@@ -44,7 +44,7 @@ static int fifo_open(struct inode * inode,struct file * filp)
 		if (retval && !--PIPE_READERS(*inode))
 			wake_up_interruptible(&PIPE_WAIT(*inode));
 		break;
-	
+
 	case 2:
 	/*
 	 *  O_WRONLY
@@ -75,7 +75,7 @@ static int fifo_open(struct inode * inode,struct file * filp)
 		if (retval && !--PIPE_WRITERS(*inode))
 			wake_up_interruptible(&PIPE_WAIT(*inode));
 		break;
-	
+
 	case 3:
 	/*
 	 *  O_RDWR

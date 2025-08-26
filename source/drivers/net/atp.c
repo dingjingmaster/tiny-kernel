@@ -27,7 +27,7 @@ static char *version =
 	code to test my theorized operation.
 
 					Theory of Operation
-	
+
 	The RTL8002 adaptor seems to be built around a custom spin of the SEEQ
 	controller core.  It probably has a 16K or 64K internal packet buffer, of
 	which the first 4K is devoted to transmit and the rest to receive.
@@ -74,27 +74,27 @@ static char *version =
 	interpretations of the device registers.
 */
 
-#include <linux/config.h>		/* Used only to override default values. */
-#include <linux/kernel.h>
-#include <linux/sched.h>
-#include <linux/types.h>
-#include <linux/fcntl.h>
-#include <linux/interrupt.h>
-#include <linux/ptrace.h>
-#include <linux/ioport.h>
-#include <linux/in.h>
-#include <linux/malloc.h>
-#include <linux/string.h>
-#include <asm/system.h>
-#include <asm/bitops.h>
-#include <asm/io.h>
-#include <asm/dma.h>
-#include <errno.h>
+#include "../../include/linux/config.h"		/* Used only to override default values. */
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/types.h"
+#include "../../include/linux/fcntl.h"
+#include "../../include/linux/interrupt.h"
+#include "../../include/linux/ptrace.h"
+#include "../../include/linux/ioport.h"
+#include "../../include/linux/in.h"
+#include "../../include/linux/malloc.h"
+#include "../../include/linux/string.h"
+#include "../../include/asm/system.h"
+#include "../../include/asm/bitops.h"
+#include "../../include/asm/io.h"
+#include "../../include/asm/dma.h"
+#include "../../include/linux/errno.h"
 
-#include "dev.h"
-#include "eth.h"
-#include "skbuff.h"
-#include "arp.h"
+#include "../../net/inet/dev.h"
+#include "../../net/inet/eth.h"
+#include "../../net/inet/skbuff.h"
+#include "../../net/inet/arp.h"
 
 #include "atp.h"
 
@@ -296,18 +296,18 @@ static void get_node_ID(struct device *dev)
 	short ioaddr = dev->base_addr;
 	int sa_offset = 0;
 	int i;
-	
+
 	write_reg(ioaddr, CMR2, CMR2_EEPROM);	  /* Point to the EEPROM control registers. */
-	
+
 	/* Some adaptors have the station address at offset 15 instead of offset
 	   zero.  Check for it, and fix it if needed. */
 	if (eeprom_op(ioaddr, EE_READ(0)) == 0xffff)
 		sa_offset = 15;
-	
+
 	for (i = 0; i < 3; i++)
 		((unsigned short *)dev->dev_addr)[i] =
 			ntohs(eeprom_op(ioaddr, EE_READ(sa_offset + i)));
-	
+
 	write_reg(ioaddr, CMR2, CMR2_NULL);
 }
 
@@ -327,7 +327,7 @@ static unsigned short eeprom_op(short ioaddr, unsigned int cmd)
 {
 	unsigned eedata_out = 0;
 	int num_bits = EE_CMD_SIZE;
-	
+
 	while (--num_bits >= 0) {
 		char outval = test_bit(num_bits, &cmd) ? EE_DATA_WRITE : 0;
 		write_reg_high(ioaddr, PROM_CMD, outval | EE_CLK_LOW);
@@ -379,7 +379,7 @@ static void hardware_init(struct device *dev)
     int i;
 
 	write_reg_high(ioaddr, CMR1, CMR1h_RESET);
-	
+
     for (i = 0; i < 6; i++)
 		write_reg_byte(ioaddr, PAR0 + i, dev->dev_addr[i]);
 
@@ -676,7 +676,7 @@ static void net_rx(struct device *dev)
 		int pkt_len = (rx_head.rx_count & 0x7ff) - 4; 		/* The "-4" is omits the FCS (CRC). */
 		int sksize = sizeof(struct sk_buff) + pkt_len;
 		struct sk_buff *skb;
-		
+
 		skb = alloc_skb(sksize, GFP_ATOMIC);
 		if (skb == NULL) {
 			printk("%s: Memory squeeze, dropping packet.\n", dev->name);
@@ -687,7 +687,7 @@ static void net_rx(struct device *dev)
 		skb->mem_addr = skb;
 		skb->len = pkt_len;
 		skb->dev = dev;
-		
+
 		read_block(ioaddr, pkt_len, skb->data, dev->if_port);
 
 		if (net_debug > 6) {
@@ -698,7 +698,7 @@ static void net_rx(struct device *dev)
 				   data[6], data[7], data[8], data[9], data[10], data[11],
 				   data[12], data[13]);
 		}
-		
+
 #ifdef HAVE_NETIF_RX
 		netif_rx(skb);
 #else

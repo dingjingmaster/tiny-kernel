@@ -4,14 +4,14 @@
  *  Copyright (C) 1991, 1992  Linus Torvalds
  */
 
-#include <asm/segment.h>
+#include "../include/asm/segment.h"
 
-#include <linux/sched.h>
-#include <linux/errno.h>
-#include <linux/string.h>
-#include <linux/stat.h>
-#include <linux/termios.h>
-#include <linux/fcntl.h> /* for f_flags values */
+#include "../include/linux/sched.h"
+#include "../include/linux/errno.h"
+#include "../include/linux/string.h"
+#include "../include/linux/stat.h"
+#include "../include/linux/termios.h"
+#include "../include/linux/fcntl.h" /* for f_flags values */
 
 static int file_ioctl(struct file *filp,unsigned int cmd,unsigned long arg)
 {
@@ -55,7 +55,7 @@ static int file_ioctl(struct file *filp,unsigned int cmd,unsigned long arg)
 
 
 asmlinkage int sys_ioctl(unsigned int fd, unsigned int cmd, unsigned long arg)
-{	
+{
 	struct file * filp;
 	int on;
 

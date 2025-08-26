@@ -14,15 +14,15 @@
  *		Alan Cox	:	More generic kfree handler
  */
 
-#include <linux/config.h>
-#include <linux/types.h>
-#include <linux/kernel.h>
-#include <linux/sched.h>
-#include <asm/segment.h>
-#include <asm/system.h>
-#include <linux/mm.h>
-#include <linux/interrupt.h>
-#include <linux/in.h>
+#include "../../include/linux/config.h"
+#include "../../include/linux/types.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/sched.h"
+#include "../../include/asm/segment.h"
+#include "../../include/asm/system.h"
+#include "../../include/linux/mm.h"
+#include "../../include/linux/interrupt.h"
+#include "../../include/linux/in.h"
 #include "inet.h"
 #include "dev.h"
 #include "ip.h"
@@ -386,7 +386,7 @@ void kfree_skb(struct sk_buff *skb, int rw)
 		skb->free=1;	/* Free when unlocked */
 		return;
 	}
-	
+
 	if(skb->free == 2)
 		printk("Warning: kfree_skb passed an skb that nobody set the free flag on!\n");
 	if(skb->list)
@@ -470,7 +470,7 @@ void kfree_skbmem(void *mem,unsigned size)
 /*
  *	Skbuff device locking
  */
- 
+
 void skb_kept_by_device(struct sk_buff *skb)
 {
 	skb->lock++;

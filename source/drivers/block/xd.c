@@ -3,7 +3,7 @@
  *
  * Author: Pat Mackinlay, smackinla@cc.curtin.edu.au
  * Date: 29/09/92
- * 
+ *
  * Revised: 01/01/93, ...
  *
  * Ref: DTC 5150X Controller Specification (thanks to Kevin Fowler, kevinf@agora.rain.com)
@@ -11,17 +11,17 @@
  */
 
 
-#include <linux/errno.h>
-#include <linux/sched.h>
-#include <linux/fs.h>
-#include <linux/kernel.h>
-#include <linux/genhd.h>
-#include <linux/xd.h>
+#include "../../include/linux/errno.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/fs.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/genhd.h"
+#include "../../include/linux/xd.h"
 
-#include <asm/system.h>
-#include <asm/io.h>
-#include <asm/segment.h>
-#include <asm/dma.h>
+#include "../../include/asm/system.h"
+#include "../../include/asm/io.h"
+#include "../../include/asm/segment.h"
+#include "../../include/asm/dma.h"
 
 #define MAJOR_NR XT_DISK_MAJOR
 #include "blk.h"
@@ -84,7 +84,7 @@ static u_short xd_iobase = 0;
 u_long xd_init (u_long mem_start,u_long mem_end)
 {
 	u_char i,controller,*address;
-	
+
 	if (register_blkdev(MAJOR_NR,"xd",&xd_fops)) {
 		printk("xd_init: unable to get major number %d\n",MAJOR_NR);
 		return (mem_start);
@@ -100,7 +100,7 @@ u_long xd_init (u_long mem_start,u_long mem_end)
 		if (controller)
 			xd_sigs[controller].init_controller(address);
 		xd_drives = xd_initdrives(xd_sigs[controller].init_drive);
-		
+
 		printk("xd_init: detected %d hard drive%s (using IRQ%d & DMA%d)\n",xd_drives,xd_drives == 1 ? "" : "s",xd_irq,xd_dma);
 		for (i = 0; i < xd_drives; i++)
 			printk("xd_init: drive %d geometry - heads = %d, cylinders = %d, sectors = %d\n",i,xd_info[i].heads,xd_info[i].cylinders,xd_info[i].sectors);
@@ -231,7 +231,7 @@ static int xd_ioctl (struct inode *inode,struct file *file,u_int cmd,u_long arg)
 				fsync_dev(inode->i_rdev);
 				invalidate_buffers(inode->i_rdev);
 				return 0;
-				
+
 			case BLKRRPART:		return (xd_reread_partitions(inode->i_rdev));
 			RO_IOCTLS(inode->i_rdev,arg);
 		}
@@ -281,7 +281,7 @@ static int xd_readwrite (u_char operation,u_char drive,char *buffer,u_int block,
 	u_char cmdblk[6],sense[4];
 	u_short track,cylinder;
 	u_char head,sector,control,mode,temp;
-	
+
 #ifdef DEBUG_READWRITE
 	printk("xd_readwrite: operation = %s, drive = %d, buffer = 0x%X, block = %d, count = %d\n",operation == READ ? "read" : "write",drive,buffer,block,count);
 #endif /* DEBUG_READWRITE */
@@ -325,7 +325,7 @@ static int xd_readwrite (u_char operation,u_char drive,char *buffer,u_int block,
 static void xd_recalibrate (u_char drive)
 {
 	u_char cmdblk[6];
-	
+
 	xd_build(cmdblk,CMD_RECALIBRATE,drive,0,0,0,0,0);
 	if (xd_command(cmdblk,PIO_MODE,0,0,0,XD_TIMEOUT * 8))
 		printk("xd_recalibrate: warning! error recalibrating, controller may be unstable\n");
@@ -378,7 +378,7 @@ static u_char *xd_build (u_char *cmdblk,u_char command,u_char drive,u_char head,
 	cmdblk[3] = cylinder & 0xFF;
 	cmdblk[4] = count;
 	cmdblk[5] = control;
-	
+
 	return (cmdblk);
 }
 
@@ -407,7 +407,7 @@ static u_int xd_command (u_char *command,u_char mode,u_char *indata,u_char *outd
 
 	if (xd_waitport(XD_STATUS,STAT_SELECT,STAT_SELECT,timeout))
 		return (1);
-	
+
 	while (!complete) {
 		if (xd_waitport(XD_STATUS,STAT_READY,STAT_READY,timeout))
 			return (1);
@@ -546,7 +546,7 @@ static void xd_wd_init_drive (u_char drive)
 		xd_setparam(CMD_WDSETPARAM,drive,xd_info[drive].heads,xd_info[drive].cylinders,((u_short *) (buf))[0xD8],((u_short *) (buf))[0xDA],buf[0x1B4]);
 	}
 	else
-		printk("xd_wd_init_drive: error reading geometry for drive %d\n",drive);	
+		printk("xd_wd_init_drive: error reading geometry for drive %d\n",drive);
 }
 
 static void xd_seagate_init_controller (u_char *address)
@@ -592,7 +592,7 @@ static void xd_omti_init_controller (u_char *address)
 		default:	printk("xd_omti_init_controller: unsupported BIOS address %p\n",address);
 				xd_iobase = 0x320; break;
 	}
-	
+
 	xd_irq = 5;			/* the IRQ and DMA channel are fixed on the Omti controllers */
 	xd_dma = 3;
 	xd_maxsectors = 0x40;
@@ -664,4 +664,3 @@ static void xd_setparam (u_char command,u_char drive,u_char heads,u_short cylind
 	if (xd_command(cmdblk,PIO_MODE,0,0,0,XD_TIMEOUT * 2))
 		printk("xd_setparam: error setting characteristics for drive %d\n",drive);
 }
-

@@ -23,14 +23,14 @@
  *		as published by the Free Software Foundation; either version
  *		2 of the License, or (at your option) any later version.
  */
-#include <linux/autoconf.h>
-#include <linux/sched.h>
-#include <linux/string.h>
-#include <linux/socket.h>
-#include <linux/net.h>
-#include <linux/ddi.h>
-#include <linux/un.h>
-#include <linux/param.h>
+#include "../../include/linux/autoconf.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/socket.h"
+#include "../../include/linux/net.h"
+#include "../../include/linux/ddi.h"
+#include "../../include/linux/un.h"
+#include "../../include/linux/param.h"
 #include "unix.h"
 
 

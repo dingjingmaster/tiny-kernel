@@ -4,14 +4,14 @@
  *  Copyright (C) 1991, 1992  Linus Torvalds
  */
 
-#include <asm/segment.h>
+#include "../include/asm/segment.h"
 
-#include <linux/sched.h>
-#include <linux/kernel.h>
-#include <linux/errno.h>
-#include <linux/stat.h>
-#include <linux/fcntl.h>
-#include <linux/string.h>
+#include "../include/linux/sched.h"
+#include "../include/linux/kernel.h"
+#include "../include/linux/errno.h"
+#include "../include/linux/stat.h"
+#include "../include/linux/fcntl.h"
+#include "../include/linux/string.h"
 
 extern int fcntl_getlk(unsigned int, struct flock *);
 extern int fcntl_setlk(unsigned int, unsigned int, struct flock *);
@@ -64,7 +64,7 @@ asmlinkage int sys_dup(unsigned int fildes)
 }
 
 asmlinkage int sys_fcntl(unsigned int fd, unsigned int cmd, unsigned long arg)
-{	
+{
 	struct file * filp;
 
 	if (fd >= NR_OPEN || !(filp = current->filp[fd]))

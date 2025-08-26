@@ -17,8 +17,8 @@
  *					for udp at least is 'valid'.
  *		Alan Cox	:	Fixed icmp handling properly
  *		Alan Cox	: 	Correct error for oversized datagrams
- *		Alan Cox	:	Tidied select() semantics. 
- *		Alan Cox	:	udp_err() fixed properly, also now 
+ *		Alan Cox	:	Tidied select() semantics.
+ *		Alan Cox	:	udp_err() fixed properly, also now
  *					select and read wake correctly on errors
  *		Alan Cox	:	udp_send verify_area moved to avoid mem leak
  *		Alan Cox	:	UDP can count its memory
@@ -41,19 +41,19 @@
  *		as published by the Free Software Foundation; either version
  *		2 of the License, or (at your option) any later version.
  */
- 
-#include <asm/system.h>
-#include <asm/segment.h>
-#include <linux/types.h>
-#include <linux/sched.h>
-#include <linux/fcntl.h>
-#include <linux/socket.h>
-#include <linux/sockios.h>
-#include <linux/in.h>
-#include <linux/errno.h>
-#include <linux/timer.h>
-#include <linux/termios.h>
-#include <linux/mm.h>
+
+#include "../../include/asm/system.h"
+#include "../../include/asm/segment.h"
+#include "../../include/linux/types.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/fcntl.h"
+#include "../../include/linux/socket.h"
+#include "../../include/linux/sockios.h"
+#include "../../include/linux/in.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/timer.h"
+#include "../../include/linux/termios.h"
+#include "../../include/linux/mm.h"
 #include "inet.h"
 #include "dev.h"
 #include "ip.h"
@@ -86,7 +86,7 @@ print_udp(struct udphdr *uh)
  * This routine is called by the ICMP module when it gets some
  * sort of error condition.  If err < 0 then the socket should
  * be closed and the error returned to the user.  If err > 0
- * it's just the icmp type << 8 | icmp code.  
+ * it's just the icmp type << 8 | icmp code.
  * Header points to the ip header of the error packet. We move
  * on past this. Then (as it used to claim before adjustment)
  * header points to the first 8 bytes of the udp header.  We need
@@ -99,28 +99,28 @@ udp_err(int err, unsigned char *header, unsigned long daddr,
   struct udphdr *th;
   struct sock *sk;
   struct iphdr *ip=(struct iphdr *)header;
-  
+
   header += 4*ip->ihl;
-  
-  th = (struct udphdr *)header;  
-   
+
+  th = (struct udphdr *)header;
+
   DPRINTF((DBG_UDP,"UDP: err(err=%d, header=%X, daddr=%X, saddr=%X, protocl=%X)\n\
 sport=%d,dport=%d", err, header, daddr, saddr, protocol, (int)th->source,(int)th->dest));
 
   sk = get_sock(&udp_prot, th->source, daddr, th->dest, saddr);
 
-  if (sk == NULL) 
+  if (sk == NULL)
   	return;	/* No socket for error */
-  	
+
   if (err < 0)		/* As per the calling spec */
   {
   	sk->err = -err;
   	sk->error_report(sk);		/* User process wakes to see error */
   	return;
   }
-  
+
   if (err & 0xff00 ==(ICMP_SOURCE_QUENCH << 8)) {	/* Slow down! */
-	if (sk->cong_window > 1) 
+	if (sk->cong_window > 1)
 		sk->cong_window = sk->cong_window/2;
 	return;
   }
@@ -201,11 +201,11 @@ udp_check(struct udphdr *uh, int len,
 
 
 static void
-udp_send_check(struct udphdr *uh, unsigned long saddr, 
+udp_send_check(struct udphdr *uh, unsigned long saddr,
 	       unsigned long daddr, int len, struct sock *sk)
 {
   uh->check = 0;
-  if (sk && sk->no_check) 
+  if (sk && sk->no_check)
   	return;
   uh->check = udp_check(uh, len, saddr, daddr);
   if (uh->check == 0) uh->check = 0xffff;
@@ -223,7 +223,7 @@ udp_send(struct sock *sk, struct sockaddr_in *sin,
   unsigned long saddr;
   int size, tmp;
   int err;
-  
+
   DPRINTF((DBG_UDP, "UDP: send(dst=%s:%d buff=%X len=%d)\n",
 		in_ntoa(sin->sin_addr.s_addr), ntohs(sin->sin_port),
 		from, len));
@@ -252,7 +252,7 @@ udp_send(struct sock *sk, struct sockaddr_in *sin,
   tmp = sk->prot->build_header(skb, saddr, sin->sin_addr.s_addr,
 			       &dev, IPPROTO_UDP, sk->opt, skb->mem_len,sk->ip_tos,sk->ip_ttl);
   skb->sk=sk;	/* So memory is freed correctly */
-			    
+
   if (tmp < 0 ) {
 	sk->prot->wfree(sk, skb->mem_addr, skb->mem_len);
 	return(tmp);
@@ -273,7 +273,7 @@ udp_send(struct sock *sk, struct sockaddr_in *sin,
 #else
   if (skb->len > 4095)
   {
-#endif    
+#endif
 	printk("UDP: send: length %d > mtu %d (ignored)\n", len, dev->mtu);
 	sk->prot->wfree(sk, skb->mem_addr, skb->mem_len);
 	return(-EMSGSIZE);
@@ -310,11 +310,11 @@ udp_sendto(struct sock *sk, unsigned char *from, int len, int noblock,
   DPRINTF((DBG_UDP, "UDP: sendto(len=%d, flags=%X)\n", len, flags));
 
   /* Check the flags. */
-  if (flags) 
+  if (flags)
   	return(-EINVAL);
-  if (len < 0) 
+  if (len < 0)
   	return(-EINVAL);
-  if (len == 0) 
+  if (len == 0)
   	return(0);
 
   /* Get and verify the address. */
@@ -324,9 +324,9 @@ udp_sendto(struct sock *sk, unsigned char *from, int len, int noblock,
 	if(err)
 		return err;
 	memcpy_fromfs(&sin, usin, sizeof(sin));
-	if (sin.sin_family && sin.sin_family != AF_INET) 
+	if (sin.sin_family && sin.sin_family != AF_INET)
 		return(-EINVAL);
-	if (sin.sin_port == 0) 
+	if (sin.sin_port == 0)
 		return(-EINVAL);
   } else {
 	if (sk->state != TCP_ESTABLISHED) return(-EINVAL);
@@ -334,7 +334,7 @@ udp_sendto(struct sock *sk, unsigned char *from, int len, int noblock,
 	sin.sin_port = sk->dummy_th.dest;
 	sin.sin_addr.s_addr = sk->daddr;
   }
-  
+
   if(!sk->broadcast && chk_addr(sin.sin_addr.s_addr)==IS_BROADCAST)
     	return -EACCES;			/* Must turn broadcast on first */
   sk->inuse = 1;
@@ -453,9 +453,9 @@ udp_recvfrom(struct sock *sk, unsigned char *to, int len,
 	return(err);
   }
 
-  if (len == 0) 
+  if (len == 0)
   	return(0);
-  if (len < 0) 
+  if (len < 0)
   	return(-EINVAL);
 
   if (addr_len) {
@@ -490,7 +490,7 @@ udp_recvfrom(struct sock *sk, unsigned char *to, int len,
 	addr.sin_addr.s_addr = skb->daddr;
 	memcpy_tofs(sin, &addr, sizeof(*sin));
   }
-  
+
   skb_free_datagram(skb);
   release_sock(sk);
   return(copied);
@@ -510,8 +510,8 @@ udp_connect(struct sock *sk, struct sockaddr_in *usin, int addr_len)
 {
   struct sockaddr_in sin;
   int er;
-  
-  if (addr_len < sizeof(sin)) 
+
+  if (addr_len < sizeof(sin))
   	return(-EINVAL);
 
   er=verify_area(VERIFY_READ, usin, sizeof(sin));
@@ -519,12 +519,12 @@ udp_connect(struct sock *sk, struct sockaddr_in *usin, int addr_len)
   	return er;
 
   memcpy_fromfs(&sin, usin, sizeof(sin));
-  if (sin.sin_family && sin.sin_family != AF_INET) 
+  if (sin.sin_family && sin.sin_family != AF_INET)
   	return(-EAFNOSUPPORT);
 
   if(!sk->broadcast && chk_addr(sin.sin_addr.s_addr)==IS_BROADCAST)
     	return -EACCES;			/* Must turn broadcast on first */
-  	
+
   sk->daddr = sin.sin_addr.s_addr;
   sk->dummy_th.dest = sin.sin_port;
   sk->state = TCP_ESTABLISHED;
@@ -553,9 +553,9 @@ udp_rcv(struct sk_buff *skb, struct device *dev, struct options *opt,
 
   uh = (struct udphdr *) skb->h.uh;
   sk = get_sock(&udp_prot, uh->dest, saddr, uh->source, daddr);
-  if (sk == NULL) 
+  if (sk == NULL)
   {
-	if (chk_addr(daddr) == IS_MYADDR) 
+	if (chk_addr(daddr) == IS_MYADDR)
 	{
 		icmp_send(skb, ICMP_DEST_UNREACH, ICMP_PORT_UNREACH, dev);
 	}
@@ -586,7 +586,7 @@ udp_rcv(struct sk_buff *skb, struct device *dev, struct options *opt,
 
 
   /* Charge it to the socket. */
-  if (sk->rmem_alloc + skb->mem_len >= sk->rcvbuf) 
+  if (sk->rmem_alloc + skb->mem_len >= sk->rcvbuf)
   {
 	skb->sk = NULL;
 	kfree_skb(skb, FREE_WRITE);
@@ -600,14 +600,14 @@ udp_rcv(struct sk_buff *skb, struct device *dev, struct options *opt,
   print_udp(uh);
 
   /* Now add it to the data chain and wake things up. */
-  
+
   skb_queue_tail(&sk->rqueue,skb);
 
   skb->len = len - sizeof(*uh);
 
-  if (!sk->dead) 
+  if (!sk->dead)
   	sk->data_ready(sk,skb->len);
-  	
+
   release_sock(sk);
   return(0);
 }

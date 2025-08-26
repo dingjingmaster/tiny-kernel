@@ -1,10 +1,10 @@
-#include <linux/kernel.h>
-#include <linux/sched.h>
-#include <linux/fs.h>
-#include <linux/hdreg.h>
-#include <linux/errno.h>
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/fs.h"
+#include "../../include/linux/hdreg.h"
+#include "../../include/linux/errno.h"
 
-#include <asm/segment.h>
+#include "../../include/asm/segment.h"
 
 #include "../block/blk.h"
 #include "scsi.h"

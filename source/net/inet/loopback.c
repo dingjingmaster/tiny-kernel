@@ -16,21 +16,21 @@
  *		as published by the Free Software Foundation; either version
  *		2 of the License, or (at your option) any later version.
  */
-#include <linux/config.h>
-#include <linux/kernel.h>
-#include <linux/sched.h>
-#include <linux/fs.h>
-#include <linux/types.h>
-#include <linux/string.h>
-#include <linux/socket.h>
-#include <linux/errno.h>
-#include <linux/fcntl.h>
-#include <linux/in.h>
-#include <linux/if_ether.h>	/* For the statistics structure. */
+#include "../../include/linux/config.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/fs.h"
+#include "../../include/linux/types.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/socket.h"
+#include "../../include/linux/errno.h"
+#include "../../include/linux/fcntl.h"
+#include "../../include/linux/in.h"
+#include "../../include/linux/if_ether.h"	/* For the statistics structure. */
 
-#include <asm/system.h>
-#include <asm/segment.h>
-#include <asm/io.h>
+#include "../../include/asm/system.h"
+#include "../../include/asm/segment.h"
+#include "../../include/asm/io.h"
 
 #include "inet.h"
 #include "dev.h"
@@ -132,6 +132,6 @@ loopback_init(struct device *dev)
   dev->priv = kmalloc(sizeof(struct enet_statistics), GFP_KERNEL);
   memset(dev->priv, 0, sizeof(struct enet_statistics));
   dev->get_stats = get_stats;
-  
+
   return(0);
 };

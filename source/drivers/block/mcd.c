@@ -33,23 +33,23 @@
 */
 
 
-#include <linux/errno.h>
-#include <linux/signal.h>
-#include <linux/sched.h>
-#include <linux/timer.h>
-#include <linux/fs.h>
-#include <linux/kernel.h>
-#include <linux/cdrom.h>
-#include <linux/ioport.h>
+#include "../../include/linux/errno.h"
+#include "../../include/linux/signal.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/timer.h"
+#include "../../include/linux/fs.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/cdrom.h"
+#include "../../include/linux/ioport.h"
 
 /* #define REALLY_SLOW_IO  */
-#include <asm/system.h>
-#include <asm/io.h>
-#include <asm/segment.h>
+#include "../../include/asm/system.h"
+#include "../../include/asm/io.h"
+#include "../../include/asm/segment.h"
 
 #define MAJOR_NR MITSUMI_CDROM_MAJOR
 #include "blk.h"
-#include <linux/mcd.h>
+#include "../../include/linux/mcd.h"
 
 #if 0
 static int mcd_sizes[] = { 0 };
@@ -97,11 +97,11 @@ void mcd_setup(char *str, int *ints)
 {
    if (ints[0] > 0)
       mcd_port = ints[1];
-   if (ints[0] > 1)      
+   if (ints[0] > 1)
       mcd_irq  = ints[2];
 }
 
- 
+
 int
 check_mcd_media_change(int full_dev, int flag)
 {
@@ -110,7 +110,7 @@ check_mcd_media_change(int full_dev, int flag)
 
 #if 1	 /* the below is not reliable */
    return 0;
-#endif  
+#endif
    target = MINOR(full_dev);
 
    if (target > 0) {
@@ -620,11 +620,11 @@ mcd_status()
 	{
 		mcdDiskChanged = 1;
 	}
-	
+
 	if ((st & MST_READY) == 0)
 	{
 		printk("mcd: disk removed\n");
-		mcdDiskChanged = 1;		
+		mcdDiskChanged = 1;
 		end_request(0);
 		do_mcd_request();
 		return;
@@ -656,7 +656,7 @@ mcd_read_cmd()
 	{
 		mcdDiskChanged = 1;
 	}
-	
+
 	if (st == -1)
 	{
 		if (McdTimeout == 0)
@@ -707,7 +707,7 @@ mcd_data()
 		sti();
 		return;
 	}
-	
+
 	if (i == (MFL_STATUS | MFL_DATA))
 	{
 		if (McdTimeout == 0)
@@ -715,10 +715,10 @@ mcd_data()
 			printk("mcd: data timeout, retrying\n");
 			SET_TIMER(mcd_start, 1);
 		}
-		
+
 		else
 			SET_TIMER(mcd_data, 1);
-		
+
 		sti();
 		return;
 	}
@@ -823,7 +823,7 @@ mcd_init(unsigned long mem_start, unsigned long mem_end)
 		 mcd_port);
 	  return mem_start;
 	}
-	  
+
 	blk_dev[MAJOR_NR].request_fn = DEVICE_REQUEST;
 	read_ahead[MAJOR_NR] = 4;
 
@@ -844,14 +844,14 @@ mcd_init(unsigned long mem_start, unsigned long mem_end)
 		return mem_start;
 	}
 	count = inb(MCDPORT(0));		/* pick up the status */
-	
+
 	outb(MCMD_GET_VERSION,MCDPORT(0));
 	for(count=0;count<3;count++)
 		if(getValue(result+count)) {
 			printk("mcd: mitsumi get version failed at 0x%d\n",
 			       mcd_port);
 			return mem_start;
-		}	
+		}
 
 	if (result[0] == result[1] && result[1] == result[2])
 		return mem_start;
@@ -1224,4 +1224,3 @@ Toc[i].diskTime.min, Toc[i].diskTime.sec, Toc[i].diskTime.frame);
 
 	return limit > 0 ? 0 : -1;
 }
-

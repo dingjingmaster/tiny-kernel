@@ -1,6 +1,10 @@
 #ifndef _LINUX_TYPES_H
 #define _LINUX_TYPES_H
 
+#ifndef NULL
+#define NULL (void*)0
+#endif
+
 #ifndef _SIZE_T
 #define _SIZE_T
 typedef unsigned int size_t;
@@ -76,7 +80,7 @@ typedef unsigned long tcflag_t;
 
 /*
  * Those macros may have been defined in <gnu/types.h>. But we always
- * use the ones here. 
+ * use the ones here.
  */
 #undef __FDSET_LONGS
 #define __FDSET_LONGS 8

@@ -5,7 +5,7 @@
  *	    (gentzel@nova.enet.dec.com)
  *  scatter/gather added by Scott Taylor (n217cg@tamuts.tamu.edu)
  *  24F and multiple command support by John F. Carr (jfc@athena.mit.edu)
- *    John's work modified by Caleb Epstein (cae@jpmorgan.com) and 
+ *    John's work modified by Caleb Epstein (cae@jpmorgan.com) and
  *    Eric Youngdale (eric@tantalus.nrl.navy.mil).
  *	Thanks to UltraStor for providing the necessary documentation
  */
@@ -14,7 +14,7 @@
  * TODO:
  *	1. Find out why scatter/gather is limited to 16 requests per command.
  *	2. Look at command linking (mscp.command_link and
- *	   mscp.command_link_id).  (Does not work with many disks, 
+ *	   mscp.command_link_id).  (Does not work with many disks,
  *				and no performance increase.  ERY).
  *	3. Allow multiple adapters.
  */
@@ -114,16 +114,16 @@
  * Release ICM slot by clearing first byte on 24F.
  */
 
-#include <linux/stddef.h>
-#include <linux/string.h>
-#include <linux/sched.h>
-#include <linux/kernel.h>
-#include <linux/ioport.h>
+#include "../../include/linux/stddef.h"
+#include "../../include/linux/string.h"
+#include "../../include/linux/sched.h"
+#include "../../include/linux/kernel.h"
+#include "../../include/linux/ioport.h"
 
-#include <asm/io.h>
-#include <asm/bitops.h>
-#include <asm/system.h>
-#include <asm/dma.h>
+#include "../../include/asm/io.h"
+#include "../../include/asm/bitops.h"
+#include "../../include/asm/system.h"
+#include "../../include/asm/dma.h"
 
 #define ULTRASTOR_PRIVATE	/* Get the private stuff from ultrastor.h */
 #include "../block/blk.h"
@@ -200,10 +200,10 @@ struct mscp {
 
 /* Used to store configuration info read from config i/o registers.  Most of
    this is not used yet, but might as well save it.
-   
+
    This structure also holds port addresses that are not at the same offset
    on the 14F and 24F.
-   
+
    This structure holds all data that must be duplicated to support multiple
    adapters.  */
 
@@ -679,7 +679,7 @@ int ultrastor_queuecommand(Scsi_Cmnd *SCpnt, void (*done)(Scsi_Cmnd *))
        READ command for a tape doesn't have a block offset, and the adapter
        incorrectly assumes that all reads from the tape read the same
        blocks.  Results will depend on read buffer size and other disk
-       activity. 
+       activity.
 
        ???  Which other device types should never use the cache?   */
     my_mscp->ca = scsi_devices[SCpnt->index].type != TYPE_TAPE;
@@ -718,8 +718,8 @@ int ultrastor_queuecommand(Scsi_Cmnd *SCpnt, void (*done)(Scsi_Cmnd *))
 
     /* else??? */
 
-    while ((inb(LCL_DOORBELL_INTR(config.doorbell_address)) & 
-	    (config.slot ? 2 : 1)) 
+    while ((inb(LCL_DOORBELL_INTR(config.doorbell_address)) &
+	    (config.slot ? 2 : 1))
 	   && config.aborted[mscp_index] == 0xff);
 
     /* To avoid race conditions, make the code to write to the adapter
@@ -1044,7 +1044,7 @@ static void ultrastor_interrupt(int cpl)
       {
 #if ULTRASTOR_DEBUG & (UD_ABORT|UD_INTERRUPT)
 	printk("MSCP %d (%x): no command\n", mscp_index, (unsigned int) mscp);
-#endif	
+#endif
 #if ULTRASTOR_MAX_CMDS == 1
 	config.mscp_busy = FALSE;
 #else

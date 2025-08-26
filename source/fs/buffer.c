@@ -17,18 +17,18 @@
  */
 
 #include <stdarg.h>
- 
-#include <linux/config.h>
-#include <linux/errno.h>
-#include <linux/sched.h>
-#include <linux/kernel.h>
-#include <linux/major.h>
-#include <linux/string.h>
-#include <linux/locks.h>
-#include <linux/errno.h>
 
-#include <asm/system.h>
-#include <asm/io.h>
+#include "../include/linux/config.h"
+#include "../include/linux/errno.h"
+#include "../include/linux/sched.h"
+#include "../include/linux/kernel.h"
+#include "../include/linux/major.h"
+#include "../include/linux/string.h"
+#include "../include/linux/locks.h"
+#include "../include/linux/errno.h"
+
+#include "../include/asm/system.h"
+#include "../include/asm/io.h"
 
 #ifdef CONFIG_SCSI
 #ifdef CONFIG_BLK_DEV_SR
@@ -105,7 +105,7 @@ repeat:
 	for (i = nr_buffers*2 ; i-- > 0 ; bh = bh->b_next_free) {
 		if (dev && bh->b_dev != dev)
 			continue;
-#ifdef 0 /* Disable bad-block debugging code */
+#if 0 //def 0 /* Disable bad-block debugging code */
 		if (bh->b_req && !bh->b_lock &&
 		    !bh->b_dirt && !bh->b_uptodate)
 			printk ("Warning (IO error) - orphaned block %08x on %04x\n",
@@ -121,7 +121,7 @@ repeat:
 			}
 			wait_on_buffer (bh);
 		}
-		/* If an unlocked buffer is not uptodate, there has been 
+		/* If an unlocked buffer is not uptodate, there has been
 		   an IO error. Skip it. */
 		if (wait && bh->b_req && !bh->b_lock &&
 		    !bh->b_dirt && !bh->b_uptodate)
@@ -355,7 +355,7 @@ static inline void insert_into_queues(struct buffer_head * bh)
 }
 
 static struct buffer_head * find_buffer(dev_t dev, int block, int size)
-{		
+{
 	struct buffer_head * tmp;
 
 	for (tmp = hash(dev,block) ; tmp != NULL ; tmp = tmp->b_next)
@@ -419,7 +419,7 @@ void set_blocksize(dev_t dev, int size)
 
 	bh = free_list;
 	for (i = nr_buffers*2 ; --i > 0 ; bh = bhnext) {
-		bhnext = bh->b_next_free; 
+		bhnext = bh->b_next_free;
 		if (bh->b_dev != dev)
 			continue;
 		if (bh->b_size == size)

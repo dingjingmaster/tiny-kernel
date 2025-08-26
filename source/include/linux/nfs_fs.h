@@ -9,10 +9,10 @@
  *  OS-specific nfs filesystem definitions and declarations
  */
 
-#include <linux/nfs.h>
+#include "../../include/linux/nfs.h"
 
-#include <linux/in.h>
-#include <linux/nfs_mount.h>
+#include "../../include/linux/in.h"
+#include "../../include/linux/nfs_mount.h"
 
 /*
  * The readdir cache size controls how many directory entries are cached.
@@ -98,7 +98,7 @@ extern int nfs_rpc_call(struct nfs_server *server, int *start, int *end);
 
 /* linux/fs/nfs/inode.c */
 
-extern struct super_block *nfs_read_super(struct super_block *sb, 
+extern struct super_block *nfs_read_super(struct super_block *sb,
 					  void *data,int);
 extern struct inode *nfs_fhget(struct super_block *sb, struct nfs_fh *fhandle,
 			       struct nfs_fattr *fattr);
