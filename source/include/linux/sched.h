@@ -236,7 +236,7 @@ struct task_struct {
 	unsigned long swap_cnt;		/* number of pages to swap on next pass */
 	short swap_table;		/* current page table */
 	short swap_page;		/* current page */
-#endif NEW_SWAP
+#endif //NEW_SWAP
 	struct vm_area_struct *stk_vma;
 };
 

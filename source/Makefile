@@ -52,11 +52,11 @@ ifdef CONFIG_CPP
 CFLAGS := $(CFLAGS) -x c++
 endif
 
-ifdef CONFIG_M486
-CFLAGS := $(CFLAGS) -m486
-else
-CFLAGS := $(CFLAGS) -m386
-endif
+#ifdef CONFIG_M486
+#CFLAGS := $(CFLAGS) -m486
+#else
+#CFLAGS := $(CFLAGS) -m386
+#endif
 
 override CFLAGS += -Iinclude
 
